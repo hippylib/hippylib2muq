@@ -25,7 +25,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         self.xa0 = const_dfVector(self.prior.R, 0)
         self.xa1 = const_dfVector(self.prior.R, 1)
-        self.noises = const_dfVector(self.prior.sqrtR, 1)
+        self.noise = const_dfVector(self.prior.sqrtR, 1)
         self.sample = const_dfVector(self.prior.R, 1)
 
     def ApplyCovariance(self, x):
