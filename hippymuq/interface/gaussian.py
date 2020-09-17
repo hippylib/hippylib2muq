@@ -1,7 +1,3 @@
-"""
-Gaussian distributions
-"""
-
 import numpy as np
 import dolfin as df
 import hippylib as hl
@@ -9,18 +5,118 @@ import pymuqModeling as mm
 
 from ..utility.conversion import dfVector2npArray, const_dfVector, npArray2dfVector
 
+class LaplaceGaussian(mm.PyGaussianBase):
+    """
+    An interface class between ``hippylib::LaplaceGaussian`` and \
+    ``muq::GaussianBase``
+    """
+    def __init__(self, hl_prior, use_zero_mean=False):
+        """
+        :param hl_prior hippylib::BiLaplacianPrior: a hippylib class instance
+        :param use_zero_mean bool: if True, mean = 0
+        """
+        if use_zero_mean:
+            mean = np.zeros(hl_prior.mean.size())
+        else:
+            mean = dfVector2npArray(hl_prior.mean)
+        mm.PyGaussianBase.__init__(self, mean)
+
+        self.prior = hl_prior
+
+        self.xa0 = const_dfVector(self.prior.R, 0)
+        self.xa1 = const_dfVector(self.prior.R, 1)
+        self.noises = const_dfVector(self.prior.sqrtR, 1)
+        self.sample = const_dfVector(self.prior.R, 1)
+
+    def ApplyCovariance(self, x):
+        """
+        Apply the covariance matrix.
+
+        :param x numpy::ndarray: input vector
+        """
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dfVector(x, self.xa0)
+
+            # Solve
+            nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
+
+            return dfVector2npArray(self.xa1)
+        else:
+            nrow = x.shape[0]
+            ncol = x.shape[1]
+            xt = x.T
+            yarr = np.zeros((ncol, nrow))
+            for i in range(ncol):
+                xi = xt[i, :]
+
+                # Convert `x` to dolfin.Vector
+                npArray2dfVector(xi, self.xa0)
+
+                # Solve
+                nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
+
+                yarr[i, :] = dfVector2npArray(self.xa1)
+
+            return yarr.T
+
+    def ApplyPrecision(self, x):
+        """
+        Apply the precision matrix
+
+        :param x numpy::ndarray: input vector
+        """
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dfVector(x, self.xa1)
+
+            # Apply R
+            self.prior.R.mult(self.xa1, self.xa0)
+
+            return dfVector2npArray(self.xa0)
+        else:
+            nrow = x.shape[0]
+            ncol = x.shape[1]
+            xt = x.T
+            yarr = np.zeros((ncol, nrow))
+            for i in range(ncol):
+                xi = xt[i, :]
+
+                # Convert `x` to dolfin.Vector
+                npArray2dfVector(xi, self.xa1)
+
+                # Apply R
+                self.prior.R.mult(self.xa1, self.xa0)
+
+                yarr[i, :] = dfVector2npArray(self.xa0)
+
+            return yarr.T
+
+    def SampleImpl(self, inputs):
+        """
+        Draw a sample.
+        This is an overladed function of ``muq::PyGaussianBase``
+
+        :param inputs numpy::ndarray: input vector
+        """
+        hl.parRandom.normal(1., self.noise)
+
+        self.prior.sample(self.noise, self.sample)
+
+        x = dfVector2npArray(self.sample)
+        return x
 
 class BiLaplaceGaussian(mm.PyGaussianBase):
-
-    """Interfacing class between hl.BiLaplacianPrior and mm.GaussianBase
-
-    Covariance matrix :math:`C = A^{-1} M A^{-1}`
-
-    Precision matrix :math:`R = A M^{-1} A`
+    """
+    A class interfacing between ``hippylib::BiLaplacianPrior`` and \
+    ``muq::GaussianBase``
     """
 
     def __init__(self, hl_prior, use_zero_mean=False):
-        """TODO: to be defined. """
+        """
+        :param hl_prior hippylib::BiLaplacianPrior: a hippylib class instance
+        :param use_zero_mean bool: if True, mean = 0
+        """
         if use_zero_mean:
             mean = np.zeros(hl_prior.mean.size())
         else:
@@ -54,13 +150,10 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
         self.xsqm1 = const_dfVector(self.prior.sqrtM, 1)
 
     def ApplyCovariance(self, x):
-        """Action of :math:`y = Cx`
+        """
+        Apply the covariance matrix.
 
-        C is the covariance matrix.
-
-        :param x: a numpy array input
-        :returns: Cx
-
+        :param x numpy::ndarray: input vector
         """
         if x.ndim == 1:
             # Convert `x` to dolfin.Vector
@@ -89,11 +182,10 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
             return yarr.T
 
     def ApplyPrecision(self, x):
-        """Action of :math:'y = Rx'
+        """
+        Apply the precision matrix
 
-        :param x: a numpy array input
-        :returns: Rx
-
+        :param x numpy::ndarray: input vector
         """
         if x.ndim == 1:
             # Convert `x` to dolfin.Vector
@@ -122,11 +214,10 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
             return yarr.T
 
     def ApplyCovSqrt(self, x):
-        """Action of :math:`A^{-1} \\sqrt{M}`
+        """
+        Apply the square root of covariance matrix.
 
-        :param x: a numpy array input
-        :returns:
-
+        :param x numpy::ndarray: input vector
         """
         if x.ndim == 1:
 
@@ -158,15 +249,14 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
                 self.prior.Asolver.solve(self.vecc2, self.vecc1)
 
                 yarr[i, :] = dfVector2npArray(self.vecc2)
-            
+
             return yarr.T
 
     def ApplyPrecSqrt(self, x):
-        """Action of :math:`A M^{-1} \\sqrt{M} x`
+        """
+        Apply the square root of precision matrix.
 
-        :param x: a numpy array input
-        :returns:
-
+        :param x numpy::ndarray: input vector
         """
         if x.ndim == 1:
             # Convert `x` to dolfin.Vector
@@ -208,10 +298,11 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
 
     def SampleImpl(self, inputs):
-        """Overloaded function
+        """
+        Draw a sample.
+        This is an overladed function of ``muq::PyGaussianBase``
 
-        :returns: TODO
-
+        :param inputs numpy::ndarray: input vector
         """
         hl.parRandom.normal(1., self.noise)
         x = dfVector2npArray(self.noise)
@@ -219,14 +310,14 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
 
 class LAPosteriorGaussian(mm.PyGaussianBase):
-
-    """Docstring for LAPosteriorGaussian. """
-
+    """
+    A class interfacing between ``hippylib::GaussianLRPosterior`` and 
+    ``muq:PyGaussianBase``
+    """
     def __init__(self, lapost, use_zero_mean=False):
-        """TODO: to be defined.
-
-        :lapost: TODO
-
+        """
+        :param lapost hippylib::GaussianLRPosterior: a hippylib class instance
+        :param use_zero_mean bool: if True, mean = 0
         """
         self.lapost = lapost
         if use_zero_mean:
@@ -248,24 +339,45 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
         self.wpost = const_dfVector(self.lapost.prior.A, 1)
 
     def ApplyPrecision(self, x):
+        """
+        Apply the precision matrix.
+
+        :param x numpy::ndarray: input vector
+        """
         npArray2dfVector(x, self.help1)
         self.lapost.Hlr.mult(self.help1, self.help0)
 
         return dfVector2npArray(self.help0)
 
     def ApplyCovariance(self, x):
+        """
+        Apply the covariance matrix.
+
+        :param x numpy::ndarray: input vector
+        """
         npArray2dfVector(x, self.help0)
         self.lapost.Hlr.solve(self.help1, self.help0)
 
         return dfVector2npArray(self.help1)
 
     def ApplyCovSqrt(self, x):
+        """
+        Apply the square root of covariance matrix.
+
+        :param x numpy::ndarray: input vector
+        """
         npArray2dfVector(x, self.noise)
         self.lapost.sample(self.noise, self.wprior, self.wpost, add_mean=False)
 
         return dfVector2npArray(self.wpost)
 
     def SampleImpl(self, inputs):
+        """
+        Draw a sample.
+        This is an overladed function of ``muq::PyGaussianBase``
+
+        :param inputs numpy::ndarray: input vector
+        """
         hl.parRandom.normal(1., self.noise)
         x = dfVector2npArray(self.noise)
         return self.GetMean() + self.ApplyCovSqrt(x)
