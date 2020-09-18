@@ -311,7 +311,7 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
 class LAPosteriorGaussian(mm.PyGaussianBase):
     """
-    A class interfacing between ``hippylib::GaussianLRPosterior`` and 
+    A class interfacing between ``hippylib::GaussianLRPosterior`` and \
     ``muq:PyGaussianBase``
     """
     def __init__(self, lapost, use_zero_mean=False):
@@ -326,7 +326,7 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
             mean = dfVector2npArray(lapost.mean)
         mm.PyGaussianBase.__init__(self, mean)
 
-        self.noise = df.Vector(self.lapost.prior.sqrtM.mpi_comm())
+        self.noise = df.Vector()
         self.lapost.prior.init_vector(self.noise, "noise")
 
         self.help0 = df.Vector(self.lapost.Hlr.help.mpi_comm())
@@ -335,8 +335,10 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
         self.help1 = df.Vector(self.lapost.Hlr.help.mpi_comm())
         self.lapost.init_vector(self.help1, 1)
 
-        self.wprior = const_dfVector(self.lapost.prior.A, 1)
-        self.wpost = const_dfVector(self.lapost.prior.A, 1)
+        self.wprior = df.Vector()
+        self.lapost.init_vector(self.wprior, 1)
+        self.wpost = df.Vector()
+        self.lapost.init_vector(self.wpost, 1)
 
     def ApplyPrecision(self, x):
         """
