@@ -1,5 +1,4 @@
-#FROM ceciledc/fenics_mixed_dimensional:latest
-FROM quay.io/fenicsproject/stable:latest
+FROM quay.io/fenicsproject/stable:2019.1.0.r3
 MAINTAINER Ki-Tae Kim
 
 USER root
@@ -7,7 +6,10 @@ USER root
 RUN apt-get -qq -y update && \
     pip3 install --upgrade pip && \
     pip3 install hippylib && \
+    pip3 install jupyter && \
     pip3 install h5py && \
+    pip3 install seaborn && \
+    pip3 install matplotlib && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -25,7 +27,7 @@ RUN mkdir -p ./lib/muq && \
     rm -rf muq2
 
 # Install hippylib-muq interface
-RUN git clone https://github.com/hippylib/hippylib2muq.git
+# RUN git clone https://github.com/hippylib/hippylib2muq.git
 
 USER root
 
