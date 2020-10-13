@@ -1,3 +1,24 @@
+#  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
+#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  University of California--Merced, Washington University in St. Louis,
+#  The United States Army Corps of Engineers, Massachusetts Institute of Technology
+
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+This module provides a convergence diagnostic for samples drawn from MCMC methods.
+"""
 import math
 import numpy as np
 import scipy.linalg
@@ -5,17 +26,23 @@ import matplotlib.pyplot as plt
 
 
 class MultPSRF(object):
+    """Computing the Multivariate Potential Scale Reduction Factor
 
-    """Computing the Multivariate Potential Scale Reduction Factor and effective sample size
+    This class is to compute the Multivariate Potential Scale Reduction Factor 
+    (MPSRF) described in [Brooks1998]_.
+    Note that MPSRF is the square-root version, i.e., :math:`\\hat{R}^p` where 
+    :math:`\\hat{R}^p` is defined by Equation (4.1) in [Brooks1998]_.
 
-    Return the square-root of :math:`\\hat{R}^p`
-
-    Referece:
-    [1] Brooks and Gelman 1998, General Methods for Monitoring Convergence of Iterative Simulations
+    .. [Brooks1998] Brooks and Gelman, 1998, General Methods for 
+                   Monitoring Convergence of Iterative Simulations.
     """
 
     def __init__(self, ndof, nsamps, nchain):
-        """TODO: to be defined. """
+        """
+        :param int ndof: dimension of the parameter
+        :param int nsamps: number of samples
+        :param int nchain: number of MCMC chains
+        """
         self.ndof = ndof
         self.nsamps = nsamps
         self.nchain = nchain
@@ -27,11 +54,10 @@ class MultPSRF(object):
         self.mpsrf = None
 
     def update_W(self, samps):
-        """TODO: Docstring for update_chain.
+        """
+        Update the within-sequence varance matrix W for a chain ``samps``.
 
-        :param samps: TODO
-        :returns: TODO
-
+        :param numpy:ndarray samps: a sequence of samples generated
         """
         wmean = samps.mean(axis=1)
         self.withinmean[self.ct, :] = wmean
@@ -42,9 +68,8 @@ class MultPSRF(object):
         self.ct += 1
 
     def compute_mpsrf(self):
-        """TODO: Docstring for compute_mpsrf.
-        :returns: TODO
-
+        """
+        Compute MPSRF.
         """
         assert self.ct == self.nchain, "Not all the chains are passed to update_W"
 
@@ -67,6 +92,9 @@ class MultPSRF(object):
         return self.mpsrf
 
     def print_result(self):
+        """
+        Print the description and the result of MCMC chains and its diagnostic.
+        """
         assert self.ct == self.nchain, "Not all the chains are passed to update_W"
 
         print("Number of chains: {0:>21d}".format(self.nchain))
@@ -77,17 +105,24 @@ class MultPSRF(object):
 
 class PSRF(object):
 
-    """Computing the Potential Scale Reduction Factor and effective sample size
+    """Computing the Potential Scale Reduction Factor and the effective sample size
 
-    Return the square-root of :math:`\\hat{R}`
+    This class is to compute the Potential Scale Reduction Factor (PSRF) and
+    the effective sample size (ESS) as described in [Brooks1998]_ and [Gelman2014]_.
+    Note that PSRF is the square-root version of :math:`\\hat{R}` where 
+    :math:`\\hat{R}` is defined by Equation (1.1) defined in [Brooks1998].
 
-    Referece:
-    [1] Brooks and Gelman 1998, General Methods for Monitoring Convergence of Iterative Simulations
-    [2] Gelman et al. 2014, pp 286-287, Bayesian Data Analysis 
+    .. [Gelman2014] Gelman et al., 2014, Bayesian Data Analysis, pp 286-287.
     """
 
     def __init__(self, nsamps, nchain, calEss=False, max_lag=None):
-        """TODO: to be defined. """
+        """
+        :param int nsamps: number of samples
+        :param int nchain: number of MCMC chains
+        :param bool calEss: if True, ESS is calculated
+        :param int max_lag: maximum of time lag for computing the autocorrelation 
+                            function
+        """
         self.nsamps = nsamps
         self.nchain = nchain
         self.ct = 0
@@ -110,11 +145,10 @@ class PSRF(object):
             self.variogram_chain = np.zeros((self.nchain, self.max_lag))
 
     def update_W(self, sample):
-        """TODO: Docstring for update_W.
+        """
+        Update the within-sequence varance W for a chain ``samps``.
 
-        :param sample: TODO
-        :returns: TODO
-
+        :param numpy:ndarray samps: a sequence of samples generated
         """
         wmean = sample.mean()
         self.withinmean[self.ct] = wmean
@@ -132,8 +166,13 @@ class PSRF(object):
         self.ct += 1
 
     def compute_PsrfEss(self, plot_acorr=False, write_acorr=False, fname=None):
-        """TODO: Docstring for compute_psrf.
+        """
+        Compute PSRF and ESS
 
+        :param bool plot_acorr: if True, plot the autocorrelation function
+        :param bool write_acorr: if True, write the autocorrelation function to
+                                 a file
+        :param string fname: file name for the autocorrelation function result
         """
         assert self.ct == self.nchain, "Not all the chains are passed to update_W"
 
@@ -179,6 +218,9 @@ class PSRF(object):
             return self.psrf
 
     def print_result(self):
+        """
+        Print the description and the result of MCMC chains and its diagnostic.
+        """
         assert self.ct == self.nchain, "Not all the chains are passed to update_W"
 
         print("Number of chains: {0:>21d}".format(self.nchain))

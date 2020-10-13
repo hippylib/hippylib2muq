@@ -1,3 +1,24 @@
+#  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
+#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  University of California--Merced, Washington University in St. Louis,
+#  The United States Army Corps of Engineers, Massachusetts Institute of Technology
+
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+This module provides postprocessing related functions.
+"""
 import pymuqSamplingAlgorithms as ms
 import seaborn
 import numpy as np
@@ -17,10 +38,32 @@ def _get_name(x):
 
 
 def print_methodDict(method_list):
-    """Print the method list in dictionary format for MCMC simulation
+    """
+    Print the method descriptions formatted for the MCMC simulation.
 
-    :param method_list: discription of MCMC methods
+    For MCMC kernel, abbreviations mean --
 
+    ==== ===================
+    Name MCMC kernel
+    ==== ===================
+    mh   Metropolis–Hastings
+    dr   Delayed Rejection
+    ==== ===================
+
+    For MCMC proposal, abbreviations mean --
+
+    ==== ===================
+    Name MCMC proposal
+    ==== ===================
+    pcn  Preconditioned Crank-Nicolson
+    mala preconditioned Metropolis Adjusted Langevin Algorithm
+    ==== ===================
+
+    Note that this auxiliary function is only for the MCMC kernels and proposals
+    listed in the above tables, but other MCMC methods such as Dimension-independent
+    likelihood-informed MCMC are also available for use.
+
+    :param dictionary method_list: the discriptions of MCMC methods
     """
     print('{0:18s} {1:10s} {2:10s} {3:10s}'.format('Method', 'Kernel', 'Proposal',
                                                    'Beta or Step-size'))
@@ -55,6 +98,13 @@ def print_methodDict(method_list):
 
 
 def print_qoiResult(method_list, qoi_dataset):
+    """
+    Print the result of MCMC simulations for the quantity of interest.
+
+    :param dictionary method_list: the discriptions of MCMC methods used
+    :param dictionary qoi_dataset: a dictionary returned from a call of
+                                   ``hippymuq:track_qoiTracer``
+    """
     sep = '\n' + '=' * 51 + '\n'
     print(sep, "Summary of convergence diagnostics (single chain)", sep)
     print('{0:18s} {1:>6s} {2:^6s} {3:>6s} {4:>7s}'.format('Method', 'E[QOI]',
@@ -78,6 +128,15 @@ def print_qoiResult(method_list, qoi_dataset):
 
 
 def plot_qoiResult(method_list, qoi_dataset, max_lag=None):
+    """
+    Plot the result of MCMC simulations for the quantity of interest
+
+    :param dictionary method_list: the discriptions of MCMC methods used
+    :param dictionary qoi_dataset: a dictionary returned from a call of
+                                   ``hippymuq:track_qoiTracer``
+    :param int max_lag: maximum of time lag for computing the autocorrelation 
+                        function
+    """
     fig, axes = plt.subplots(nrows=len(method_list), ncols=3, figsize=(12, 20))
     colorlist = ['c', 'orange', 'b', 'g', 'r']
 
