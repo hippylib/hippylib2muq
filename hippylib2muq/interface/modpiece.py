@@ -1,17 +1,43 @@
+#  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
+#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  University of California--Merced, Washington University in St. Louis,
+#  The United States Army Corps of Engineers, Massachusetts Institute of Technology
+
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+"""
+This module provides a set of wrappers that bind some ``hippylib`` functionalities
+such that they can be used by ``muq``.
+
+Please refer to ModPiece_ for the detailes of member functions defined here.
+
+.. _ModPiece: https://mituq.bitbucket.io/classmuq_1_1Modeling_1_1ModPiece.html
+"""
 import numpy as np
 import dolfin as df
 import hippylib as hl
 import pymuqModeling as mm
 from ..utility.conversion import dfVector2npArray, const_dfVector, npArray2dfVector
 
-
 class Param2LogLikelihood(mm.PyModPiece):
-    """
-    This class implements mapping from parameter to Loglikelihood.
+    """ Parameter to log-likelihood map
+
+    This class implements mapping from parameter to log-likelihood.
     """
     def __init__(self, model):
         """
-        :param model hippylib::Model: a ``hipplib::Model`` instance
+        :param hippylib::Model model: a ``hipplib::Model`` instance
         """
         self.model = model
 
@@ -31,9 +57,9 @@ class Param2LogLikelihood(mm.PyModPiece):
 
     def EvaluateImpl(self, inputs):
         """
-        Evaluate the log-likelihood.
+        Evaluate the log-likelihood for given ``inputs``.
 
-        :param inputs numpy::ndarray: parameter values
+        :param numpy::ndarray inputs: parameter values
         """
         npArray2dfVector(inputs[0], self.m)
         x = [self.u, self.m, None]
@@ -47,11 +73,11 @@ class Param2LogLikelihood(mm.PyModPiece):
 
     def JacobianImpl(self, outDimWrt, inDimWrt, inputs):
         """
-        Compute the Jacobian.
+        Compute the Jacobian for given ``inputs``.
 
-        :param outDimWrt int: output dimension; should be 0
-        :param inDimWrt int: input dimension; should be 0
-        :param inputs numpy::ndarray: parameter values
+        :param int outDimWrt: output dimension; should be 0
+        :param int inDimWrt: input dimension; should be 0
+        :param numpy::ndarray inputs: parameter values
         """
         npArray2dfVector(inputs[0], self.m)
         x = [self.u, self.m, self.p]
@@ -74,12 +100,13 @@ class Param2LogLikelihood(mm.PyModPiece):
 
     def GradientImpl(self, outDimWrt, inDimWrt, inputs, sens):
         """
-        Compute gradient; apply the transpose of Jacobian to ``sens``
+        Compute gradient; apply the transpose of Jacobian to ``sens`` for given
+        ``inputs``.
 
-        :param outDimWrt int: output dimension; should be 0
-        :param inDimWrt int: input dimension; should be 0
-        :param inputs numpy::ndarray: parameter values
-        :param sens numpy::ndarray: input vector the transpose of Jacobian 
+        :param int outDimWrt: output dimension; should be 0
+        :param int inDimWrt: input dimension; should be 0
+        :param numpy::ndarray inputs: parameter values
+        :param numpy::ndarray sens: input vector the transpose of Jacobian 
                                     applies to
         """
         self.Jacobian(outDimWrt, inDimWrt, inputs)
@@ -87,17 +114,27 @@ class Param2LogLikelihood(mm.PyModPiece):
 
     def ApplyJacobianImpl(self, outDimWrt, inDimWrt, inputs, vec):
         """
-        Apply Jacobian to ``vec``
+        Apply Jacobian to ``vec`` for given ``inputs``.
 
-        :param outDimWrt int: output dimension; should be 0
-        :param inDimWrt int: input dimension; should be 0
-        :param inputs numpy::ndarray: parameter values
-        :param vec numpy::ndarray: input vector Jacobian applies to
+        :param int outDimWrt: output dimension; should be 0
+        :param int inDimWrt: input dimension; should be 0
+        :param numpy::ndarray inputs: parameter values
+        :param numpy::ndarray vec: input vector Jacobian applies to
         """
         self.Jacobian(outDimWrt, inDimWrt, inputs)
         self.jacobianAction = self.jacobian.dot(vec)
 
     def ApplyHessianImpl(self, outWrt, inWrt1, inWrt2, inputs, sens, vec):
+        """
+        Apply Hessian to ``vec`` for given ``sens`` and ``inputs``.
+
+        :param int outWrt: output dimension; should be 0
+        :param int inWrt1: input dimension; should be 0
+        :param int inWrt2: input dimension; should be 0
+        :param numpy::ndarray inputs: parameter values
+        :param numpy::ndarray sens: sensitivity values
+        :param numpy::ndarray vec: input vector Hessian applies to
+        """
         assert inWrt1 == 0 and inWrt2 == 0
 
         npArray2dfVector(inputs[0], self.m)
@@ -122,12 +159,13 @@ class Param2LogLikelihood(mm.PyModPiece):
 
 
 class Param2obs(mm.PyModPiece):
-    """
+    """ Parameter to observable map
+
     This class implements mapping from parameter to observations.
     """
     def __init__(self, model):
         """
-        :param model hippylib::Model: a ``hippylib::Model`` instance
+        :param hippylib::Model model: a ``hippylib::Model`` instance
         """
         self.model = model
 
@@ -155,9 +193,9 @@ class Param2obs(mm.PyModPiece):
 
     def EvaluateImpl(self, inputs):
         """
-        Evaluate the observations.
+        Evaluate the observations for given ``inputs``.
 
-        :param inputs numpy::ndarray: parameter values
+        :param numpy::ndarray inputs: parameter values
         """
         npArray2dfVector(inputs[0], self.m)
         x = [self.u, self.m, None]
@@ -174,12 +212,12 @@ class Param2obs(mm.PyModPiece):
 
     def GradientImpl(self, outDimWrt, inDimWrt, inputs, sens):
         """
-        Compute gradient; apply the transpose of Jacobian to ``sens``
+        Compute gradient; apply the transpose of Jacobian to ``sens``.
 
-        :param outDimWrt int: output dimension; should be 0
-        :param inDimWrt int: input dimension; should be 0
-        :param inputs numpy::ndarray: parameter values
-        :param sens numpy::ndarray: input vector the transpose of Jacobian 
+        :param int outDimWrt: output dimension; should be 0
+        :param int inDimWrt: input dimension; should be 0
+        :param numpy::ndarray inputs: parameter values
+        :param numpy::ndarray sens: input vector the transpose of Jacobian 
                                     applies to
         """
         npArray2dfVector(inputs[0], self.m)
@@ -194,6 +232,16 @@ class Param2obs(mm.PyModPiece):
         self.gradient = dfVector2npArray(self.gm)
 
     def ApplyHessianImpl(self, outWrt, inWrt1, inWrt2, inputs, sens, vec):
+        """
+        Apply Hessian to ``vec`` for given ``sens`` and ``inputs``.
+
+        :param int outWrt: output dimension; should be 0
+        :param int inWrt1: input dimension; should be 0
+        :param int inWrt2: input dimension; should be 0
+        :param numpy::ndarray inputs: parameter values
+        :param numpy::ndarray sens: sensitivity values
+        :param numpy::ndarray vec: input vector Hessian applies to
+        """
         assert inWrt1 == 0 and inWrt2 == 0
 
         npArray2dfVector(inputs[0], self.m)
@@ -214,10 +262,10 @@ class Param2obs(mm.PyModPiece):
 
     def _solves_stateadj(self, x, sens):
         """
-        Solves the state and adjoint problems given parameters and sensitivity
+        Solves the state and adjoint problems given parameters and sensitivity.
 
-        :param x numpy::ndarray: parameter values
-        :param sens numpy::ndarray: sensitivity
+        :param numpy::ndarray x: parameter values
+        :param numpy::ndarray sens: sensitivity
         """
         """
         """
@@ -229,6 +277,39 @@ class Param2obs(mm.PyModPiece):
         self.model.misfit.B.transpmult(self.sens, self.adjrhs)
         self.adjrhs *= -1
         self.model.problem.solveAdj(x[hl.ADJOINT], x, self.adjrhs)
+       
+
+class LogBiLaplaceGaussian(mm.PyModPiece):
+    """ Log-bi-Laplace prior
+
+    This class evaluates log of the bi-Laplacian prior.
+    """
+
+    def __init__(self, prior):
+        """
+        :param hippylib::BiLaplacianPrior prior: ``hippylib::BiLaplacianPrior`` 
+                                                 instance
+        """
+        self.prior = prior
+
+        self.m = const_dfVector(self.prior.A, 1)
+        self.help = const_dfVector(self.prior.A, 0)
+
+        self.npar = self.m.local_size()
+
+        mm.PyModPiece.__init__(self, [self.npar], [1])
+
+    def EvaluateImpl(self, inputs):
+        """
+        Evaluate the log of bi-Laplacian prior.
+
+        :param numpy::ndarray inputs: input vector
+        """
+        npArray2dfVector(inputs[0], self.m)
+        self.m.axpy(-1, self.prior.mean)
+        self.prior.R.mult(self.m, self.help)
+
+        self.outputs = [np.array([-0.5 * self.m.inner(self.help)])]
 
 
 # class Param2state(mm.PyModPiece):
@@ -318,38 +399,4 @@ class Param2obs(mm.PyModPiece):
 #         self.model.misfit.B.transpmult(self.adjrhs, self.grad)
 
 #         self.gradient = dfVector2npArray(self.grad)
-       
-
-class LogBiLaplaceGaussian(mm.PyModPiece):
-    """
-    This class is for evaluating log of biLaplacian prior.
-    """
-
-    def __init__(self, prior):
-        """
-        :param prior hippylib::BiLaplacianPrior: ``hippylib::BiLaplacianPrior`` 
-                                                 instance
-        """
-        self.prior = prior
-
-        self.m = const_dfVector(self.prior.A, 1)
-        self.help = const_dfVector(self.prior.A, 0)
-
-        self.npar = self.m.local_size()
-
-        mm.PyModPiece.__init__(self, [self.npar], [1])
-
-    def EvaluateImpl(self, inputs):
-        """
-        Evaluate the log of biLaplacian prior
-
-        :param inputs numpy::ndarray: input vector
-        """
-        npArray2dfVector(inputs[0], self.m)
-        self.m.axpy(-1, self.prior.mean)
-        self.prior.R.mult(self.m, self.help)
-
-        self.outputs = [np.array([-0.5 * self.m.inner(self.help)])]
-
-
 
