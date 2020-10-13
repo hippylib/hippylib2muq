@@ -25,7 +25,30 @@ folder.
 
 ## Installation
 
-Please see [INSTALL](./INSTALL.md) for the installation guide.
+`hIPPYlib-MUQ` is the interface program between `hIPPYlib` and `MUQ`, which should be, of course, installed first.
+
+We highly recommend to use our prebuilt Docker image, which is the easiest way to
+run `hIPPYlib-MUQ`.
+With [Docker](https://www.docker.com/) installed on your system, type:
+```sh
+
+```
+
+`hIPPYlib-MUQ` and its dependencies can be installed via `pip` and [Conda](https://docs.conda.io/en/latest/), which is described in [INSTALL](./INSTALL.md).
+
+## Documentation
+
+A complete API documentation of `hIPPYlib-MUQ` is available at.
+
+## Contributors
+
+- Ki-Tae Kim, University of California, Merced
+- Umberto Villa, Washington University in St. Louis
+- Matthew Parno, The United States Army Corps of Engineers 
+- Youssef Marzouk, Massachusetts Institute of Technology
+- Omar Ghattas, The University of Texas at Austin
+- Noemi Petra, University of California, Merced
+
 
 ## License
 

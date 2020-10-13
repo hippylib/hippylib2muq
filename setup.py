@@ -26,7 +26,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name="hippylib2muq",
-      version="0.0.0",
+      version="1.0.0",
       author="Ki-Tae Kim, Umberto Villa, Matthew Parno, Youssef Marzouk, Omar Ghattas , Noemi Petra",
       author_email="kkim107@ucmerced.edu",
       description="a hippylib-muq interface for large-scale Bayesian inverse problems",
