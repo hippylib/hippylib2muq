@@ -39,53 +39,48 @@ bibliography: paper.bib
 # Summary
 
 Inverse problems arise in all areas of science, engineering,
-technology, and medicine and are governed often by complex
+technology, and medicine and are often governed by complex
 physics-based mathematical models. These models are subject to
 considerable uncertainties stemming from unknown or uncertain inputs
-in the model (e.g., coefficient fields, constitutive laws, source
-terms, geometries, initial and/or boundary conditions) as well as from
-noisy and limited observations. While many of these input parameters
-cannot be directly observed, they can be inferred from
-observations. This typically leads to a severely ill-posed inverse
-problem whose solution can be extremely challenging. Bayesian
+(e.g., coefficient fields, constitutive laws, source terms,
+geometries, initial and/or boundary conditions) as well as from noisy
+and limited observations. While many of these input parameters cannot
+be directly observed, they can be inferred from observations. Bayesian
 inversion facilitates the integration of data with complex
 physics-based models to quantify and reduce uncertainties in model
 predictions. The algorithmic developments for Bayesian inversion are
 subject to several computational challenges. For instance,
-characterizing the posterior distributions of parameters or
-predictions inevitably requires repeated evaluations of (possibly)
-large-scale and complex forward models governed by differential
-equations. In addition, the posterior distribution has a complex
-structure stemming from the presence of possibly nonlinear forward
-models and heterogeneous sources of data.  In a Bayesian approach to
-inverse problems we recast the problem as a problem of statistical
-inference of uncertain parameters.  In this Bayesian formulation, the
-goal is to characterize the posterior probability distribution for the
-parameters given the data; see, e.g., [@Bui-ThanhGhattasMartinEtAl13],
-[@PetraMartinStadlerEtAl14] for a Bayesian inference framework for
-infinite dimensional PDE-constrained inverse problems.
+characterizing the posterior distribution of the parameters of
+interest or predictions inevitably requires repeated evaluations of
+(possibly) large-scale and complex forward models governed by
+differential equations. In addition, the posterior distribution has a
+complex structure stemming from the presence of possibly nonlinear
+forward models and heterogeneous sources of data (e.g.,
+[@Bui-ThanhGhattasMartinEtAl13], [@PetraMartinStadlerEtAl14]).
 
-Our objective is to create a robust and scalable software framework to tackle 
-complex large-scale PDE-constrained Bayesian inverse problems across a wide range 
-of science and engineering disciplines. 
-`hIPPYlib-MUQ` is a Python interface between two open source softwares, `hIPPYlib` 
-and `MUQ`, which have complementary capabilities. 
-[`hIPPYlib`](https://hippylib.github.io) [@VillaPetraGhattas18] is an extensible 
-software package aimed at solving deterministic and linearized Bayesian inverse 
-problems governed by PDEs.
-Based on FEniCS [@LoggWells10], [@LoggMardalGarth12], [@LangtangenLogg17] for 
-the solution of forward PDE problems and on PETSc [@petsc-web-page] for scalable 
-and parallel linear algebra operations and solvers, `hIPPYlib` implements the
-globalized inexact Newton-conjugate gradient algorithm, low-rank approximation of 
-the Hessian, and sampling from large-scale Gaussian fields, see. [@Villa2018] for 
-the details.
-[`MUQ`](http://muq.mit.edu/) is a collection of tools for solving uncertainty 
-quantification problems. 
-`MUQ` provides an easy way to combine many model components (physical and statistical models) 
-into a single sophisticated model and a spectrum of powerful uncertainty quantification 
-algorithms such as Markov chain Monte Carlo (MCMC) methods, polynomial chaos expansions, 
-Karhunen-Loeve expansions, and Gaussian process regression.
-<!-- TODO: give some reference for MUQ -->
+Our objective is to create a robust and scalable software framework to
+tackle such complex large-scale partial differential differential
+(PDEs)-constrained Bayesian inverse problems across a wide range of
+science and engineering disciplines.  `hIPPYlib-MUQ` is a Python
+interface between two open source softwares, `hIPPYlib` and `MUQ`,
+which have complementary capabilities.
+[`hIPPYlib`](https://hippylib.github.io) [@VillaPetraGhattas18] is an
+extensible software package aimed at solving deterministic and
+linearized Bayesian inverse problems governed by PDEs.  Based on
+FEniCS [@LoggWells10], [@LoggMardalGarth12], [@LangtangenLogg17] for
+the solution of forward PDE problems and on PETSc [@petsc-web-page]
+for scalable and parallel linear algebra operations and solvers,
+`hIPPYlib` implements the globalized inexact Newton-conjugate gradient
+algorithm, low-rank approximation of the Hessian, and sampling from
+large-scale Gaussian fields, see. [@Villa2018] for the details.
+[`MUQ`](http://muq.mit.edu/) is a collection of tools for solving
+uncertainty quantification problems.  `MUQ` provides an easy way to
+combine many model components (physical and statistical models) into a
+single sophisticated model and a spectrum of powerful uncertainty
+quantification algorithms such as Markov chain Monte Carlo (MCMC)
+methods, polynomial chaos expansions, Karhunen-Loeve expansions, and
+Gaussian process regression.  <!-- TODO: give some reference for MUQ
+-->
 
 `hIPPYlib-MUQ` integrates these two libraries into a unique software framework, 
 allowing users to implement the state-of-the-art Bayesian inversion algorithms 
