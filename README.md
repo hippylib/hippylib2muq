@@ -40,7 +40,7 @@ With [Docker](https://www.docker.com/) installed on your system, type:
 
 A complete API documentation of `hIPPYlib-MUQ` is available at.
 
-## Contributors
+## Authors
 
 - Ki-Tae Kim, University of California, Merced
 - Umberto Villa, Washington University in St. Louis
