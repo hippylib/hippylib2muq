@@ -55,7 +55,7 @@ interest or predictions inevitably requires repeated evaluations of
 (possibly) large-scale and complex forward models governed by
 differential equations. In addition, the posterior distribution has a
 complex structure stemming from the presence of possibly nonlinear
-forward models and heterogeneous sources of data (e.g.,
+forward models and heterogeneous sources of data (see for instance
 [@Bui-ThanhGhattasMartinEtAl13], [@PetraMartinStadlerEtAl14]).
 
 Our objective is to create a robust and scalable software framework to
