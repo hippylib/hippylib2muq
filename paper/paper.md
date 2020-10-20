@@ -38,19 +38,32 @@ bibliography: paper.bib
 
 # Summary
 
-Inverse problems arise in many branches of scientific and engineering applications.
-The aim of inverse problems is to infer unobservable parameters of interest, 
-given observational data and model that links the parameters and the data.
-In general, inverse problems are ill-posed with the observations corrupted by noise and
-the uncertainty involved in the model.
-Hence, it is important not only to solve for the parameters, but also to quantify
-the uncertainty inherent in the inference.
-The Bayesian approach to inverse problems enables these tasks in an explicit way 
-by recasting the problem as a problem of statistical inference of uncertain parameters. 
-In this Bayesian formulation, the goal is to characterize the posterior probability 
-distribution for the parameters given the data; see, e.g., [@Bui-ThanhGhattasMartinEtAl13], 
-[@PetraMartinStadlerEtAl14] for a Bayesian inference framework for infinite dimensional 
-PDE-constrained inverse problems.
+Inverse problems arise in all areas of science, engineering,
+technology, and medicine and are governed often by complex
+physics-based mathematical models. These models are subject to
+considerable uncertainties stemming from unknown or uncertain inputs
+in the model (e.g., coefficient fields, constitutive laws, source
+terms, geometries, initial and/or boundary conditions) as well as from
+noisy and limited observations. While many of these input parameters
+cannot be directly observed, they can be inferred from
+observations. This typically leads to a severely ill-posed inverse
+problem whose solution can be extremely challenging. Bayesian
+inversion facilitates the integration of data with complex
+physics-based models to quantify and reduce uncertainties in model
+predictions. The algorithmic developments for Bayesian inversion are
+subject to several computational challenges. For instance,
+characterizing the posterior distributions of parameters or
+predictions inevitably requires repeated evaluations of (possibly)
+large-scale and complex forward models governed by differential
+equations. In addition, the posterior distribution has a complex
+structure stemming from the presence of possibly nonlinear forward
+models and heterogeneous sources of data.  In a Bayesian approach to
+inverse problems we recast the problem as a problem of statistical
+inference of uncertain parameters.  In this Bayesian formulation, the
+goal is to characterize the posterior probability distribution for the
+parameters given the data; see, e.g., [@Bui-ThanhGhattasMartinEtAl13],
+[@PetraMartinStadlerEtAl14] for a Bayesian inference framework for
+infinite dimensional PDE-constrained inverse problems.
 
 Our objective is to create a robust and scalable software framework to tackle 
 complex large-scale PDE-constrained Bayesian inverse problems across a wide range 
