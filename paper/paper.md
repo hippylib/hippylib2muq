@@ -32,7 +32,7 @@ affiliations:
     index: 4
   - name: Oden Institute for Computational Engineering and Sciences, Department of Mechanical Engineering, and Department of Geological Sciences, The University of Texas at Austin
     index: 5
-date: 
+date:
 bibliography: paper.bib
 ---
 
@@ -73,18 +73,18 @@ for scalable and parallel linear algebra operations and solvers,
 `hIPPYlib` implements the globalized inexact Newton-conjugate gradient
 algorithm, low-rank approximation of the Hessian, and sampling from
 large-scale Gaussian fields, see. [@Villa2018] for the details.
-[`MUQ`](http://muq.mit.edu/) is a collection of tools for solving
-uncertainty quantification problems.  `MUQ` provides an easy way to
-combine many model components (physical and statistical models) into a
-single sophisticated model and a spectrum of powerful uncertainty
-quantification algorithms such as Markov chain Monte Carlo (MCMC)
-methods, polynomial chaos expansions, Karhunen-Loeve expansions, and
-Gaussian process regression.  <!-- TODO: give some reference for MUQ
--->
+[`MUQ`](http://muq.mit.edu/) [@Parno2014] is a collection of tools for solving
+uncertainty quantification problems.  `MUQ` provides a suite of powerful
+uncertainty quantification algorithms as Markov chain Monte Carlo (MCMC)
+methods [@Parno2018], transport maps [@Marzouk2016], polynomial chaos
+expansions [@Conrad2013], Karhunen-Loeve expansions, and Gaussian process
+modeling [@GPML2005; @Hartikainen2010].  `MUQ` also provides a framework for
+easily combining statistical and physical models in a way that supports the
+efficient computation of gradients, Jacobians, and Hessian-vector products.
 
-`hIPPYlib-MUQ` integrates these two libraries into a unique software framework, 
-allowing users to implement the state-of-the-art Bayesian inversion algorithms 
-in a seamless way. 
+`hIPPYlib-MUQ` integrates these two libraries into a unique software framework,
+allowing users to implement the state-of-the-art Bayesian inversion algorithms
+in a seamless way.
 In this framework, `hIPPYlib` is used to define the forward model, the prior,
 and the likelihood, to compute the maximum a posteriori (MAP) point, and to
 construct the low-rank based Laplace approximation to the posterior distribution.
@@ -93,18 +93,18 @@ posterior distribution.
 `hIPPYlib-MUQ` offers a set of wrappers that encapsulate the functionality of
 `hIPPYlib` in a way that various features of `hIPPYlib` can be accessed by `MUQ`.
 A key aspect of `hIPPYlib-MUQ` is that it enables the use of MCMC methods enriched
-by the Hessian of the log likelihood, which is crucial for efficient and scalable 
+by the Hessian of the log likelihood, which is crucial for efficient and scalable
 exploration of the posterior distribution for large-scale Bayesian inverse problems.
 Namely, the Laplace approximation of the posterior with the low-rank factorization
-of the Hessian can be invoked to generate high-quality proposals for MCMC methods, 
+of the Hessian can be invoked to generate high-quality proposals for MCMC methods,
 thereby significantly enhancing sampling efficiency.
 
-`hIPPYlib-MUQ` also provides convergence diagnostics for MCMC samples: the potential 
-scale reduction factor and its extension to multivariate parameter cases [@Brooks98], 
+`hIPPYlib-MUQ` also provides convergence diagnostics for MCMC samples: the potential
+scale reduction factor and its extension to multivariate parameter cases [@Brooks98],
 the autocorrelation function and the effective sample size.
 
 
-`hIPPYlib-MUQ` is designed to be used for general large-scale Bayesian inverse problems, 
+`hIPPYlib-MUQ` is designed to be used for general large-scale Bayesian inverse problems,
 allowing not only for use in many diverse research and application fields, but
 also for educational purpose.
 
@@ -113,12 +113,12 @@ The source code for `hIPPYlib-MUQ` has been archived to Zenodo with the linked D
 
 # Acknowledgements
 
-This work was supported by the U.S. National Science Foundation (NSF), 
-Software Infrastructure for Sustained Innovation (SI2: SSE & SSI) Program under 
-grants ACI-1550487, ACI-1550593, and ACI-1550547. 
-In addition, the authors acknowledge computing time on the Multi-Environment 
-Computer for Exploration and Discovery (MERCED) cluster at UC Merced, which was 
+This work was supported by the U.S. National Science Foundation (NSF),
+Software Infrastructure for Sustained Innovation (SI2: SSE & SSI) Program under
+grants ACI-1550487, ACI-1550593, and ACI-1550547.
+In addition, the authors acknowledge computing time on the Multi-Environment
+Computer for Exploration and Discovery (MERCED) cluster at UC Merced, which was
 funded by NSF grant ACI-1429783.
 <!-- TODO: ask Noemi if there is missing -->
 
-# References 
+# References
