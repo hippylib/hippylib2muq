@@ -30,9 +30,11 @@ folder.
 We highly recommend to use our prebuilt Docker image, which is the easiest way to
 run `hIPPYlib-MUQ`.
 With [Docker](https://www.docker.com/) installed on your system, type:
-```sh
-
 ```
+docker run -ti --rm -v $(pwd):/home/fenics/hippylib2muq/tutorial \
+           -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0'
+```
+The notebook will be available at the following address in your web-browser.
 
 `hIPPYlib-MUQ` and its dependencies can be installed via `pip` and [Conda](https://docs.conda.io/en/latest/), which is described in [INSTALL](./INSTALL.md).
 
