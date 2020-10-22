@@ -1,5 +1,5 @@
 ---
-title: 'hIPPYlib-MUQ: An Extensible Software Framework for Large-scale Bayesian Inverse Problems'
+title: 'hIPPYlib-MUQ: Scalable Markov chain Monte Carlo Sampling Methods for Large-scale Bayesian Inverse Problems Governed by PDEs'
 tags:
   - Python
   - Inverse problems
