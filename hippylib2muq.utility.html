@@ -1,0 +1,345 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hippylib2muq.utility package &mdash; hippylib2muq 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hippylib2muq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">hippylib2muq.utility package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.utility.conversion">hippylib2muq.utility.conversion module</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.utility.postprocessing">hippylib2muq.utility.postprocessing module</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.utility">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hippylib2muq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>hippylib2muq.utility package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hippylib2muq.utility.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hippylib2muq-utility-package">
+<h1>hippylib2muq.utility package<a class="headerlink" href="#hippylib2muq-utility-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-hippylib2muq.utility.conversion">
+<span id="hippylib2muq-utility-conversion-module"></span><h2>hippylib2muq.utility.conversion module<a class="headerlink" href="#module-hippylib2muq.utility.conversion" title="Permalink to this headline">¶</a></h2>
+<p>This module provides type conversions for the proper use of dependent packages.</p>
+<dl class="function">
+<dt id="hippylib2muq.utility.conversion.const_dfVector">
+<code class="sig-prename descclassname">hippylib2muq.utility.conversion.</code><code class="sig-name descname">const_dfVector</code><span class="sig-paren">(</span><em class="sig-param">mat</em>, <em class="sig-param">dim</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.utility.conversion.const_dfVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct and initialize a dolfin vector so that it is compatible with matrix 
+<span class="math notranslate nohighlight">\(A\)</span> for the multiplication <span class="math notranslate nohighlight">\(Ax = b\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat</strong> (<em>dolfin:matrix</em>) – a <code class="docutils literal notranslate"><span class="pre">dolfin:matrix</span></code></p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – 0 for b and 1 for x</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an initialized <code class="docutils literal notranslate"><span class="pre">dolfin:vector</span></code> which is compatiable with <code class="docutils literal notranslate"><span class="pre">mat</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="hippylib2muq.utility.conversion.dfVector2npArray">
+<code class="sig-prename descclassname">hippylib2muq.utility.conversion.</code><code class="sig-name descname">dfVector2npArray</code><span class="sig-paren">(</span><em class="sig-param">vec</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.utility.conversion.dfVector2npArray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a <code class="docutils literal notranslate"><span class="pre">dolfin:vector</span></code> to a <code class="docutils literal notranslate"><span class="pre">numpy:ndarray</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vec</strong> (<em>dolfin:vector</em>) – a <code class="docutils literal notranslate"><span class="pre">dolfin:vector</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>converted <code class="docutils literal notranslate"><span class="pre">numpy:ndarray</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="hippylib2muq.utility.conversion.npArray2dfVector">
+<code class="sig-prename descclassname">hippylib2muq.utility.conversion.</code><code class="sig-name descname">npArray2dfVector</code><span class="sig-paren">(</span><em class="sig-param">arr</em>, <em class="sig-param">vec</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.utility.conversion.npArray2dfVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign values of <code class="docutils literal notranslate"><span class="pre">numpy:ndarray</span></code> to <code class="docutils literal notranslate"><span class="pre">dolfin:vector</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>numpy:ndarray</em>) – a <code class="docutils literal notranslate"><span class="pre">numpy:ndarray</span></code></p></li>
+<li><p><strong>vec</strong> (<em>dolfin:vector</em>) – a <code class="docutils literal notranslate"><span class="pre">dolfin:vector</span></code> assigned by <code class="docutils literal notranslate"><span class="pre">arr</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hippylib2muq.utility.postprocessing">
+<span id="hippylib2muq-utility-postprocessing-module"></span><h2>hippylib2muq.utility.postprocessing module<a class="headerlink" href="#module-hippylib2muq.utility.postprocessing" title="Permalink to this headline">¶</a></h2>
+<p>This module provides postprocessing related functions.</p>
+<dl class="function">
+<dt id="hippylib2muq.utility.postprocessing.plot_qoiResult">
+<code class="sig-prename descclassname">hippylib2muq.utility.postprocessing.</code><code class="sig-name descname">plot_qoiResult</code><span class="sig-paren">(</span><em class="sig-param">method_list</em>, <em class="sig-param">qoi_dataset</em>, <em class="sig-param">max_lag=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.utility.postprocessing.plot_qoiResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the result of MCMC simulations for the quantity of interest</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method_list</strong> (<em>dictionary</em>) – the discriptions of MCMC methods used</p></li>
+<li><p><strong>qoi_dataset</strong> (<em>dictionary</em>) – a dictionary returned from a call of
+<code class="docutils literal notranslate"><span class="pre">hippymuq:track_qoiTracer</span></code></p></li>
+<li><p><strong>max_lag</strong> (<em>int</em>) – maximum of time lag for computing the autocorrelation 
+function</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="hippylib2muq.utility.postprocessing.print_methodDict">
+<code class="sig-prename descclassname">hippylib2muq.utility.postprocessing.</code><code class="sig-name descname">print_methodDict</code><span class="sig-paren">(</span><em class="sig-param">method_list</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.utility.postprocessing.print_methodDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the method descriptions formatted for the MCMC simulation.</p>
+<p>For MCMC kernel, abbreviations mean –</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 83%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>MCMC kernel</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mh</p></td>
+<td><p>Metropolis–Hastings</p></td>
+</tr>
+<tr class="row-odd"><td><p>dr</p></td>
+<td><p>Delayed Rejection</p></td>
+</tr>
+</tbody>
+</table>
+<p>For MCMC proposal, abbreviations mean –</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 93%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>MCMC proposal</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pcn</p></td>
+<td><p>Preconditioned Crank-Nicolson</p></td>
+</tr>
+<tr class="row-odd"><td><p>mala</p></td>
+<td><p>preconditioned Metropolis Adjusted Langevin Algorithm</p></td>
+</tr>
+</tbody>
+</table>
+<p>Note that this auxiliary function is only for the MCMC kernels and proposals
+listed in the above tables, but other MCMC methods such as Dimension-independent
+likelihood-informed MCMC are also available for use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>method_list</strong> (<em>dictionary</em>) – the discriptions of MCMC methods</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="hippylib2muq.utility.postprocessing.print_qoiResult">
+<code class="sig-prename descclassname">hippylib2muq.utility.postprocessing.</code><code class="sig-name descname">print_qoiResult</code><span class="sig-paren">(</span><em class="sig-param">method_list</em>, <em class="sig-param">qoi_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.utility.postprocessing.print_qoiResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the result of MCMC simulations for the quantity of interest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method_list</strong> (<em>dictionary</em>) – the discriptions of MCMC methods used</p></li>
+<li><p><strong>qoi_dataset</strong> (<em>dictionary</em>) – a dictionary returned from a call of
+<code class="docutils literal notranslate"><span class="pre">hippymuq:track_qoiTracer</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hippylib2muq.utility">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hippylib2muq.utility" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ki-Tae Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

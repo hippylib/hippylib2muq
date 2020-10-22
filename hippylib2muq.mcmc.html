@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hippylib2muq.mcmc package &mdash; hippylib2muq 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hippylib2muq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">hippylib2muq.mcmc package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.mcmc.diagnostics">hippylib2muq.mcmc.diagnostics module</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.mcmc.qoi">hippylib2muq.mcmc.qoi module</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.mcmc">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hippylib2muq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>hippylib2muq.mcmc package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hippylib2muq.mcmc.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hippylib2muq-mcmc-package">
+<h1>hippylib2muq.mcmc package<a class="headerlink" href="#hippylib2muq-mcmc-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-hippylib2muq.mcmc.diagnostics">
+<span id="hippylib2muq-mcmc-diagnostics-module"></span><h2>hippylib2muq.mcmc.diagnostics module<a class="headerlink" href="#module-hippylib2muq.mcmc.diagnostics" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a convergence diagnostic for samples drawn from MCMC methods.</p>
+<dl class="class">
+<dt id="hippylib2muq.mcmc.diagnostics.MultPSRF">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.mcmc.diagnostics.</code><code class="sig-name descname">MultPSRF</code><span class="sig-paren">(</span><em class="sig-param">ndof</em>, <em class="sig-param">nsamps</em>, <em class="sig-param">nchain</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.MultPSRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Computing the Multivariate Potential Scale Reduction Factor</p>
+<p>This class is to compute the Multivariate Potential Scale Reduction Factor 
+(MPSRF) described in <a class="reference internal" href="#brooks1998" id="id1"><span>[Brooks1998]</span></a>.
+Note that MPSRF is the square-root version, i.e., <span class="math notranslate nohighlight">\(\hat{R}^p\)</span> where 
+<span class="math notranslate nohighlight">\(\hat{R}^p\)</span> is defined by Equation (4.1) in <a class="reference internal" href="#brooks1998" id="id2"><span>[Brooks1998]</span></a>.</p>
+<dl class="citation">
+<dt class="label" id="brooks1998"><span class="brackets">Brooks1998</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>,<a href="#id3">3</a>)</span></dt>
+<dd><p>Brooks and Gelman, 1998, General Methods for 
+Monitoring Convergence of Iterative Simulations.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="hippylib2muq.mcmc.diagnostics.MultPSRF.compute_mpsrf">
+<code class="sig-name descname">compute_mpsrf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.MultPSRF.compute_mpsrf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute MPSRF.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.mcmc.diagnostics.MultPSRF.print_result">
+<code class="sig-name descname">print_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.MultPSRF.print_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the description and the result of MCMC chains and its diagnostic.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.mcmc.diagnostics.MultPSRF.update_W">
+<code class="sig-name descname">update_W</code><span class="sig-paren">(</span><em class="sig-param">samps</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.MultPSRF.update_W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the within-sequence varance matrix W for a chain <code class="docutils literal notranslate"><span class="pre">samps</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>samps</strong> (<em>numpy:ndarray</em>) – a sequence of samples generated</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hippylib2muq.mcmc.diagnostics.PSRF">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.mcmc.diagnostics.</code><code class="sig-name descname">PSRF</code><span class="sig-paren">(</span><em class="sig-param">nsamps</em>, <em class="sig-param">nchain</em>, <em class="sig-param">calEss=False</em>, <em class="sig-param">max_lag=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.PSRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Computing the Potential Scale Reduction Factor and the effective sample size</p>
+<p>This class is to compute the Potential Scale Reduction Factor (PSRF) and
+the effective sample size (ESS) as described in <a class="reference internal" href="#brooks1998" id="id3"><span>[Brooks1998]</span></a> and <a class="reference internal" href="#gelman2014" id="id4"><span>[Gelman2014]</span></a>.
+Note that PSRF is the square-root version of <span class="math notranslate nohighlight">\(\hat{R}\)</span> where 
+<span class="math notranslate nohighlight">\(\hat{R}\)</span> is defined by Equation (1.1) defined in [Brooks1998].</p>
+<dl class="citation">
+<dt class="label" id="gelman2014"><span class="brackets"><a class="fn-backref" href="#id4">Gelman2014</a></span></dt>
+<dd><p>Gelman et al., 2014, Bayesian Data Analysis, pp 286-287.</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="hippylib2muq.mcmc.diagnostics.PSRF.compute_PsrfEss">
+<code class="sig-name descname">compute_PsrfEss</code><span class="sig-paren">(</span><em class="sig-param">plot_acorr=False</em>, <em class="sig-param">write_acorr=False</em>, <em class="sig-param">fname=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.PSRF.compute_PsrfEss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute PSRF and ESS</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plot_acorr</strong> (<em>bool</em>) – if True, plot the autocorrelation function</p></li>
+<li><p><strong>write_acorr</strong> (<em>bool</em>) – if True, write the autocorrelation function to
+a file</p></li>
+<li><p><strong>fname</strong> (<em>string</em>) – file name for the autocorrelation function result</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.mcmc.diagnostics.PSRF.print_result">
+<code class="sig-name descname">print_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.PSRF.print_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the description and the result of MCMC chains and its diagnostic.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.mcmc.diagnostics.PSRF.update_W">
+<code class="sig-name descname">update_W</code><span class="sig-paren">(</span><em class="sig-param">sample</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.diagnostics.PSRF.update_W" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the within-sequence varance W for a chain <code class="docutils literal notranslate"><span class="pre">samps</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>samps</strong> (<em>numpy:ndarray</em>) – a sequence of samples generated</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hippylib2muq.mcmc.qoi">
+<span id="hippylib2muq-mcmc-qoi-module"></span><h2>hippylib2muq.mcmc.qoi module<a class="headerlink" href="#module-hippylib2muq.mcmc.qoi" title="Permalink to this headline">¶</a></h2>
+<p>This module contains some functions related to the quantity of interest.</p>
+<dl class="function">
+<dt id="hippylib2muq.mcmc.qoi.cal_qoiTracer">
+<code class="sig-prename descclassname">hippylib2muq.mcmc.qoi.</code><code class="sig-name descname">cal_qoiTracer</code><span class="sig-paren">(</span><em class="sig-param">pde</em>, <em class="sig-param">qoi</em>, <em class="sig-param">muq_samps</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.qoi.cal_qoiTracer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function is for tracing the quantity of interest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pde</strong> (<em>hippylib:PDEProblem</em>) – a hippylib:PDEProblem instance</p></li>
+<li><p><strong>qoi</strong> – the quantity of interest; it should contain the member function
+named as <code class="docutils literal notranslate"><span class="pre">eval</span></code> which evaluates the value of qoi</p></li>
+<li><p><strong>muq_samps</strong> – samples generated from <code class="docutils literal notranslate"><span class="pre">muq</span></code> sampler</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="hippylib2muq.mcmc.qoi.track_qoiTracer">
+<code class="sig-prename descclassname">hippylib2muq.mcmc.qoi.</code><code class="sig-name descname">track_qoiTracer</code><span class="sig-paren">(</span><em class="sig-param">pde</em>, <em class="sig-param">qoi</em>, <em class="sig-param">method_list</em>, <em class="sig-param">max_lag=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.mcmc.qoi.track_qoiTracer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function computes the autocorrelation function and the effective sample
+size of the quantity of interest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pde</strong> (<em>hippylib:PDEProblem</em>) – a hippylib:PDEProblem instance</p></li>
+<li><p><strong>qoi</strong> – the quantity of interest; it should contain the member function</p></li>
+<li><p><strong>method_list</strong> (<em>dictionary</em>) – a dictionary containing MCMC methods descriptions
+with samples generated from muq sampler</p></li>
+<li><p><strong>max_lag</strong> (<em>int</em>) – maximum of time lag for computing the autocorrelation 
+function</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hippylib2muq.mcmc">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hippylib2muq.mcmc" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ki-Tae Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

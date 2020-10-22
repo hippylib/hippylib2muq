@@ -1,0 +1,540 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hippylib2muq.interface package &mdash; hippylib2muq 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hippylib2muq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">hippylib2muq.interface package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.interface.gaussian">hippylib2muq.interface.gaussian module</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.interface.modpiece">hippylib2muq.interface.modpiece module</a></li>
+<li><a class="reference internal" href="#module-hippylib2muq.interface">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hippylib2muq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>hippylib2muq.interface package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hippylib2muq.interface.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hippylib2muq-interface-package">
+<h1>hippylib2muq.interface package<a class="headerlink" href="#hippylib2muq-interface-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-hippylib2muq.interface.gaussian">
+<span id="hippylib2muq-interface-gaussian-module"></span><h2>hippylib2muq.interface.gaussian module<a class="headerlink" href="#module-hippylib2muq.interface.gaussian" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a set of wrappers that expose some functions of <code class="docutils literal notranslate"><span class="pre">hippylib</span></code> 
+(the Gaussian prior distributions and the low-rank based laplace approximation 
+to the posterior distribution) to <code class="docutils literal notranslate"><span class="pre">muq</span></code>.</p>
+<dl class="class">
+<dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.gaussian.</code><code class="sig-name descname">BiLaplaceGaussian</code><span class="sig-paren">(</span><em class="sig-param">hl_prior</em>, <em class="sig-param">use_zero_mean=False</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyGaussianBase</span></code></p>
+<p>The prior Gaussian distribution with Laplacian-like covariance operator</p>
+<p>A class interfacing between <code class="docutils literal notranslate"><span class="pre">hippylib::BiLaplacianPrior</span></code> and     <code class="docutils literal notranslate"><span class="pre">muq::GaussianBase</span></code>.</p>
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyCovSqrt">
+<code class="sig-name descname">ApplyCovSqrt</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyCovSqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the square root of covariance matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyCovariance">
+<code class="sig-name descname">ApplyCovariance</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the covariance matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyPrecSqrt">
+<code class="sig-name descname">ApplyPrecSqrt</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyPrecSqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the square root of precision matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyPrecision">
+<code class="sig-name descname">ApplyPrecision</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian.ApplyPrecision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the precision matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian.SampleImpl">
+<code class="sig-name descname">SampleImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian.SampleImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a sample from the prior distribution.
+This is an overladed function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>
+The argument <code class="docutils literal notranslate"><span class="pre">inputs</span></code> is not used, but should be given when 
+<code class="docutils literal notranslate"><span class="pre">SampleImpl</span></code> is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hippylib2muq.interface.gaussian.LAPosteriorGaussian">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.gaussian.</code><code class="sig-name descname">LAPosteriorGaussian</code><span class="sig-paren">(</span><em class="sig-param">lapost</em>, <em class="sig-param">use_zero_mean=False</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LAPosteriorGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyGaussianBase</span></code></p>
+<p>Low-rank based Laplace approximation to the posterior distribution</p>
+<p>A class interfacing between <code class="docutils literal notranslate"><span class="pre">hippylib::GaussianLRPosterior</span></code> and     <code class="docutils literal notranslate"><span class="pre">muq:PyGaussianBase</span></code>.</p>
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LAPosteriorGaussian.ApplyCovSqrt">
+<code class="sig-name descname">ApplyCovSqrt</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LAPosteriorGaussian.ApplyCovSqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the square root of covariance matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LAPosteriorGaussian.ApplyCovariance">
+<code class="sig-name descname">ApplyCovariance</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LAPosteriorGaussian.ApplyCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the covariance matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LAPosteriorGaussian.ApplyPrecision">
+<code class="sig-name descname">ApplyPrecision</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LAPosteriorGaussian.ApplyPrecision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the precision matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LAPosteriorGaussian.SampleImpl">
+<code class="sig-name descname">SampleImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LAPosteriorGaussian.SampleImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a sample from the approximated posterior distribution.
+This is an overladed function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hippylib2muq.interface.gaussian.LaplaceGaussian">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.gaussian.</code><code class="sig-name descname">LaplaceGaussian</code><span class="sig-paren">(</span><em class="sig-param">hl_prior</em>, <em class="sig-param">use_zero_mean=False</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LaplaceGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyGaussianBase</span></code></p>
+<p>The prior Gaussian distribution with Laplacian-like covariance operator</p>
+<p>An interface class between <code class="docutils literal notranslate"><span class="pre">hippylib::LaplaceGaussian</span></code> and     <code class="docutils literal notranslate"><span class="pre">muq::GaussianBase</span></code>.
+This class is appropriate to 1D (parameter) problems.</p>
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LaplaceGaussian.ApplyCovariance">
+<code class="sig-name descname">ApplyCovariance</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LaplaceGaussian.ApplyCovariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the covariance matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LaplaceGaussian.ApplyPrecision">
+<code class="sig-name descname">ApplyPrecision</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LaplaceGaussian.ApplyPrecision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the precision matrix to <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.gaussian.LaplaceGaussian.SampleImpl">
+<code class="sig-name descname">SampleImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LaplaceGaussian.SampleImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw a sample from the prior distribution.
+This is an overladed function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>.
+The argument <code class="docutils literal notranslate"><span class="pre">inputs</span></code> is not used, but should be given when 
+<code class="docutils literal notranslate"><span class="pre">SampleImpl</span></code> is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hippylib2muq.interface.modpiece">
+<span id="hippylib2muq-interface-modpiece-module"></span><h2>hippylib2muq.interface.modpiece module<a class="headerlink" href="#module-hippylib2muq.interface.modpiece" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a set of wrappers that bind some <code class="docutils literal notranslate"><span class="pre">hippylib</span></code> functionalities
+such that they can be used by <code class="docutils literal notranslate"><span class="pre">muq</span></code>.</p>
+<p>Please refer to <a class="reference external" href="https://mituq.bitbucket.io/classmuq_1_1Modeling_1_1ModPiece.html">ModPiece</a> for the detailes of member functions defined here.</p>
+<dl class="class">
+<dt id="hippylib2muq.interface.modpiece.LogBiLaplaceGaussian">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.modpiece.</code><code class="sig-name descname">LogBiLaplaceGaussian</code><span class="sig-paren">(</span><em class="sig-param">prior</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.LogBiLaplaceGaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyModPiece</span></code></p>
+<p>Log-bi-Laplace prior</p>
+<p>This class evaluates log of the bi-Laplacian prior.</p>
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.LogBiLaplaceGaussian.EvaluateImpl">
+<code class="sig-name descname">EvaluateImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.LogBiLaplaceGaussian.EvaluateImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the log of bi-Laplacian prior.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – input vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hippylib2muq.interface.modpiece.Param2LogLikelihood">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.modpiece.</code><code class="sig-name descname">Param2LogLikelihood</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2LogLikelihood" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyModPiece</span></code></p>
+<p>Parameter to log-likelihood map</p>
+<p>This class implements mapping from parameter to log-likelihood.</p>
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2LogLikelihood.ApplyHessianImpl">
+<code class="sig-name descname">ApplyHessianImpl</code><span class="sig-paren">(</span><em class="sig-param">outWrt</em>, <em class="sig-param">inWrt1</em>, <em class="sig-param">inWrt2</em>, <em class="sig-param">inputs</em>, <em class="sig-param">sens</em>, <em class="sig-param">vec</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2LogLikelihood.ApplyHessianImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Hessian to <code class="docutils literal notranslate"><span class="pre">vec</span></code> for given <code class="docutils literal notranslate"><span class="pre">sens</span></code> and <code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outWrt</strong> (<em>int</em>) – output dimension; should be 0</p></li>
+<li><p><strong>inWrt1</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inWrt2</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p></li>
+<li><p><strong>sens</strong> (<em>numpy::ndarray</em>) – sensitivity values</p></li>
+<li><p><strong>vec</strong> (<em>numpy::ndarray</em>) – input vector Hessian applies to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2LogLikelihood.ApplyJacobianImpl">
+<code class="sig-name descname">ApplyJacobianImpl</code><span class="sig-paren">(</span><em class="sig-param">outDimWrt</em>, <em class="sig-param">inDimWrt</em>, <em class="sig-param">inputs</em>, <em class="sig-param">vec</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2LogLikelihood.ApplyJacobianImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Jacobian to <code class="docutils literal notranslate"><span class="pre">vec</span></code> for given <code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outDimWrt</strong> (<em>int</em>) – output dimension; should be 0</p></li>
+<li><p><strong>inDimWrt</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p></li>
+<li><p><strong>vec</strong> (<em>numpy::ndarray</em>) – input vector Jacobian applies to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2LogLikelihood.EvaluateImpl">
+<code class="sig-name descname">EvaluateImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2LogLikelihood.EvaluateImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the log-likelihood for given <code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2LogLikelihood.GradientImpl">
+<code class="sig-name descname">GradientImpl</code><span class="sig-paren">(</span><em class="sig-param">outDimWrt</em>, <em class="sig-param">inDimWrt</em>, <em class="sig-param">inputs</em>, <em class="sig-param">sens</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2LogLikelihood.GradientImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute gradient; apply the transpose of Jacobian to <code class="docutils literal notranslate"><span class="pre">sens</span></code> for given
+<code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outDimWrt</strong> (<em>int</em>) – output dimension; should be 0</p></li>
+<li><p><strong>inDimWrt</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p></li>
+<li><p><strong>sens</strong> (<em>numpy::ndarray</em>) – input vector the transpose of Jacobian 
+applies to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2LogLikelihood.JacobianImpl">
+<code class="sig-name descname">JacobianImpl</code><span class="sig-paren">(</span><em class="sig-param">outDimWrt</em>, <em class="sig-param">inDimWrt</em>, <em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2LogLikelihood.JacobianImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Jacobian for given <code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outDimWrt</strong> (<em>int</em>) – output dimension; should be 0</p></li>
+<li><p><strong>inDimWrt</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hippylib2muq.interface.modpiece.Param2obs">
+<em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.modpiece.</code><code class="sig-name descname">Param2obs</code><span class="sig-paren">(</span><em class="sig-param">model</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyModPiece</span></code></p>
+<p>Parameter to observable map</p>
+<p>This class implements mapping from parameter to observations.</p>
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2obs.ApplyHessianImpl">
+<code class="sig-name descname">ApplyHessianImpl</code><span class="sig-paren">(</span><em class="sig-param">outWrt</em>, <em class="sig-param">inWrt1</em>, <em class="sig-param">inWrt2</em>, <em class="sig-param">inputs</em>, <em class="sig-param">sens</em>, <em class="sig-param">vec</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2obs.ApplyHessianImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Hessian to <code class="docutils literal notranslate"><span class="pre">vec</span></code> for given <code class="docutils literal notranslate"><span class="pre">sens</span></code> and <code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outWrt</strong> (<em>int</em>) – output dimension; should be 0</p></li>
+<li><p><strong>inWrt1</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inWrt2</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p></li>
+<li><p><strong>sens</strong> (<em>numpy::ndarray</em>) – sensitivity values</p></li>
+<li><p><strong>vec</strong> (<em>numpy::ndarray</em>) – input vector Hessian applies to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2obs.EvaluateImpl">
+<code class="sig-name descname">EvaluateImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2obs.EvaluateImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the observations for given <code class="docutils literal notranslate"><span class="pre">inputs</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="hippylib2muq.interface.modpiece.Param2obs.GradientImpl">
+<code class="sig-name descname">GradientImpl</code><span class="sig-paren">(</span><em class="sig-param">outDimWrt</em>, <em class="sig-param">inDimWrt</em>, <em class="sig-param">inputs</em>, <em class="sig-param">sens</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.modpiece.Param2obs.GradientImpl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute gradient; apply the transpose of Jacobian to <code class="docutils literal notranslate"><span class="pre">sens</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>outDimWrt</strong> (<em>int</em>) – output dimension; should be 0</p></li>
+<li><p><strong>inDimWrt</strong> (<em>int</em>) – input dimension; should be 0</p></li>
+<li><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – parameter values</p></li>
+<li><p><strong>sens</strong> (<em>numpy::ndarray</em>) – input vector the transpose of Jacobian 
+applies to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-hippylib2muq.interface">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-hippylib2muq.interface" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ki-Tae Kim
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
