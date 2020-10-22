@@ -7,7 +7,7 @@
                                                                
 ```
 
-> Powerful Markov chain Monte Carlo Sampling Methods for Large-scale Bayesian Inverse Problems Governed by PDEs
+> Scalable Markov chain Monte Carlo Sampling Methods for Large-scale Bayesian Inverse Problems Governed by PDEs
 
 ## Overview
 
