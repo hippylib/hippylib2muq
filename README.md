@@ -7,7 +7,7 @@
                                                                
 ```
 
-> An Extensible Software Framework for Large-scale Bayesian Inverse Problems
+> Powerful Markov chain Monte Carlo Sampling Methods for Large-scale Bayesian Inverse Problems Governed by PDEs
 
 ## Overview
 
@@ -36,11 +36,15 @@ docker run -ti --rm -v $(pwd):/home/fenics/hippylib2muq/tutorial \
 ```
 The notebook will be available at the following address in your web-browser.
 
+See [INSTALL](./INSTALL.md) for further details.
+
+<!--
 `hIPPYlib-MUQ` and its dependencies can be installed via `pip` and [Conda](https://docs.conda.io/en/latest/), which is described in [INSTALL](./INSTALL.md).
+-->
 
 ## Documentation
 
-A complete API documentation of `hIPPYlib-MUQ` is available at.
+A complete API documentation of `hIPPYlib-MUQ` is available [here](https://hippylib.github.io/hippylib2muq/).
 
 ## Authors
 
