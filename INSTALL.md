@@ -1,12 +1,11 @@
-`hIPPYlib-MUQ` builds on [`hIPPYlib`](https://github.com/hippylib/hippylib) and [`MUQ`](https://bitbucket.org/mituq/muq2/src/master/).
-Installations of these packages are summarized here, but please see the detailed 
-installation guides given in each github/bitbucket page.
+`hIPPYlib-MUQ` builds on [`hIPPYlib`](https://github.com/hippylib/hippylib)
+version 3.0.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
+[`MUQ`](https://bitbucket.org/mituq/muq2/src/master/) version 0.2.0.  
 
-After all the required packages are installed, `hIPPYlib-MUQ` can be installed
-using `pip`:
-```sh
-pip3 install hippylib2muq
-```
+Installations of these
+packages are summarized here, but please see the detailed installation guides
+given in each github/bitbucket page.
+
 
 ## Installation of dependencies
 

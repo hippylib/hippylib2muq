@@ -7,9 +7,10 @@ RUN apt-get -qq -y update && \
     pip3 install --upgrade pip && \
     pip3 install hippylib && \
     pip3 install jupyter && \
+    pip3 install matplotlib && \
     pip3 install h5py && \
     pip3 install seaborn && \
-    pip3 install matplotlib && \
+    pip3 install statsmodels && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -27,12 +28,10 @@ RUN mkdir -p ./lib/muq && \
     rm -rf muq2
 
 # Install hippylib-muq interface
-# RUN git clone https://github.com/hippylib/hippylib2muq.git
-
-USER root
+RUN git clone https://github.com/hippylib/hippylib2muq.git
 
 # Set environmental variables
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/home/fenics/lib/muq/lib" \
-    PYTHONPATH="/home/fenics/lib/muq/lib"
+    PYTHONPATH="/home/fenics/lib/muq/lib:/hone/fenics/hippylib2muq"
 
 CMD ["bash"]
