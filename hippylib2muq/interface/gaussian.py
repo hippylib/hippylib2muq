@@ -17,9 +17,9 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 """
-This module provides a set of wrappers that expose some functions of ``hippylib`` 
-(the Gaussian prior distributions and the low-rank based laplace approximation 
-to the posterior distribution) to ``muq``.
+This module provides a set of wrappers that expose some functions of
+``hippylib`` (the prior Gaussian distributions and the low-rank based Laplace
+approximation to the posterior distribution) to ``muq``.
 """
 import numpy as np
 import dolfin as df
@@ -34,7 +34,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
     An interface class between ``hippylib::LaplaceGaussian`` and \
     ``muq::GaussianBase``.
-    This class is appropriate to 1D (parameter) problems.
+    This class is appropriate for 1D (parameter) problems.
     """
     def __init__(self, hl_prior, use_zero_mean=False):
         """
@@ -121,7 +121,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
     def SampleImpl(self, inputs):
         """
         Draw a sample from the prior distribution.
-        This is an overladed function of ``muq::PyGaussianBase``.
+        This is an overloaded function of ``muq::PyGaussianBase``.
         The argument ``inputs`` is not used, but should be given when 
         ``SampleImpl`` is called.
 
@@ -329,7 +329,7 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
     def SampleImpl(self, inputs):
         """
         Draw a sample from the prior distribution.
-        This is an overladed function of ``muq::PyGaussianBase``
+        This is an overloaded function of ``muq::PyGaussianBase``
         The argument ``inputs`` is not used, but should be given when 
         ``SampleImpl`` is called.
 
@@ -408,7 +408,7 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
     def SampleImpl(self, inputs):
         """
         Draw a sample from the approximated posterior distribution.
-        This is an overladed function of ``muq::PyGaussianBase``.
+        This is an overloaded function of ``muq::PyGaussianBase``.
 
         :param numpy::ndarray inputs: input vector
         """
