@@ -16,9 +16,5 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# version
-from .version import version_info, __version__
-
-from .utility import *
-from .interface import *
-from .mcmc import *
+version_info = (0, 1, 0)
+__version__ = '.'.join([str(x) for x in version_info])
