@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>hippylib2muq.interface package &mdash; hippylib2muq 1.0.0 documentation</title>
+  <title>hippylib2muq.interface package &mdash; hippylib2muq 0.1.0 documentation</title>
   
 
   
@@ -159,9 +159,9 @@
 </div>
 <div class="section" id="module-hippylib2muq.interface.gaussian">
 <span id="hippylib2muq-interface-gaussian-module"></span><h2>hippylib2muq.interface.gaussian module<a class="headerlink" href="#module-hippylib2muq.interface.gaussian" title="Permalink to this headline">¶</a></h2>
-<p>This module provides a set of wrappers that expose some functions of <code class="docutils literal notranslate"><span class="pre">hippylib</span></code> 
-(the Gaussian prior distributions and the low-rank based laplace approximation 
-to the posterior distribution) to <code class="docutils literal notranslate"><span class="pre">muq</span></code>.</p>
+<p>This module provides a set of wrappers that expose some functions of
+<code class="docutils literal notranslate"><span class="pre">hippylib</span></code> (the prior Gaussian distributions and the low-rank based Laplace
+approximation to the posterior distribution) to <code class="docutils literal notranslate"><span class="pre">muq</span></code>.</p>
 <dl class="class">
 <dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian">
 <em class="property">class </em><code class="sig-prename descclassname">hippylib2muq.interface.gaussian.</code><code class="sig-name descname">BiLaplaceGaussian</code><span class="sig-paren">(</span><em class="sig-param">hl_prior</em>, <em class="sig-param">use_zero_mean=False</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian" title="Permalink to this definition">¶</a></dt>
@@ -216,7 +216,7 @@ to the posterior distribution) to <code class="docutils literal notranslate"><sp
 <dt id="hippylib2muq.interface.gaussian.BiLaplaceGaussian.SampleImpl">
 <code class="sig-name descname">SampleImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.BiLaplaceGaussian.SampleImpl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a sample from the prior distribution.
-This is an overladed function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>
+This is an overloaded function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>
 The argument <code class="docutils literal notranslate"><span class="pre">inputs</span></code> is not used, but should be given when 
 <code class="docutils literal notranslate"><span class="pre">SampleImpl</span></code> is called.</p>
 <dl class="field-list simple">
@@ -271,7 +271,7 @@ The argument <code class="docutils literal notranslate"><span class="pre">inputs
 <dt id="hippylib2muq.interface.gaussian.LAPosteriorGaussian.SampleImpl">
 <code class="sig-name descname">SampleImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LAPosteriorGaussian.SampleImpl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a sample from the approximated posterior distribution.
-This is an overladed function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>.</p>
+This is an overloaded function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>inputs</strong> (<em>numpy::ndarray</em>) – input vector</p>
@@ -287,7 +287,7 @@ This is an overladed function of <code class="docutils literal notranslate"><spa
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pymuqModeling_.PyGaussianBase</span></code></p>
 <p>The prior Gaussian distribution with Laplacian-like covariance operator</p>
 <p>An interface class between <code class="docutils literal notranslate"><span class="pre">hippylib::LaplaceGaussian</span></code> and     <code class="docutils literal notranslate"><span class="pre">muq::GaussianBase</span></code>.
-This class is appropriate to 1D (parameter) problems.</p>
+This class is appropriate for 1D (parameter) problems.</p>
 <dl class="method">
 <dt id="hippylib2muq.interface.gaussian.LaplaceGaussian.ApplyCovariance">
 <code class="sig-name descname">ApplyCovariance</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LaplaceGaussian.ApplyCovariance" title="Permalink to this definition">¶</a></dt>
@@ -314,7 +314,7 @@ This class is appropriate to 1D (parameter) problems.</p>
 <dt id="hippylib2muq.interface.gaussian.LaplaceGaussian.SampleImpl">
 <code class="sig-name descname">SampleImpl</code><span class="sig-paren">(</span><em class="sig-param">inputs</em><span class="sig-paren">)</span><a class="headerlink" href="#hippylib2muq.interface.gaussian.LaplaceGaussian.SampleImpl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw a sample from the prior distribution.
-This is an overladed function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>.
+This is an overloaded function of <code class="docutils literal notranslate"><span class="pre">muq::PyGaussianBase</span></code>.
 The argument <code class="docutils literal notranslate"><span class="pre">inputs</span></code> is not used, but should be given when 
 <code class="docutils literal notranslate"><span class="pre">SampleImpl</span></code> is called.</p>
 <dl class="field-list simple">
@@ -508,7 +508,7 @@ applies to</p></li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2020, Ki-Tae Kim
+        &copy; Copyright 2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas
 
     </p>
   </div>

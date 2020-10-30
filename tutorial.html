@@ -1,0 +1,1014 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bayesian quantification of parameter uncertainty &mdash; hippylib2muq 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hippylib2muq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hippylib2muq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Bayesian quantification of parameter uncertainty</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="math notranslate nohighlight" id="tutorial">
+\[\def\data{ {\bf d}_\rm{obs}}
+\def\vec{\bf}
+\def\m{ {\bf m}}
+\def\map{m_{\nu}}
+\def\postcov{ \mathcal{C}_{\nu} }
+\def\prcov{ \mathcal{C}_{\text{prior}} }
+\def\matrix{\bf}
+\def\Hmisfit{ \mathcal{H}_{\text{misfit}} }
+\def\diag{\operatorname{diag}}
+\def\Vr{{\matrix V}_r}
+\def\Wr{{\matrix W}_r}
+\def\Ir{{\matrix I}_r}
+\def\Dr{{\matrix D}_r}
+\def\H{{\matrix H} }
+\def\matHmis{ {\H}_{\rm misfit}}
+\def\Gpost{\boldsymbol{\Gamma}_{\nu} }
+\def\Gprior{ \boldsymbol{\Gamma}_{\rm prior} }\]</div>
+<div class="section" id="bayesian-quantification-of-parameter-uncertainty">
+<h1>Bayesian quantification of parameter uncertainty<a class="headerlink" href="#bayesian-quantification-of-parameter-uncertainty" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="i-estimating-the-posterior-pdf-of-the-coefficient-parameter-field-in-an-elliptic-pde">
+<h2>I. Estimating the posterior pdf of the coefficient parameter field in an elliptic PDE<a class="headerlink" href="#i-estimating-the-posterior-pdf-of-the-coefficient-parameter-field-in-an-elliptic-pde" title="Permalink to this headline">¶</a></h2>
+<p>In this example we tackle the problem of quantifying the
+uncertainty in the solution of an inverse problem governed by an
+elliptic PDE via the Bayesian inference framework.
+Hence, we state the inverse problem as a
+problem of statistical inference over the space of uncertain
+parameters, which are to be inferred from data and a physical
+model.  The resulting solution to the statistical inverse problem
+is a posterior distribution that assigns to any candidate set of
+parameter fields, our belief (expressed as a probability) that a
+member of this candidate set is the “true” parameter field that
+gave rise to the observed data.</p>
+<div class="section" id="bayes-s-theorem">
+<h3>Bayes’s Theorem<a class="headerlink" href="#bayes-s-theorem" title="Permalink to this headline">¶</a></h3>
+<p>The posterior probability distribution combines the prior pdf
+<span class="math notranslate nohighlight">\(\mu_{\text{prior}}(m)\)</span> over the parameter space, which encodes
+any knowledge or assumptions about the parameter space that we may
+wish to impose before the data are considered, with a likelihood pdf
+<span class="math notranslate nohighlight">\(\pi_{\text{like}}(\data \; | \; m)\)</span>, which explicitly
+represents the probability that a given parameter <span class="math notranslate nohighlight">\(m\)</span>
+might give rise to the observed data <span class="math notranslate nohighlight">\(\data \in \mathbb{R}^{n_t}\)</span>, namely:</p>
+<div class="math notranslate nohighlight">
+\[\begin{align}
+d \mu_{\text{post}}(m | \data) \propto \pi_{\text{like}}(\data \,|\, m) \, d\mu_{\text{prior}}(m).
+\end{align}\]</div>
+<p>Note that infinite-dimensional analog of Bayes’s formula requires the use Radon-Nikodym derivatives instead of probability density functions.</p>
+<div class="section" id="the-prior">
+<h4>The prior<a class="headerlink" href="#the-prior" title="Permalink to this headline">¶</a></h4>
+<p>We consider a Gaussian prior with mean <span class="math notranslate nohighlight">\(m_{\rm prior}\)</span> and covariance
+<span class="math notranslate nohighlight">\(\prcov\)</span>, <span class="math notranslate nohighlight">\(\mu_{\rm prior} \sim \mathcal{N}({m}_{\rm prior}, \prcov)\)</span>.
+The covariance is given by the discretization of the inverse of
+differential operator <span class="math notranslate nohighlight">\(\mathcal{A}^{-2} = (-\gamma \Delta + \delta I)^{-2}\)</span>,
+where <span class="math notranslate nohighlight">\(\gamma\)</span>, <span class="math notranslate nohighlight">\(\delta &gt; 0\)</span> control the correlation length and the variance of the prior operator. This choice of prior ensures that it is a trace-class operator, guaranteeing bounded pointwise variance and a well-posed infinite-dimensional Bayesian inverse problem.</p>
+</div>
+<div class="section" id="the-likelihood">
+<h4>The likelihood<a class="headerlink" href="#the-likelihood" title="Permalink to this headline">¶</a></h4>
+<div class="math notranslate nohighlight">
+\[\data =  {\bf f}(m) + {\bf e }, \;\;\;  {\bf e} \sim \mathcal{N}({\bf 0}, {\bf \Gamma}_{\text{noise}} )\]</div>
+<div class="math notranslate nohighlight">
+\[\pi_{\text like}(\data \; | \; m)  \propto \exp \left( - \tfrac{1}{2} \parallel {\bf f}(m) - \data \parallel^{2}_{{\bf \Gamma}_{\text{noise}}^{-1}}\right)\]</div>
+<p>Here <span class="math notranslate nohighlight">\({\bf f}\)</span> is the parameter-to-observable map that takes a parameter
+<span class="math notranslate nohighlight">\(m\)</span> and maps it to the space observation vector <span class="math notranslate nohighlight">\(\data\)</span>.</p>
+<p>In this application, <span class="math notranslate nohighlight">\({\bf f}\)</span> consists in the composition of a PDE solve
+(to compute the state <span class="math notranslate nohighlight">\(u\)</span>) and a pointwise observation of the state
+<span class="math notranslate nohighlight">\(u\)</span> to extract the observation vector <span class="math notranslate nohighlight">\(\data\)</span>.</p>
+</div>
+<div class="section" id="the-posterior">
+<h4>The posterior<a class="headerlink" href="#the-posterior" title="Permalink to this headline">¶</a></h4>
+<div class="math notranslate nohighlight">
+\[d\mu_{\text{post}}(m \; | \; \data)  \propto \exp \left( - \tfrac{1}{2} \parallel {\bf f}(m) - \data \parallel^{2}_{{\bf \Gamma}_{\text{noise}}^{-1}} \! - \tfrac{1}{2}\parallel m - m_{\rm prior} \parallel^{2}_{\prcov^{-1}} \right)\]</div>
+</div>
+</div>
+<div class="section" id="the-laplace-approximation-to-the-posterior-nu-sim-mathcal-n-map-bf-postcov">
+<h3>The Laplace approximation to the posterior: <span class="math notranslate nohighlight">\(\nu \sim \mathcal{N}({\map},\bf \postcov)\)</span><a class="headerlink" href="#the-laplace-approximation-to-the-posterior-nu-sim-mathcal-n-map-bf-postcov" title="Permalink to this headline">¶</a></h3>
+<p>The mean of the Laplace approximation posterior distribution, <span class="math notranslate nohighlight">\({\map}\)</span>, is the
+parameter maximizing the posterior, and
+is known as the maximum a posteriori (MAP) point.  It can be found
+by minimizing the negative log of the posterior, which amounts to
+solving a deterministic inverse problem) with appropriately weighted norms,</p>
+<div class="math notranslate nohighlight">
+\[\map := \underset{m}{\arg \min} \; \mathcal{J}(m) \;:=\;
+\Big(
+\frac{1}{2} \| {\bf f}(m) - \data \|^2_{ {\bf \Gamma}_{\text{noise}}^{-1}}
++\frac{1}{2} \| m -m_{\rm prior} \|^2_{\prcov^{-1}}
+\Big).\]</div>
+<p>The posterior covariance matrix is then given by the inverse of
+the Hessian matrix of <span class="math notranslate nohighlight">\(\mathcal{J}\)</span> at <span class="math notranslate nohighlight">\(\map\)</span>, namely</p>
+<div class="math notranslate nohighlight">
+\[\postcov = \left(\Hmisfit(\map) + \prcov^{-1} \right)^{-1},\]</div>
+<p>provided that <span class="math notranslate nohighlight">\(\Hmisfit(\map)\)</span> is positive semidefinite.</p>
+<div class="section" id="the-generalized-eigenvalue-problem">
+<h4>The generalized eigenvalue problem<a class="headerlink" href="#the-generalized-eigenvalue-problem" title="Permalink to this headline">¶</a></h4>
+<p>In what follows we denote with <span class="math notranslate nohighlight">\(\matHmis, \Gpost, \Gprior \in \mathbb{R}^{n\times n}\)</span>
+the matrices stemming from the discretization of the
+operators <span class="math notranslate nohighlight">\(\Hmisfit(\map)\)</span>, <span class="math notranslate nohighlight">\(\postcov\)</span>, <span class="math notranslate nohighlight">\(\prcov\)</span> with respect
+to the unweighted Euclidean inner product.
+Then we considered the symmetric generalized eigenvalue problem</p>
+<div class="math notranslate nohighlight">
+\[\matHmis {\matrix V} = \Gprior^{-1} {\matrix V} {\matrix \Lambda},\]</div>
+<p>where <span class="math notranslate nohighlight">\({\matrix \Lambda} = \diag(\lambda_i) \in \mathbb{R}^{n\times n}\)</span>
+contains the generalized eigenvalues and the columns of <span class="math notranslate nohighlight">\({\matrix V}\in \mathbb R^{n\times n}\)</span>
+the generalized eigenvectors such that
+<span class="math notranslate nohighlight">\({\matrix V}^T \Gprior^{-1} {\matrix V} = {\matrix I}\)</span>.</p>
+</div>
+<div class="section" id="randomized-eigensolvers-to-construct-the-approximate-spectral-decomposition">
+<h4>Randomized eigensolvers to construct the approximate spectral decomposition<a class="headerlink" href="#randomized-eigensolvers-to-construct-the-approximate-spectral-decomposition" title="Permalink to this headline">¶</a></h4>
+<p>When the generalized eigenvalues <span class="math notranslate nohighlight">\(\{\lambda_i\}\)</span> decay rapidly, we can
+extract a low-rank approximation of <span class="math notranslate nohighlight">\(\matHmis\)</span> by retaining only the
+<span class="math notranslate nohighlight">\(r\)</span>
+largest eigenvalues and corresponding eigenvectors,</p>
+<div class="math notranslate nohighlight">
+\[\matHmis \approx \Gprior^{-1} \Vr {\matrix{\Lambda}}_r \Vr^T \Gprior^{-1}.\]</div>
+<p>Here, <span class="math notranslate nohighlight">\(\Vr \in \mathbb{R}^{n\times r}\)</span> contains only the <span class="math notranslate nohighlight">\(r\)</span>
+generalized eigenvectors of <span class="math notranslate nohighlight">\(\matHmis\)</span> that correspond to the <span class="math notranslate nohighlight">\(r\)</span> largest eigenvalues,
+which are assembled into the diagonal matrix <span class="math notranslate nohighlight">\({\matrix{\Lambda}}_r = \diag (\lambda_i) \in \mathbb{R}^{r \times r}\)</span>.</p>
+</div>
+<div class="section" id="the-approximate-posterior-covariance">
+<h4>The approximate posterior covariance<a class="headerlink" href="#the-approximate-posterior-covariance" title="Permalink to this headline">¶</a></h4>
+<p>Using the Sherman–Morrison–Woodbury formula, we write</p>
+<div class="math notranslate nohighlight">
+\[\begin{align}
+  \notag \Gpost = \left(\matHmis+ \Gprior^{-1}\right)^{-1}
+  = \Gprior^{-1}-\Vr {\matrix{D}}_r \Vr^T +
+  \mathcal{O}\left(\sum_{i=r+1}^{n} \frac{\lambda_i}{\lambda_i +
+    1}\right),
+\end{align}\]</div>
+<p>where <span class="math notranslate nohighlight">\({\matrix{D}}_r :=\diag(\lambda_i/(\lambda_i+1)) \in \mathbb{R}^{r\times r}\)</span>.
+The last term in this expression captures the
+error due to truncation in terms of the discarded eigenvalues; this
+provides a criterion for truncating the spectrum, namely that <span class="math notranslate nohighlight">\(r\)</span> is
+chosen such that <span class="math notranslate nohighlight">\(\lambda_r\)</span> is small relative to 1.</p>
+<p>Therefore we can approximate the posterior covariance as</p>
+<div class="math notranslate nohighlight">
+\[\Gpost \approx \Gprior - \Vr {\matrix{D}}_r \Vr^T\]</div>
+</div>
+<div class="section" id="drawing-samples-from-a-gaussian-distribution-with-covariance-gpost">
+<h4>Drawing samples from a Gaussian distribution with covariance $Gpost$<a class="headerlink" href="#drawing-samples-from-a-gaussian-distribution-with-covariance-gpost" title="Permalink to this headline">¶</a></h4>
+<p>Let <span class="math notranslate nohighlight">\({\bf x}\)</span> be a sample for the prior distribution, i.e. <span class="math notranslate nohighlight">\({\bf x} \sim \mathcal{N}({\bf 0}, \Gprior)\)</span>, then, using the low rank approximation of
+the posterior covariance, we compute a sample <span class="math notranslate nohighlight">\({\bf v} \sim \mathcal{N}({\bf 0}, \Gpost)\)</span> as</p>
+<div class="math notranslate nohighlight">
+\[{\bf v} = \big\{ \Vr \big[ ({\matrix{\Lambda}}_r +
+  \Ir)^{-1/2} - \Ir \big] \Vr^T\Gprior^{-1}  + {\bf I} \big\} {\bf x}\]</div>
+</div>
+</div>
+<div class="section" id="full-posterior-sampling-via-markov-chain-monte-carlo-mcmc">
+<h3>Full posterior sampling via Markov chain Monte Carlo (MCMC)<a class="headerlink" href="#full-posterior-sampling-via-markov-chain-monte-carlo-mcmc" title="Permalink to this headline">¶</a></h3>
+<p>The posterior can be fully explored by using MCMC algorithms, the most popular method for sampling from a probability distribution.
+In this example, some of the advanced MCMC algorithms are considered and compared in terms of efficiency and accuracy.</p>
+<div class="section" id="the-preconditioned-crank-nicolson-algorithm-pcn">
+<h4>The preconditioned Crank-Nicolson algorithm (pCN)<a class="headerlink" href="#the-preconditioned-crank-nicolson-algorithm-pcn" title="Permalink to this headline">¶</a></h4>
+<p>The pCN algorithm is perhaps the simplest MCMC method that is well-defined in the infinite
+dimensional setting ensuring a mixing rates independent of the dimension of the discretized parameter space.</p>
+<p>The algorithm proceeds as follows (see <a class="reference external" href="#Cotter">[Cotter et al. (2013)]</a> <a class="reference external" href="#Pinski">[Pinski et al. (2015)]</a> for the details):</p>
+<ol class="arabic simple">
+<li><p>Given <span class="math notranslate nohighlight">\(m^{(k)}\)</span>, propose <span class="math notranslate nohighlight">\(v^{(k+1)} = m_{\rm prop} + \sqrt{1 - \beta^2}(m^{(k)} - m_{\rm prop}) + \beta \xi^{(k)}, \quad \xi^{(k)} \sim \mathcal{N}( 0, \mathcal{C}_{\rm prop} )\)</span></p></li>
+<li><p>Set <span class="math notranslate nohighlight">\(m^{(k+1)} = v^{(k+1)}\)</span> with probability <span class="math notranslate nohighlight">\(a(m^{(k)}, v^{(k+1)}) = \min \left(1, \frac{\mu_{\text{post}}(v^{(k+1)}) q(v^{(k+1)}, m^{(k)})}{\mu_{\text{post}}(m^{(k)}) q(m^{(k)}, v^{(k+1)})} \right)\)</span></p></li>
+</ol>
+<p>where <span class="math notranslate nohighlight">\(q(m,v) \sim \mathcal{N}\left( m_{\rm prop} + \sqrt{1 - \beta^2}(m - m_{\rm prop}), \beta^2 \mathcal{C}_{\rm prop} \right)\)</span> with proposal mean <span class="math notranslate nohighlight">\(m_{\rm prop}\)</span> and covariance <span class="math notranslate nohighlight">\(\mathcal{C}_{\rm prop}\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> is a parameter controlling the step length of the proposal.</p>
+</div>
+<div class="section" id="the-preconditioned-metropolis-adjusted-langevin-algorithm-mala">
+<h4>The preconditioned Metropolis adjusted Langevin algorithm (MALA)<a class="headerlink" href="#the-preconditioned-metropolis-adjusted-langevin-algorithm-mala" title="Permalink to this headline">¶</a></h4>
+<p>The MALA algorithm is built on two mechanisms: the overdamped Langevin diffusion to propose a move and the Metropolis–Hastings algorithm to accept or reject the proposal move <a class="reference external" href="#Roberts">[Roberts and Tweedie (1996)]</a>.</p>
+<p>The preconditioned MALA algorithm is described as follows:</p>
+<ol class="arabic simple">
+<li><p>Given <span class="math notranslate nohighlight">\(m^{(k)}\)</span>, propose <span class="math notranslate nohighlight">\(v^{(k+1)} = m^{(k)} + \tau \mathcal{A}_{\rm prop} \nabla \log \mu_{\text{post}} (m^{(k)}) + \sqrt{2 \tau \mathcal{A}_{\rm prop}} \xi^{(k)}, \quad \xi^{(k)} \sim \mathcal{N}( 0, \mathcal{I})\)</span></p></li>
+<li><p>Set <span class="math notranslate nohighlight">\(m^{(k+1)} = v^{(k+1)}\)</span> with probability <span class="math notranslate nohighlight">\(a(m^{(k)}, v^{(k+1)}) = \min \left(1, \frac{\mu_{\text{post}}(v^{(k+1)}) q(v^{(k+1)}, m^{(k)})}{\mu_{\text{post}}(m^{(k)}) q(m^{(k)}, v^{(k+1)})} \right)\)</span></p></li>
+</ol>
+<p>where <span class="math notranslate nohighlight">\(q(m,v) \sim \mathcal{N}\left( m + \tau \mathcal{A}_{\rm prop} \nabla \log \mu_{\text{post}} (m), 2 \tau \mathcal{A}_{\rm prop} \right)\)</span> with a proposal covariance <span class="math notranslate nohighlight">\(\mathcal{A}_{\rm prop}\)</span> and <span class="math notranslate nohighlight">\(\tau\)</span> is a step size.</p>
+</div>
+<div class="section" id="the-delayed-rejection-dr">
+<h4>The Delayed Rejection (DR)<a class="headerlink" href="#the-delayed-rejection-dr" title="Permalink to this headline">¶</a></h4>
+<p>The basic idea of the delayed rejection is to use a sequence of stages in each iteration.
+Unlike the basic Metropolis-Hastings algorithm, if a candidate is rejected, a new move is proposed.
+The acceptance rate for the new proposal move is adjusted so that the stationary distribution is preserved.
+For the details, see <a class="reference external" href="#Mira">[Mira (2001)]</a>.</p>
+</div>
+</div>
+<div class="section" id="this-tutorial-shows">
+<h3>This tutorial shows<a class="headerlink" href="#this-tutorial-shows" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Definition of the component of an inverse problem (the forward problem, the prior, and the misfit functional) using hIPPYlib</p></li>
+<li><p>Computation of the maximum a posterior MAP point using inexact Newton-CG algorithm</p></li>
+<li><p>Low-rank based approximation of the posterior covariance under the Laplace Approximation</p></li>
+<li><p>Sampling from the prior distribution and Laplace Approximation using hIPPYlib</p></li>
+<li><p>Construction of a MUQ workgraph using a PDE model defined in hIPPYlib</p></li>
+<li><p>Exploring the full posterior using the MCMC methods implemented in MUQ</p></li>
+<li><p>Convergence diagnostics of MCMC simulation results and their comparison</p></li>
+</ul>
+</div>
+<div class="section" id="mathematical-tools-used">
+<h3>Mathematical tools used<a class="headerlink" href="#mathematical-tools-used" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Finite element method</p></li>
+<li><p>Derivation of gradient and Hessian via the adjoint method</p></li>
+<li><p>Inexact Newton-CG</p></li>
+<li><p>Randomized eigensolvers</p></li>
+<li><p>Bayes’ formula</p></li>
+<li><p>MCMC methods</p></li>
+</ul>
+</div>
+<div class="section" id="list-of-software-used">
+<h3>List of software used<a class="headerlink" href="#list-of-software-used" title="Permalink to this headline">¶</a></h3>
+<p><span class="raw-html-m2r"><a href="https://hippylib.github.io">hIPPYlib</a></span>, <span class="raw-html-m2r"><a href="http://muq.mit.edu">MUQ</a></span> and their interfaces are the main software framework in this tutorial.
+Additional tools used are:</p>
+<ul class="simple">
+<li><p><span class="raw-html-m2r"><a href="http://fenicsproject.org">FEniCS</a></span>, A parallel finite element element library for the discretization of partial differential equations</p></li>
+<li><p><span class="raw-html-m2r"><a href="http://www.mcs.anl.gov/petsc">PETSc</a></span>, A set of data structures and routines for scalable and efficient linear algebra operations and solvers</p></li>
+<li><p><span class="raw-html-m2r"><a href="http://www.numpy.org">Numpy</a></span>, A python package for linear algebra</p></li>
+<li><p><span class="raw-html-m2r"><a href="http://matplotlib.org">Matplotlib</a></span>, A python package for visualizing the results</p></li>
+</ul>
+</div>
+<div class="section" id="references">
+<h3>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h3>
+<p><span class="raw-html-m2r"><a id="Cotter">Cotter, S. L., Roberts, G. O., Stuart, A. M., & White, D. (2013)</a></span>.
+MCMC methods for functions: modifying old algorithms to make them faster.
+Statistical Science, 424-446.</p>
+<p><span class="raw-html-m2r"><a id="Pinski">Pinski, F. J., Simpson, G., Stuart, A. M., & Weber, H. (2015)</a></span>.
+Algorithms for Kullback–Leibler approximation of probability measures in infinite dimensions.
+SIAM Journal on Scientific Computing, 37(6), A2733-A2757.</p>
+<p><span class="raw-html-m2r"><a id="Roberts">Roberts, G. O., & Tweedie, R. L. (1996)</a></span>.
+Exponential convergence of Langevin distributions and their discrete approximations.
+Bernoulli, 2(4), 341-363.</p>
+<p><span class="raw-html-m2r"><a id="Mira">Mira, A. (2001)</a></span>.
+On Metropolis-Hastings algorithms with delayed rejection.
+Metron, 59(3-4), 231-241.</p>
+</div>
+</div>
+<div class="section" id="ii-hippylib-muq-integration">
+<h2>II. hIPPYlib-MUQ integration<a class="headerlink" href="#ii-hippylib-muq-integration" title="Permalink to this headline">¶</a></h2>
+<p>The main objective of this example is to illustrate the interface between <span class="raw-html-m2r"><a href="https://hippylib.github.io">hIPPYlib</a></span> and <span class="raw-html-m2r"><a href="http://muq.mit.edu">MUQ</a></span>.</p>
+<p>We make use of <span class="raw-html-m2r"><a href="https://hippylib.github.io">hIPPYlib</a></span> to</p>
+<ul class="simple">
+<li><p>Define the forward model, prior distribution, and likelihood function</p></li>
+<li><p>Compute the MAP point by solving a deterministic inverse problem</p></li>
+<li><p>Construct the Laplace Approximation to the posterior distribution with a low-rank based approximation of the covariace operator.</p></li>
+</ul>
+<p>The main classes and functions of <span class="raw-html-m2r"><a href="https://hippylib.github.io">hIPPYlib</a></span> employed in this example are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hippylib::PDEVariationalProblem</span></code> : forward, adjoint and incremental problems solvers and their derivatives evaluations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hippylib::BiLaplacianPrior</span></code> : a biLaplacian Gaussian prior model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hippylib::GaussianLRPosterior</span></code> : the low rank Gaussian approximation of the posterior (used for generating starting points of MCMC simulations)</p></li>
+</ul>
+<p><span class="raw-html-m2r"><a href="http://muq.mit.edu">MUQ</a></span> is used to sample from the posterior by implementing MCMC methods with various kernels and proposals.</p>
+<p>The main classes and functions used here are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqModeling::PyModPiece</span></code> : an abstract interface for defining vector-valued models</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqModeling::PyGaussianBase</span></code> : an abstract interface for implementing Gaussian distributions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqModeling::WorkGraph</span></code> : a graph or a frame of connected <code class="docutils literal notranslate"><span class="pre">pymuqModeling::PyModPiece</span></code> (or <code class="docutils literal notranslate"><span class="pre">pymuqModeling::WorkPiece</span></code>) classes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqSamplingAlgorithms::CrankNicolsonProposal</span></code> : the pCN proposal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqSamplingAlgorithms::MALAProposal</span></code> : the MALA proposal</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqSamplingAlgorithms::MHKernel</span></code> : the Metropolis-Hastings transition kernel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqSamplingAlgorithms::DRKernel</span></code> : the delayed rejection kernel</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pymuqSamplingAlgorithms::SingleChainMCMC</span></code> : a single chain MCMC sampler</p></li>
+</ul>
+<p>To interface <span class="raw-html-m2r"><a href="https://hippylib.github.io">hIPPYlib</a></span> and <span class="raw-html-m2r"><a href="http://muq.mit.edu">MUQ</a></span> for this example, <code class="docutils literal notranslate"><span class="pre">hippymuq</span></code> provides the following classes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hippymuq::Param2LogLikelihood</span></code> : a child of <code class="docutils literal notranslate"><span class="pre">muq::PyModPiece</span></code> which wraps <code class="docutils literal notranslate"><span class="pre">hippylib::PDEVariationalProblem</span></code> and <code class="docutils literal notranslate"><span class="pre">hippylib:PointwiseStateObservation</span></code> (solving the forward problem, mapping from parameters to log likelihood and evaluating its derivative)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hippymuq::BiLaplaceGaussian</span></code> : a child of <code class="docutils literal notranslate"><span class="pre">pymuqModeling::PyGaussianBase</span></code> which wraps <code class="docutils literal notranslate"><span class="pre">hippylib::BiLaplacianPrior</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hippymuq::LAPosteriorGaussian</span></code> : a child of <code class="docutils literal notranslate"><span class="pre">pymuqModeling::PyGaussianBase</span></code> which wraps <code class="docutils literal notranslate"><span class="pre">hippylib::GaussianLRPosterior</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="iii-implementation">
+<h2>III. Implementation<a class="headerlink" href="#iii-implementation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="load-modules">
+<h3>1. Load modules<a class="headerlink" href="#load-modules" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+
+<span class="kn">import</span> <span class="nn">dolfin</span> <span class="kn">as</span> <span class="nn">dl</span>
+<span class="kn">from</span> <span class="nn">hippylib</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">pymuqModeling</span> <span class="kn">as</span> <span class="nn">mm</span>
+<span class="kn">import</span> <span class="nn">pymuqSamplingAlgorithms</span> <span class="kn">as</span> <span class="nn">ms</span>
+<span class="kn">import</span> <span class="nn">hippylib2muq</span> <span class="kn">as</span> <span class="nn">hm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;FFC&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;UFL&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
+<span class="n">dl</span><span class="o">.</span><span class="n">set_log_active</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-the-true-parameter">
+<h3>2. Generate the true parameter<a class="headerlink" href="#generate-the-true-parameter" title="Permalink to this headline">¶</a></h3>
+<p>This function generates a random field with a prescribed anisotropic covariance function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">true_model</span><span class="p">(</span><span class="n">prior</span><span class="p">):</span>
+    <span class="n">noise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+    <span class="n">prior</span><span class="o">.</span><span class="n">init_vector</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="s2">&quot;noise&quot;</span><span class="p">)</span>
+    <span class="n">parRandom</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+    <span class="n">mtrue</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+    <span class="n">prior</span><span class="o">.</span><span class="n">init_vector</span><span class="p">(</span><span class="n">mtrue</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">prior</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="n">mtrue</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mtrue</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-up-the-mesh-and-finite-element-spaces">
+<h3>3. Set up the mesh and finite element spaces<a class="headerlink" href="#set-up-the-mesh-and-finite-element-spaces" title="Permalink to this headline">¶</a></h3>
+<p>We compute a two dimensional mesh of a unit square with nx by ny elements.
+We define a P2 finite element space for the <em>state</em> and <em>adjoint</em> variable and P1 for the <em>parameter</em>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ndim</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">nx</span>   <span class="o">=</span> <span class="mi">32</span>
+<span class="n">ny</span>   <span class="o">=</span> <span class="mi">32</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">UnitSquareMesh</span><span class="p">(</span><span class="n">nx</span><span class="p">,</span> <span class="n">ny</span><span class="p">)</span>
+
+<span class="n">Vh2</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;Lagrange&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">Vh1</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">FunctionSpace</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s1">&#39;Lagrange&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">Vh</span>  <span class="o">=</span> <span class="p">[</span><span class="n">Vh2</span><span class="p">,</span> <span class="n">Vh1</span><span class="p">,</span> <span class="n">Vh2</span><span class="p">]</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Number of dofs: STATE={0}, PARAMETER={1}, ADJOINT={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">]</span><span class="o">.</span><span class="n">dim</span><span class="p">(),</span> <span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">]</span><span class="o">.</span><span class="n">dim</span><span class="p">(),</span> <span class="n">Vh</span><span class="p">[</span><span class="n">ADJOINT</span><span class="p">]</span><span class="o">.</span><span class="n">dim</span><span class="p">())</span> <span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nb">Number</span> <span class="k">of</span> <span class="n">dofs</span><span class="p">:</span> <span class="k">STATE</span><span class="o">=</span><span class="mi">4225</span><span class="p">,</span> <span class="k">PARAMETER</span><span class="o">=</span><span class="mi">1089</span><span class="p">,</span> <span class="n">ADJOINT</span><span class="o">=</span><span class="mi">4225</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-up-the-forward-problem">
+<h3>4. Set up the forward problem<a class="headerlink" href="#set-up-the-forward-problem" title="Permalink to this headline">¶</a></h3>
+<p>Let <span class="math notranslate nohighlight">\(\Omega\)</span> be the unit square in <span class="math notranslate nohighlight">\(\mathbb{R}^2\)</span>, and
+<span class="math notranslate nohighlight">\(\Gamma_D\)</span>, <span class="math notranslate nohighlight">\(\Gamma_N\)</span> be the Dirichlet and Neumann portitions of
+the boundary <span class="math notranslate nohighlight">\(\partial \Omega\)</span> (that is <span class="math notranslate nohighlight">\(\Gamma_D \cup \Gamma_N = \partial \Omega\)</span>,
+<span class="math notranslate nohighlight">\(\Gamma_D \cap \Gamma_N = \emptyset\)</span>). The forward problem reads</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\left\{
+\begin{array}{ll}
+\nabla \cdot \left( e^m \nabla u\right) = f &amp; \text{in } \Omega\\
+u = u_D &amp; \text{on } \Gamma_D, \\
+e^m \nabla u \cdot \boldsymbol{n} = 0 &amp; \text{on } \Gamma_N,
+\end{array}
+\right.\end{split}\]</div>
+<p>where <span class="math notranslate nohighlight">\(u \in \mathcal{V}\)</span> is the state variable, and <span class="math notranslate nohighlight">\(m \in \mathcal{M}\)</span> is the uncertain parameter. Here <span class="math notranslate nohighlight">\(\Gamma_D\)</span> corresponds to
+the top and bottom sides of the unit square, and <span class="math notranslate nohighlight">\(\Gamma_N\)</span> corresponds to the left and right sides.
+We also let <span class="math notranslate nohighlight">\(f = 0\)</span>, and <span class="math notranslate nohighlight">\(u_D = 1\)</span> on the top boundary and <span class="math notranslate nohighlight">\(u_D = 0\)</span> on the bottom boundary.</p>
+<p>To set up the forward problem we use the <code class="docutils literal notranslate"><span class="pre">PDEVariationalProblem</span></code> class, which requires the following inputs</p>
+<ul class="simple">
+<li><p>the finite element spaces for the state, parameter, and adjoint variables <code class="docutils literal notranslate"><span class="pre">Vh</span></code></p></li>
+<li><p>the pde in weak form <code class="docutils literal notranslate"><span class="pre">pde_varf</span></code></p></li>
+<li><p>the boundary conditions <code class="docutils literal notranslate"><span class="pre">bc</span></code> for the forward problem and <code class="docutils literal notranslate"><span class="pre">bc0</span></code> for the adjoint and incremental problems.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">PDEVariationalProblem</span></code> class offer the following functionality:</p>
+<ul class="simple">
+<li><p>solving the forward/adjoint and incremental problems</p></li>
+<li><p>evaluate first and second partial derivative of the forward problem with respect to the state, parameter, and adojnt variables.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">u_boundary</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">on_boundary</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">on_boundary</span> <span class="ow">and</span> <span class="p">(</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dl</span><span class="o">.</span><span class="n">DOLFIN_EPS</span> <span class="ow">or</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">dl</span><span class="o">.</span><span class="n">DOLFIN_EPS</span><span class="p">)</span>
+
+<span class="n">u_bdr</span>  <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Expression</span><span class="p">(</span><span class="s2">&quot;x[1]&quot;</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">u_bdr0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">bc</span>  <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">u_bdr</span><span class="p">,</span> <span class="n">u_boundary</span><span class="p">)</span>
+<span class="n">bc0</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">DirichletBC</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">u_bdr0</span><span class="p">,</span> <span class="n">u_boundary</span><span class="p">)</span>
+
+<span class="n">f</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Constant</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">pde_varf</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">m</span><span class="p">,</span><span class="n">p</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">dl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">m</span><span class="p">)</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">nabla_grad</span><span class="p">(</span><span class="n">u</span><span class="p">),</span> <span class="n">dl</span><span class="o">.</span><span class="n">nabla_grad</span><span class="p">(</span><span class="n">p</span><span class="p">))</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">dx</span> <span class="o">-</span> <span class="n">f</span><span class="o">*</span><span class="n">p</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">dx</span>
+
+<span class="n">pde</span> <span class="o">=</span> <span class="n">PDEVariationalProblem</span><span class="p">(</span><span class="n">Vh</span><span class="p">,</span> <span class="n">pde_varf</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">bc0</span><span class="p">,</span> <span class="n">is_fwd_linear</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="set-up-the-prior">
+<h3>5. Set up the prior<a class="headerlink" href="#set-up-the-prior" title="Permalink to this headline">¶</a></h3>
+<p>To obtain the synthetic true parameter <span class="math notranslate nohighlight">\(m_{\rm true}\)</span> we generate a realization from the prior distribution.</p>
+<p>Here we assume a Gaussian prior, <span class="math notranslate nohighlight">\(\mu_{\rm prior} \sim \mathcal{N}(0, \prcov)\)</span>
+with zero mean and covariance matrix <span class="math notranslate nohighlight">\(\prcov = \mathcal{A}^{-2}\)</span>,
+which is implemented by <code class="docutils literal notranslate"><span class="pre">BiLaplacianPrior</span></code> class that provides methods to apply the regularization (precision) operator to a vector or to apply the prior covariance operator.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">gamma</span> <span class="o">=</span> <span class="o">.</span><span class="mi">1</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+
+<span class="n">theta0</span> <span class="o">=</span> <span class="mf">2.</span>
+<span class="n">theta1</span> <span class="o">=</span> <span class="o">.</span><span class="mi">5</span>
+<span class="n">alpha</span>  <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">4</span>
+
+<span class="n">anis_diff</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">CompiledExpression</span><span class="p">(</span><span class="n">ExpressionModule</span><span class="o">.</span><span class="n">AnisTensor2D</span><span class="p">(),</span> <span class="n">degree</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">anis_diff</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">theta0</span><span class="p">,</span> <span class="n">theta1</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+
+<span class="n">prior</span> <span class="o">=</span> <span class="n">BiLaplacianPrior</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span> <span class="n">gamma</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">anis_diff</span><span class="p">,</span> <span class="n">robin_bc</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Prior regularization: (delta_x - gamma*Laplacian)^order: &quot;</span>
+      <span class="s2">&quot;delta={0}, gamma={1}, order={2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">mtrue</span> <span class="o">=</span> <span class="n">true_model</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+<span class="n">objs</span> <span class="o">=</span> <span class="p">[</span><span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span><span class="n">mtrue</span><span class="p">),</span> <span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span><span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="p">)]</span>
+<span class="n">mytitles</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;True parameter&quot;</span><span class="p">,</span> <span class="s2">&quot;Prior mean&quot;</span><span class="p">]</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">multi1_plot</span><span class="p">(</span><span class="n">objs</span><span class="p">,</span> <span class="n">mytitles</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="k">Prior</span> <span class="n">regularization</span><span class="p">:</span> <span class="p">(</span><span class="n">delta_x</span> <span class="o">-</span> <span class="n">gamma</span><span class="o">*</span><span class="n">Laplacian</span><span class="p">)</span><span class="o">^</span><span class="k">order</span><span class="p">:</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">.</span><span class="mi">5</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">,</span> <span class="k">order</span><span class="o">=</span><span class="mi">2</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/tutorial_11_1.png"><img alt="png" src="_images/tutorial_11_1.png" /></a>
+</div>
+<div class="section" id="set-up-the-likelihood-and-generate-synthetic-observations">
+<h3>6. Set up the likelihood and generate synthetic observations<a class="headerlink" href="#set-up-the-likelihood-and-generate-synthetic-observations" title="Permalink to this headline">¶</a></h3>
+<p>To setup the observation operator <span class="math notranslate nohighlight">\(\mathcal{B}: \mathcal{V} \mapsto \mathbb{R}^{n_t}\)</span>,
+we generate <span class="math notranslate nohighlight">\(n_t\)</span> (<code class="docutils literal notranslate"><span class="pre">ntargets</span></code> in the code below) random locations where to evaluate the value of the state.</p>
+<p>Under the assumption of Gaussian additive noise, the likelihood function <span class="math notranslate nohighlight">\(\pi_{\rm like}\)</span> has the form</p>
+<div class="math notranslate nohighlight">
+\[\pi_{\rm like}( \data \,| \, m ) \propto \exp\left( -\frac{1}{2}\|\mathcal{B}\,u(m) - \data \|^2_{\Gamma_{\rm noise}^{-1}}\right),\]</div>
+<p>where <span class="math notranslate nohighlight">\(u(m)\)</span> denotes the solution of the forward model at a given
+parameter <span class="math notranslate nohighlight">\(m\)</span>.</p>
+<p>The class <code class="docutils literal notranslate"><span class="pre">PointwiseStateObservation</span></code> implements the evaluation of the
+log-likelihood function and of its partial derivatives w.r.t. the state
+<span class="math notranslate nohighlight">\(u\)</span> and parameter <span class="math notranslate nohighlight">\(m\)</span>.</p>
+<p>To generate the synthetic observation, we first solve the forward problem using
+the true parameter <span class="math notranslate nohighlight">\(m_{\rm true}\)</span>. Synthetic observations are obtained by perturbing the state variable at the observation points with a random Gaussian noise.
+<code class="docutils literal notranslate"><span class="pre">rel_noise</span></code> is the signal to noise ratio.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ntargets</span>  <span class="o">=</span> <span class="mi">300</span>
+<span class="n">rel_noise</span> <span class="o">=</span> <span class="mf">0.005</span>
+<span class="n">targets</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.95</span><span class="p">,</span> <span class="p">[</span><span class="n">ntargets</span><span class="p">,</span> <span class="n">ndim</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Number of observation points: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ntargets</span><span class="p">))</span>
+
+<span class="n">misfit</span> <span class="o">=</span> <span class="n">PointwiseStateObservation</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">targets</span><span class="p">)</span>
+
+<span class="n">utrue</span> <span class="o">=</span> <span class="n">pde</span><span class="o">.</span><span class="n">generate_state</span><span class="p">()</span>
+<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">utrue</span><span class="p">,</span> <span class="n">mtrue</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+<span class="n">pde</span><span class="o">.</span><span class="n">solveFwd</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">misfit</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">mult</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">misfit</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+<span class="n">MAX</span> <span class="o">=</span> <span class="n">misfit</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="s2">&quot;linf&quot;</span><span class="p">)</span>
+<span class="n">noise_std_dev</span> <span class="o">=</span> <span class="n">rel_noise</span> <span class="o">*</span> <span class="n">MAX</span>
+<span class="n">parRandom</span><span class="o">.</span><span class="n">normal_perturb</span><span class="p">(</span><span class="n">noise_std_dev</span><span class="p">,</span> <span class="n">misfit</span><span class="o">.</span><span class="n">d</span><span class="p">)</span>
+<span class="n">misfit</span><span class="o">.</span><span class="n">noise_variance</span> <span class="o">=</span> <span class="n">noise_std_dev</span><span class="o">*</span><span class="n">noise_std_dev</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="n">pde</span><span class="p">,</span> <span class="n">prior</span><span class="p">,</span> <span class="n">misfit</span><span class="p">)</span>
+
+<span class="n">vmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="n">utrue</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">misfit</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span>
+<span class="n">vmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span> <span class="n">utrue</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">misfit</span><span class="o">.</span><span class="n">d</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">utrue</span><span class="p">),</span> <span class="n">mytitle</span><span class="o">=</span><span class="s2">&quot;True state&quot;</span><span class="p">,</span>
+        <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">121</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;jet&quot;</span><span class="p">)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">plot_pts</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">misfit</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">mytitle</span><span class="o">=</span><span class="s2">&quot;Observations&quot;</span><span class="p">,</span>
+            <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">122</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;jet&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="nb">Number</span> <span class="k">of</span> <span class="n">observation</span> <span class="n">points</span><span class="p">:</span> <span class="mi">300</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/tutorial_13_1.png"><img alt="png" src="_images/tutorial_13_1.png" /></a>
+</div>
+<div class="section" id="compute-the-map-point">
+<h3>7. Compute the MAP point<a class="headerlink" href="#compute-the-map-point" title="Permalink to this headline">¶</a></h3>
+<p>We used the globalized Newtown-CG method to compute the MAP point.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">m</span> <span class="o">=</span> <span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">solver</span> <span class="o">=</span> <span class="n">ReducedSpaceNewtonCG</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;rel_tolerance&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1e-6</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;abs_tolerance&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="mf">1e-12</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;max_iter&quot;</span><span class="p">]</span>       <span class="o">=</span> <span class="mi">25</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;GN_iter&quot;</span><span class="p">]</span>        <span class="o">=</span> <span class="mi">5</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;globalization&quot;</span><span class="p">]</span>  <span class="o">=</span> <span class="s2">&quot;LS&quot;</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;LS&quot;</span><span class="p">][</span><span class="s2">&quot;c_armijo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-4</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">([</span><span class="bp">None</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="bp">None</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="n">solver</span><span class="o">.</span><span class="n">converged</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Converged in &quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">.</span><span class="n">it</span><span class="p">,</span> <span class="s2">&quot; iterations.&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Not Converged&quot;</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span> <span class="s2">&quot;Termination reason:  &quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">.</span><span class="n">termination_reasons</span><span class="p">[</span><span class="n">solver</span><span class="o">.</span><span class="n">reason</span><span class="p">]</span> <span class="p">)</span>
+<span class="k">print</span><span class="p">(</span> <span class="s2">&quot;Final gradient norm: &quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">.</span><span class="n">final_grad_norm</span> <span class="p">)</span>
+<span class="k">print</span><span class="p">(</span> <span class="s2">&quot;Final cost:          &quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">.</span><span class="n">final_cost</span> <span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">mtrue_min</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span><span class="n">mtrue</span><span class="p">)</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">mtrue_max</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span><span class="n">mtrue</span><span class="p">)</span><span class="o">.</span><span class="n">vector</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span><span class="n">mtrue</span><span class="p">),</span> <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">131</span><span class="p">,</span> <span class="n">mytitle</span><span class="o">=</span><span class="s2">&quot;True parameter&quot;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">mtrue_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mtrue_max</span><span class="p">)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">]),</span> <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">132</span><span class="p">,</span><span class="n">mytitle</span><span class="o">=</span><span class="s2">&quot;MAP&quot;</span><span class="p">,</span>
+        <span class="n">vmin</span><span class="o">=</span><span class="n">mtrue_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">mtrue_max</span><span class="p">)</span>
+<span class="n">nb</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="n">STATE</span><span class="p">]),</span> <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">133</span><span class="p">,</span><span class="n">mytitle</span><span class="o">=</span><span class="s2">&quot;Recovered state&quot;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;jet&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">It</span>  <span class="n">cg_it</span>   <span class="n">cost</span>       <span class="n">misfit</span>     <span class="n">reg</span>        <span class="p">(</span><span class="k">g</span><span class="p">,</span><span class="n">dm</span><span class="p">)</span>     <span class="o">||</span><span class="k">g</span><span class="o">||</span><span class="n">L2</span>    <span class="n">alpha</span>      <span class="n">tolcg</span>
+  <span class="mi">1</span>     <span class="mi">2</span>   <span class="mi">6</span><span class="p">.</span><span class="mi">95</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">6</span><span class="p">.</span><span class="mi">94</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">30</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">7</span><span class="p">.</span><span class="mi">91</span><span class="n">e</span><span class="o">+</span><span class="mi">04</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">78</span><span class="n">e</span><span class="o">+</span><span class="mi">05</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">5</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">2</span>     <span class="mi">3</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">81</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">81</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">36</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>  <span class="o">-</span><span class="mi">8</span><span class="p">.</span><span class="mi">27</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">5</span><span class="p">.</span><span class="mi">53</span><span class="n">e</span><span class="o">+</span><span class="mi">04</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">5</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">3</span>     <span class="mi">4</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">25</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">21</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">58</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>  <span class="o">-</span><span class="mi">3</span><span class="p">.</span><span class="mi">70</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">53</span><span class="n">e</span><span class="o">+</span><span class="mi">04</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">77</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">4</span>    <span class="mi">10</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">39</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">30</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">32</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>  <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">30</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">45</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">30</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">5</span>     <span class="mi">1</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">71</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">61</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">32</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>  <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">37</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">41</span><span class="n">e</span><span class="o">+</span><span class="mi">04</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">81</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">6</span>    <span class="mi">13</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">73</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">56</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">63</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">96</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">73</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">45</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">7</span>    <span class="mi">16</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">44</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">20</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">40</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">5</span><span class="p">.</span><span class="mi">63</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">78</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+  <span class="mi">8</span>    <span class="mi">12</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">41</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">16</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">45</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">6</span><span class="p">.</span><span class="mi">92</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">14</span><span class="n">e</span><span class="o">+</span><span class="mi">03</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">8</span><span class="p">.</span><span class="mi">01</span><span class="n">e</span><span class="o">-</span><span class="mi">02</span>
+  <span class="mi">9</span>    <span class="mi">43</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">34</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">87</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">50</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">47</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">8</span><span class="p">.</span><span class="mi">67</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">6</span><span class="p">.</span><span class="mi">98</span><span class="n">e</span><span class="o">-</span><span class="mi">02</span>
+ <span class="mi">10</span>     <span class="mi">3</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">34</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">86</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">50</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">31</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">77</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">4</span><span class="p">.</span><span class="mi">60</span><span class="n">e</span><span class="o">-</span><span class="mi">02</span>
+ <span class="mi">11</span>    <span class="mi">42</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">34</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">85</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">51</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">8</span><span class="p">.</span><span class="mi">26</span><span class="n">e</span><span class="o">-</span><span class="mi">02</span>   <span class="mi">8</span><span class="p">.</span><span class="mi">90</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">2</span><span class="p">.</span><span class="mi">24</span><span class="n">e</span><span class="o">-</span><span class="mi">02</span>
+ <span class="mi">12</span>    <span class="mi">59</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">34</span><span class="n">e</span><span class="o">+</span><span class="mi">02</span>   <span class="mi">9</span><span class="p">.</span><span class="mi">85</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>   <span class="mi">3</span><span class="p">.</span><span class="mi">51</span><span class="n">e</span><span class="o">+</span><span class="mi">01</span>  <span class="o">-</span><span class="mi">7</span><span class="p">.</span><span class="mi">70</span><span class="n">e</span><span class="o">-</span><span class="mi">04</span>   <span class="mi">8</span><span class="p">.</span><span class="mi">86</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">1</span><span class="p">.</span><span class="mi">00</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>   <span class="mi">7</span><span class="p">.</span><span class="mi">06</span><span class="n">e</span><span class="o">-</span><span class="mi">03</span>
+
+<span class="n">Converged</span> <span class="k">in</span>  <span class="mi">12</span>  <span class="n">iterations</span><span class="p">.</span>
+<span class="n">Termination</span> <span class="n">reason</span><span class="p">:</span>   <span class="n">Norm</span> <span class="k">of</span> <span class="n">the</span> <span class="n">gradient</span> <span class="k">less</span> <span class="k">than</span> <span class="n">tolerance</span>
+<span class="k">Final</span> <span class="n">gradient</span> <span class="n">norm</span><span class="p">:</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">10248108935885225</span>
+<span class="k">Final</span> <span class="n">cost</span><span class="p">:</span>           <span class="mi">133</span><span class="p">.</span><span class="mi">60199155509807</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/tutorial_15_1.png"><img alt="png" src="_images/tutorial_15_1.png" /></a>
+</div>
+<div class="section" id="compute-the-low-rank-based-laplace-approximation-of-the-posterior-la-posterior">
+<h3>8. Compute the low-rank based Laplace approximation of the posterior (LA-posterior)<a class="headerlink" href="#compute-the-low-rank-based-laplace-approximation-of-the-posterior-la-posterior" title="Permalink to this headline">¶</a></h3>
+<p>We used the <em>double pass</em> algorithm to compute a low-rank decomposition of the Hessian Misfit.
+In particular, we solve</p>
+<div class="math notranslate nohighlight">
+\[\matHmis {\bf v}_i = \lambda_i \Gprior^{-1} {\bf v}_i.\]</div>
+<p>The effective rank of the Hessian misfit is the number of eigenvalues above the
+red line (<span class="math notranslate nohighlight">\(y=1\)</span>).
+The effective rank is independent of the mesh size.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">setPointForHessianEvaluations</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">gauss_newton_approx</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">Hmisfit</span> <span class="o">=</span> <span class="n">ReducedHessian</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">misfit_only</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="k">print</span><span class="p">(</span> <span class="s2">&quot;Single/Double Pass Algorithm. Requested eigenvectors: &quot;</span>\
+       <span class="s2">&quot;{0}; Oversampling {1}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">p</span><span class="p">)</span> <span class="p">)</span>
+
+<span class="n">Omega</span> <span class="o">=</span> <span class="n">MultiVector</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span> <span class="n">k</span><span class="o">+</span><span class="n">p</span><span class="p">)</span>
+<span class="n">parRandom</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">Omega</span><span class="p">)</span>
+<span class="n">lmbda</span><span class="p">,</span> <span class="n">V</span> <span class="o">=</span> <span class="n">doublePassG</span><span class="p">(</span><span class="n">Hmisfit</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">prior</span><span class="o">.</span><span class="n">Rsolver</span><span class="p">,</span> <span class="n">Omega</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+<span class="n">nu</span> <span class="o">=</span> <span class="n">GaussianLRPosterior</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">lmbda</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span>
+<span class="n">nu</span><span class="o">.</span><span class="n">mean</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">k</span><span class="p">),</span> <span class="n">lmbda</span><span class="p">,</span> <span class="s1">&#39;b*&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">k</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;-r&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;eigenvalue&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">Single</span><span class="o">/</span><span class="n">Double</span> <span class="n">Pass</span> <span class="n">Algorithm</span><span class="p">.</span> <span class="n">Requested</span> <span class="n">eigenvectors</span><span class="p">:</span> <span class="mi">100</span><span class="p">;</span> <span class="n">Oversampling</span> <span class="mi">20</span><span class="p">.</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/tutorial_17_1.png"><img alt="png" src="_images/tutorial_17_1.png" /></a>
+</div>
+<div class="section" id="drawing-samples-from-the-prior-distribution-and-laplace-approximation">
+<h3>9. Drawing samples from the prior distribution and Laplace Approximation<a class="headerlink" href="#drawing-samples-from-the-prior-distribution-and-laplace-approximation" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nsamples</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+<span class="n">nu</span><span class="o">.</span><span class="n">init_vector</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span><span class="s2">&quot;noise&quot;</span><span class="p">)</span>
+<span class="n">s_prior</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sample_prior&quot;</span><span class="p">)</span>
+<span class="n">s_post</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Function</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;sample_post&quot;</span><span class="p">)</span>
+
+<span class="n">post_pw_variance</span><span class="p">,</span> <span class="n">pr_pw_variance</span><span class="p">,</span> <span class="n">corr_pw_variance</span> <span class="o">=</span>\
+    <span class="n">nu</span><span class="o">.</span><span class="n">pointwise_variance</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s2">&quot;Exact&quot;</span><span class="p">)</span>
+
+<span class="n">pr_max</span>   <span class="o">=</span>  <span class="mf">2.5</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">pr_pw_variance</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span> <span class="o">+</span> <span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">pr_min</span>   <span class="o">=</span> <span class="o">-</span><span class="mf">2.5</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">pr_pw_variance</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span> <span class="o">+</span> <span class="n">prior</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">ps_max</span>   <span class="o">=</span>  <span class="mf">2.5</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">post_pw_variance</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span> <span class="o">+</span> <span class="n">nu</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+<span class="n">ps_min</span>   <span class="o">=</span> <span class="o">-</span><span class="mf">2.5</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span> <span class="n">post_pw_variance</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span> <span class="o">+</span> <span class="n">nu</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span><span class="mi">8</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nsamples</span><span class="p">):</span>
+    <span class="n">parRandom</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+    <span class="n">nu</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="n">s_prior</span><span class="o">.</span><span class="n">vector</span><span class="p">(),</span> <span class="n">s_post</span><span class="o">.</span><span class="n">vector</span><span class="p">())</span>
+
+    <span class="n">impr</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">s_prior</span><span class="p">,</span> <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">231</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">pr_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">pr_max</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">imps</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">s_post</span><span class="p">,</span> <span class="n">subplot_loc</span><span class="o">=</span><span class="mi">234</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">ps_min</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">ps_max</span><span class="p">,</span> <span class="n">colorbar</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">pos_impr</span> <span class="o">=</span> <span class="n">impr</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span><span class="o">.</span><span class="n">get_points</span><span class="p">()</span>
+<span class="n">pos_imps</span> <span class="o">=</span> <span class="n">imps</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span><span class="o">.</span><span class="n">get_points</span><span class="p">()</span>
+<span class="n">height_im</span> <span class="o">=</span> <span class="n">impr</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">cbaxes_pr</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="n">pos_impr</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">pos_impr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">height_im</span><span class="p">])</span>
+<span class="n">cbaxes_ps</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_axes</span><span class="p">([</span><span class="n">pos_imps</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">pos_imps</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">height_im</span><span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">impr</span><span class="p">,</span> <span class="n">cbaxes_pr</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">imps</span><span class="p">,</span> <span class="n">cbaxes_ps</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">pos_impr</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.125</span><span class="p">,</span> <span class="s1">&#39;Prior samples&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">pos_imps</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.1</span><span class="p">,</span> <span class="s1">&#39;Laplace samples&#39;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/tutorial_19_0.png"><img alt="png" src="_images/tutorial_19_0.png" /></a>
+</div>
+<div class="section" id="define-a-quantify-of-interest">
+<h3>10 Define a quantify of interest<a class="headerlink" href="#define-a-quantify-of-interest" title="Permalink to this headline">¶</a></h3>
+<p>As a quantity of interest, we consider the log of the flux through the bottom boundary:</p>
+<div class="math notranslate nohighlight">
+\[q(m) = \ln \left\{ \int_{\Gamma_b} e^m \nabla u \cdot \mathbf{n} \, ds \right\},\]</div>
+<p>where the state variable <span class="math notranslate nohighlight">\(u\)</span> denotes the pressure, and <span class="math notranslate nohighlight">\(\mathbf{n}\)</span> is
+the unit normal vector to <span class="math notranslate nohighlight">\(\Gamma_b\)</span> (the bottom boundary of the domain).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">FluxQOI</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Vh</span><span class="p">,</span> <span class="n">dsGamma</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Vh</span> <span class="o">=</span> <span class="n">Vh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dsGamma</span> <span class="o">=</span> <span class="n">dsGamma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Constant</span><span class="p">((</span><span class="mf">0.</span><span class="p">,</span><span class="mf">1.</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">L</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">form</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dl</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">])</span><span class="o">*</span><span class="n">dl</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span> <span class="n">dl</span><span class="o">.</span><span class="n">grad</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">STATE</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dsGamma</span>
+
+    <span class="k">def</span> <span class="nf">eval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">vector2Function</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">STATE</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vh</span><span class="p">[</span><span class="n">STATE</span><span class="p">])</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">vector2Function</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span> <span class="n">dl</span><span class="o">.</span><span class="n">assemble</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">form</span><span class="p">([</span><span class="n">u</span><span class="p">,</span><span class="n">m</span><span class="p">]))</span> <span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">GammaBottom</span><span class="p">(</span><span class="n">dl</span><span class="o">.</span><span class="n">SubDomain</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">inside</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">on_boundary</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">dl</span><span class="o">.</span><span class="n">DOLFIN_EPS</span> <span class="p">)</span>
+
+<span class="n">GC</span> <span class="o">=</span> <span class="n">GammaBottom</span><span class="p">()</span>
+<span class="n">marker</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">MeshFunction</span><span class="p">(</span><span class="s2">&quot;size_t&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">marker</span><span class="o">.</span><span class="n">set_all</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">GC</span><span class="o">.</span><span class="n">mark</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">dss</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Measure</span><span class="p">(</span><span class="s2">&quot;ds&quot;</span><span class="p">,</span> <span class="n">subdomain_data</span><span class="o">=</span><span class="n">marker</span><span class="p">)</span>
+<span class="n">qoi</span> <span class="o">=</span> <span class="n">FluxQOI</span><span class="p">(</span><span class="n">Vh</span><span class="p">,</span><span class="n">dss</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exploring-the-posterior-using-mcmc-methods">
+<h3>11. Exploring the posterior using MCMC methods<a class="headerlink" href="#exploring-the-posterior-using-mcmc-methods" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="define-the-parameter-to-observable-map-in-muq">
+<h4>Define the parameter-to-observable map in MUQ<a class="headerlink" href="#define-the-parameter-to-observable-map-in-muq" title="Permalink to this headline">¶</a></h4>
+<p>Overall, we want a mapping from parameter coefficients vector to the log target,
+<span class="math notranslate nohighlight">\(J(m) = - \tfrac{1}{2} \parallel {\bf f}(m) - \data \parallel^{2}_{{\bf \Gamma}_{\text{noise}}^{-1}} \! - \tfrac{1}{2}\parallel m - m_{\rm prior} \parallel^{2}_{\prcov^{-1}}\)</span>.
+To do so, we generate a MUQ WorkGraph of connected ModPieces.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># a place holder ModPiece for the parameters</span>
+<span class="n">idparam</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">IdentityOperator</span><span class="p">(</span><span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">]</span><span class="o">.</span><span class="n">dim</span><span class="p">())</span>
+
+<span class="c1"># log Gaussian Prior ModPiece</span>
+<span class="n">gaussprior</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">BiLaplaceGaussian</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+<span class="n">log_gaussprior</span> <span class="o">=</span> <span class="n">gaussprior</span><span class="o">.</span><span class="n">AsDensity</span><span class="p">()</span>
+
+<span class="c1"># parameter to log likelihood Modpiece</span>
+<span class="n">param2loglikelihood</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">Param2LogLikelihood</span><span class="p">(</span><span class="n">pde</span><span class="p">,</span> <span class="n">misfit</span><span class="p">)</span>
+
+<span class="c1"># log target ModPiece</span>
+<span class="n">log_target</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">DensityProduct</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">workgraph</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">WorkGraph</span><span class="p">()</span>
+
+<span class="c1"># Identity operator for the parameters</span>
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddNode</span><span class="p">(</span><span class="n">idparam</span><span class="p">,</span> <span class="s1">&#39;Identity&#39;</span><span class="p">)</span>
+
+<span class="c1"># Prior model</span>
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddNode</span><span class="p">(</span><span class="n">log_gaussprior</span><span class="p">,</span> <span class="s2">&quot;Log_prior&quot;</span><span class="p">)</span>
+
+<span class="c1"># Likelihood model</span>
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddNode</span><span class="p">(</span><span class="n">param2loglikelihood</span><span class="p">,</span> <span class="s2">&quot;Log_likelihood&quot;</span><span class="p">)</span>
+
+<span class="c1"># Posterior</span>
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddNode</span><span class="p">(</span><span class="n">log_target</span><span class="p">,</span> <span class="s2">&quot;Log_target&quot;</span><span class="p">)</span>
+
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddEdge</span><span class="p">(</span><span class="s2">&quot;Identity&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Log_prior&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddEdge</span><span class="p">(</span><span class="s2">&quot;Log_prior&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Log_target&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddEdge</span><span class="p">(</span><span class="s2">&quot;Identity&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Log_likelihood&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">workgraph</span><span class="o">.</span><span class="n">AddEdge</span><span class="p">(</span><span class="s2">&quot;Log_likelihood&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Log_target&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">workgraph</span><span class="o">.</span><span class="n">Visualize</span><span class="p">(</span><span class="s2">&quot;workgraph.png&quot;</span><span class="p">)</span>
+
+<span class="c1"># Construct the problem</span>
+<span class="n">problem</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">SamplingProblem</span><span class="p">(</span><span class="n">workgraph</span><span class="o">.</span><span class="n">CreateModPiece</span><span class="p">(</span><span class="s2">&quot;Log_target&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/workgraph.png"><img alt="png" src="_images/workgraph.png" /></a>
+</div>
+<div class="section" id="set-up-mcmc-methods">
+<h4>Set up MCMC methods<a class="headerlink" href="#set-up-mcmc-methods" title="Permalink to this headline">¶</a></h4>
+<p>We run five different MCMC methods:</p>
+<ul class="simple">
+<li><p><strong>pCN</strong>: Metropolis-Hastings kernel + pCN proposal with <span class="math notranslate nohighlight">\(m_{\rm prop} = m_{\rm prior} = 0\)</span> and <span class="math notranslate nohighlight">\(\mathcal{C}_{\rm prop} = \prcov\)</span></p></li>
+<li><p><strong>MALA</strong>: Metropolis-Hastings kernel + MALA proposal with <span class="math notranslate nohighlight">\(\mathcal{A}_{\rm prop} = \prcov\)</span></p></li>
+<li><p><strong>h-pCN</strong>: Metropolis-Hastings kernel + pCN proposal with <span class="math notranslate nohighlight">\(m_{\rm prop} = \map\)</span> and <span class="math notranslate nohighlight">\(\mathcal{C}_{\rm prop} = \postcov\)</span></p></li>
+<li><p><strong>h-MALA</strong>: Metropolis-Hastings kernel + MALA proposal with <span class="math notranslate nohighlight">\(\mathcal{A}_{\rm prop} = \postcov\)</span></p></li>
+<li><p><strong>DR (h-pCN/h-MALA)</strong>: Delayed rejection kernel + two stage proposals (h-pCN proposal as first stage and h-MALA proposal as second stage)</p></li>
+</ul>
+<p>where <span class="math notranslate nohighlight">\(\postcov\)</span> is the covariance of the LA-posterior.</p>
+<p>We set the value of parameters (<span class="math notranslate nohighlight">\(\beta\)</span> for pCN and <span class="math notranslate nohighlight">\(\tau\)</span> for MALA) such that the acceptance rates are about 20-35% and 50-60% for pCN and MALA, respectively.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Construct options for MH kernel and MCMC sampler</span>
+<span class="n">options</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">options</span><span class="p">[</span><span class="s1">&#39;NumSamples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">22000</span>  <span class="c1"># Number of MCMC steps to take</span>
+<span class="n">options</span><span class="p">[</span><span class="s1">&#39;BurnIn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2000</span>  <span class="c1"># Number of steps to throw away as burn in</span>
+<span class="n">options</span><span class="p">[</span><span class="s1">&#39;PrintLevel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># in {0,1,2,3} Verbosity of the output</span>
+
+<span class="n">method_list</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="c1"># pCN</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;Beta&#39;</span><span class="p">:</span><span class="mf">0.005</span><span class="p">}</span> <span class="p">)</span>
+<span class="n">gauss_pcn</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">BiLaplaceGaussian</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+<span class="n">prop</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">CrankNicolsonProposal</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">gauss_pcn</span><span class="p">)</span>
+<span class="n">kern</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MHKernel</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">SingleChainMCMC</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="p">[</span><span class="n">kern</span><span class="p">])</span>
+
+<span class="n">method_list</span><span class="p">[</span><span class="s1">&#39;pCN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Options&#39;</span><span class="p">:</span> <span class="n">opts</span><span class="p">,</span> <span class="s1">&#39;Sampler&#39;</span><span class="p">:</span> <span class="n">sampler</span><span class="p">}</span>
+
+<span class="c1"># MALA</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;StepSize&#39;</span><span class="p">:</span><span class="mf">0.000006</span><span class="p">}</span> <span class="p">)</span>
+<span class="n">gauss_mala</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">BiLaplaceGaussian</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">use_zero_mean</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">prop</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MALAProposal</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">gauss_mala</span><span class="p">)</span>
+<span class="n">kern</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MHKernel</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">SingleChainMCMC</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="p">[</span><span class="n">kern</span><span class="p">])</span>
+
+<span class="n">method_list</span><span class="p">[</span><span class="s1">&#39;MALA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Options&#39;</span><span class="p">:</span> <span class="n">opts</span><span class="p">,</span> <span class="s1">&#39;Sampler&#39;</span><span class="p">:</span> <span class="n">sampler</span><span class="p">}</span>
+
+<span class="c1"># h-pCN</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;Beta&#39;</span><span class="p">:</span><span class="mf">0.55</span><span class="p">}</span> <span class="p">)</span>
+<span class="n">gauss_hpcn</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">LAPosteriorGaussian</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+<span class="n">prop</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">CrankNicolsonProposal</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">gauss_hpcn</span><span class="p">)</span>
+<span class="n">kern</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MHKernel</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">SingleChainMCMC</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="p">[</span><span class="n">kern</span><span class="p">])</span>
+
+<span class="n">method_list</span><span class="p">[</span><span class="s1">&#39;h-pCN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Options&#39;</span><span class="p">:</span> <span class="n">opts</span><span class="p">,</span> <span class="s1">&#39;Sampler&#39;</span><span class="p">:</span> <span class="n">sampler</span><span class="p">}</span>
+
+<span class="c1"># h-MALA</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;StepSize&#39;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">}</span> <span class="p">)</span>
+<span class="n">gauss_hmala</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">LAPosteriorGaussian</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">use_zero_mean</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">prop</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MALAProposal</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">gauss_hmala</span><span class="p">)</span>
+<span class="n">kern</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MHKernel</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">SingleChainMCMC</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="p">[</span><span class="n">kern</span><span class="p">])</span>
+
+<span class="n">method_list</span><span class="p">[</span><span class="s1">&#39;h-MALA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Options&#39;</span><span class="p">:</span> <span class="n">opts</span><span class="p">,</span> <span class="s1">&#39;Sampler&#39;</span><span class="p">:</span> <span class="n">sampler</span><span class="p">}</span>
+
+<span class="c1"># DR (h-pCN/h-MALA)</span>
+<span class="n">opts</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">opts</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="p">{</span><span class="s1">&#39;Beta&#39;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;StepSize&#39;</span><span class="p">:</span><span class="mf">0.1</span><span class="p">}</span> <span class="p">)</span>
+<span class="n">gauss_dr1</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">LAPosteriorGaussian</span><span class="p">(</span><span class="n">nu</span><span class="p">)</span>
+<span class="n">gauss_dr2</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">LAPosteriorGaussian</span><span class="p">(</span><span class="n">nu</span><span class="p">,</span> <span class="n">use_zero_mean</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">prop1</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">CrankNicolsonProposal</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">gauss_dr1</span><span class="p">)</span>
+<span class="n">prop2</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">MALAProposal</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="n">gauss_dr2</span><span class="p">)</span>
+<span class="n">kern</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">DRKernel</span><span class="p">(</span> <span class="n">opts</span><span class="p">,</span> <span class="n">problem</span><span class="p">,</span> <span class="p">[</span><span class="n">prop1</span><span class="p">,</span> <span class="n">prop2</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span> <span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">ms</span><span class="o">.</span><span class="n">SingleChainMCMC</span><span class="p">(</span><span class="n">opts</span><span class="p">,</span> <span class="p">[</span><span class="n">kern</span><span class="p">])</span>
+
+<span class="n">method_list</span><span class="p">[</span><span class="s1">&#39;DR (h-pCN/h-MALA)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Options&#39;</span><span class="p">:</span> <span class="n">opts</span><span class="p">,</span> <span class="s1">&#39;Sampler&#39;</span><span class="p">:</span> <span class="n">sampler</span><span class="p">}</span>
+
+<span class="n">hm</span><span class="o">.</span><span class="n">print_methodDict</span><span class="p">(</span><span class="n">method_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="k">Method</span>             <span class="n">Kernel</span>     <span class="n">Proposal</span>   <span class="n">Beta</span> <span class="k">or</span> <span class="n">Step</span><span class="o">-</span><span class="k">size</span>
+<span class="c1">----------------------------------------------------------</span>
+<span class="n">pCN</span>                <span class="n">mh</span>         <span class="n">pcn</span>           <span class="mi">5</span><span class="p">.</span><span class="mi">0</span><span class="n">e</span><span class="o">-</span><span class="mi">03</span>
+<span class="n">MALA</span>               <span class="n">mh</span>         <span class="n">mala</span>          <span class="mi">6</span><span class="p">.</span><span class="mi">0</span><span class="n">e</span><span class="o">-</span><span class="mi">06</span>
+<span class="n">h</span><span class="o">-</span><span class="n">pCN</span>              <span class="n">mh</span>         <span class="n">pcn</span>           <span class="mi">5</span><span class="p">.</span><span class="mi">5</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+<span class="n">h</span><span class="o">-</span><span class="n">MALA</span>             <span class="n">mh</span>         <span class="n">mala</span>          <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+<span class="n">DR</span> <span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="n">pCN</span><span class="o">/</span><span class="n">h</span><span class="o">-</span><span class="n">MALA</span><span class="p">)</span>  <span class="n">dr</span>         <span class="n">pcn</span>           <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">e</span><span class="o">+</span><span class="mi">00</span>
+                              <span class="n">mala</span>          <span class="mi">1</span><span class="p">.</span><span class="mi">0</span><span class="n">e</span><span class="o">-</span><span class="mi">01</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-mcmc-methods">
+<h4>Run MCMC methods<a class="headerlink" href="#run-mcmc-methods" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Generate starting sample vector for all the MCMC simulations</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">Vector</span><span class="p">()</span>
+<span class="n">nu</span><span class="o">.</span><span class="n">init_vector</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="s2">&quot;noise&quot;</span><span class="p">)</span>
+<span class="n">parRandom</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">noise</span><span class="p">)</span>
+<span class="n">pr_s</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_vector</span><span class="p">(</span><span class="n">PARAMETER</span><span class="p">)</span>
+<span class="n">post_s</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate_vector</span><span class="p">(</span><span class="n">PARAMETER</span><span class="p">)</span>
+<span class="n">nu</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">noise</span><span class="p">,</span> <span class="n">pr_s</span><span class="p">,</span> <span class="n">post_s</span><span class="p">,</span> <span class="n">add_mean</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">dfVector2npArray</span><span class="p">(</span><span class="n">post_s</span><span class="p">)</span>
+
+<span class="c1"># Implement MCMC simulations</span>
+<span class="k">for</span> <span class="n">mName</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">method_list</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="c1"># Run the MCMC sampler</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">method</span><span class="p">[</span><span class="s1">&#39;Sampler&#39;</span><span class="p">]</span>
+    <span class="n">samps</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">Run</span><span class="p">([</span><span class="n">x0</span><span class="p">])</span>
+
+    <span class="c1"># Save the computed results</span>
+    <span class="n">method</span><span class="p">[</span><span class="s1">&#39;Samples&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">samps</span>
+    <span class="n">method</span><span class="p">[</span><span class="s1">&#39;ElapsedTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">TotalTime</span><span class="p">()</span>
+
+    <span class="n">kernel</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">Kernels</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;AcceptanceRate&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+        <span class="n">method</span><span class="p">[</span><span class="s1">&#39;AcceptRate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">AcceptanceRate</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="s2">&quot;AcceptanceRates&quot;</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">kernel</span><span class="p">):</span>
+        <span class="n">method</span><span class="p">[</span><span class="s1">&#39;AcceptRate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kernel</span><span class="o">.</span><span class="n">AcceptanceRates</span><span class="p">()</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Drawn &quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;NumSamples&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;BurnIn&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s2">&quot;MCMC samples using&quot;</span><span class="p">,</span> <span class="n">mName</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Parameter space dimension:&quot;</span><span class="p">,</span> <span class="n">Vh</span><span class="p">[</span><span class="n">PARAMETER</span><span class="p">]</span><span class="o">.</span><span class="n">dim</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;Number of samples:&quot;</span><span class="p">,</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;NumSamples&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">options</span><span class="p">[</span><span class="s1">&#39;BurnIn&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Keep track of the quantity of interest</span>
+<span class="n">qoi_dataset</span> <span class="o">=</span> <span class="n">hm</span><span class="o">.</span><span class="n">track_qoiTracer</span><span class="p">(</span><span class="n">pde</span><span class="p">,</span> <span class="n">qoi</span><span class="p">,</span> <span class="n">method_list</span><span class="p">)</span>
+<span class="n">hm</span><span class="o">.</span><span class="n">print_qoiResult</span><span class="p">(</span><span class="n">method_list</span><span class="p">,</span> <span class="n">qoi_dataset</span><span class="p">)</span>
+<span class="n">hm</span><span class="o">.</span><span class="n">plot_qoiResult</span><span class="p">(</span><span class="n">method_list</span><span class="p">,</span> <span class="n">qoi_dataset</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">Drawn</span>  <span class="mi">20001</span> <span class="n">MCMC</span> <span class="n">samples</span> <span class="k">using</span> <span class="n">pCN</span>
+<span class="n">Drawn</span>  <span class="mi">20001</span> <span class="n">MCMC</span> <span class="n">samples</span> <span class="k">using</span> <span class="n">MALA</span>
+<span class="n">Drawn</span>  <span class="mi">20001</span> <span class="n">MCMC</span> <span class="n">samples</span> <span class="k">using</span> <span class="n">h</span><span class="o">-</span><span class="n">pCN</span>
+<span class="n">Drawn</span>  <span class="mi">20001</span> <span class="n">MCMC</span> <span class="n">samples</span> <span class="k">using</span> <span class="n">h</span><span class="o">-</span><span class="n">MALA</span>
+<span class="n">Drawn</span>  <span class="mi">20001</span> <span class="n">MCMC</span> <span class="n">samples</span> <span class="k">using</span> <span class="n">DR</span> <span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="n">pCN</span><span class="o">/</span><span class="n">h</span><span class="o">-</span><span class="n">MALA</span><span class="p">)</span>
+
+
+<span class="k">Parameter</span> <span class="k">space</span> <span class="n">dimension</span><span class="p">:</span> <span class="mi">1089</span>
+<span class="nb">Number</span> <span class="k">of</span> <span class="n">samples</span><span class="p">:</span> <span class="mi">20001</span>
+
+<span class="o">===================================================</span>
+ <span class="n">Summary</span> <span class="k">of</span> <span class="n">convergence</span> <span class="k">diagnostics</span> <span class="p">(</span><span class="n">single</span> <span class="k">chain</span><span class="p">)</span>
+<span class="o">===================================================</span>
+
+<span class="k">Method</span>             <span class="n">E</span><span class="p">[</span><span class="n">QOI</span><span class="p">]</span>   <span class="n">AR</span>      <span class="n">ESS</span>  <span class="n">ES</span><span class="o">/</span><span class="k">min</span>
+<span class="c1">-----------------------------------------------</span>
+<span class="n">pCN</span>                <span class="o">-</span><span class="mi">1</span><span class="p">.</span><span class="mi">006</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">252</span>    <span class="mi">8</span><span class="p">.</span><span class="mi">8</span>    <span class="mi">0</span><span class="p">.</span><span class="mi">6</span>
+<span class="n">MALA</span>               <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">844</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">550</span>    <span class="mi">5</span><span class="p">.</span><span class="mi">7</span>    <span class="mi">0</span><span class="p">.</span><span class="mi">1</span>
+<span class="n">h</span><span class="o">-</span><span class="n">pCN</span>               <span class="mi">0</span><span class="p">.</span><span class="mi">491</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">258</span>  <span class="mi">191</span><span class="p">.</span><span class="mi">1</span>   <span class="mi">12</span><span class="p">.</span><span class="mi">8</span>
+<span class="n">h</span><span class="o">-</span><span class="n">MALA</span>              <span class="mi">0</span><span class="p">.</span><span class="mi">553</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">543</span>  <span class="mi">305</span><span class="p">.</span><span class="mi">3</span>    <span class="mi">5</span><span class="p">.</span><span class="mi">4</span>
+<span class="n">DR</span> <span class="p">(</span><span class="n">h</span><span class="o">-</span><span class="n">pCN</span><span class="o">/</span><span class="n">h</span><span class="o">-</span><span class="n">MALA</span><span class="p">)</span>   <span class="mi">0</span><span class="p">.</span><span class="mi">505</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">582</span>  <span class="mi">550</span><span class="p">.</span><span class="mi">8</span>    <span class="mi">7</span><span class="p">.</span><span class="mi">8</span>
+</pre></div>
+</div>
+<a class="reference external image-reference" href="tutorial_files/tutorial_28_1.png"><img alt="png" src="_images/tutorial_28_1.png" /></a>
+<p>Copyright &amp;copy; 2020, Army Corps of Engineers, Massachusetts Institute of Technology, University of California–Merced, The University of Texas at Austin, Washington University in St. Louis<span class="raw-html-m2r"><br></span>
+All Rights reserved.<span class="raw-html-m2r"><br></span></p>
+<p><em>Acknowledgment</em>: This work is supported by the National Science Foundation under grants ACI-1550487, ACI-1550547, and ACI-1550593.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

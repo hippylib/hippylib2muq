@@ -6,13 +6,19 @@
 Welcome to hippylib2muq's documentation!
 ========================================
 
+.. include:: readme.rst
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :titlesonly:
+   :maxdepth: 1
+
+   installation
+   contributing
+   Example Notebook <tutorial>
+   API Reference <modules>
 
 
-
-Indices and tables
+Indices and search
 ==================
 
 * :ref:`genindex`

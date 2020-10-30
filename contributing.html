@@ -1,0 +1,408 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>How to Contribute &mdash; hippylib2muq 0.1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Bayesian quantification of parameter uncertainty" href="tutorial.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> hippylib2muq
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">How to Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Example Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">hippylib2muq</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>How to Contribute</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/contributing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="how-to-contribute">
+<h1>How to Contribute<a class="headerlink" href="#how-to-contribute" title="Permalink to this headline">¶</a></h1>
+<p>We welcome contributions at all levels: bugfixes, code improvements,
+simplifications, new capabilities, improved documentation, new
+examples/tutorials, etc.</p>
+<p>Use a pull request (PR) toward the hippylib2muq:master branch to propose your
+contribution. If you are planning significant code changes, or have any
+questions, you should also open an
+<a class="reference external" href="https://github.com/hippylib/hippylib2muq/issues">issue</a> before issuing a PR.</p>
+<p><code class="docutils literal notranslate"><span class="pre">hIPPYlib-MUQ</span></code> is an interface program between <code class="docutils literal notranslate"><span class="pre">hIPPYlib</span></code> and <code class="docutils literal notranslate"><span class="pre">MUQ</span></code>;
+contributions should be related to the interface; for contributing to each
+program, please refer to their own repositories
+(<a class="reference external" href="https://hippylib.github.io">hIPPYlib</a> and <a class="reference external" href="http://muq.mit.edu/">MUQ</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">hIPPYlib-MUQ</span></code> is maintained by <a class="reference external" href="https://github.com/hippylib">https://github.com/hippylib</a>, the main developer
+hub for the hIPPYlib project.</p>
+<p>All new contributions must be made under the terms of the <a class="reference external" href="./LICENSE">GPL3</a>
+license.</p>
+<p><em>By submitting a pull request, you are affirming the</em> <a class="reference external" href="#developers-certificate-of-origin-11">Developer’s Certificate of
+Origin</a> <em>at the end of this file.</em></p>
+<div class="section" id="quick-summary">
+<h2>Quick Summary<a class="headerlink" href="#quick-summary" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Please create development branches off <code class="docutils literal notranslate"><span class="pre">hippylib2muq:master</span></code>.</p></li>
+<li><p>Please follow the <a class="reference external" href="#developer-guidelines">developer guidelines</a>, in particular
+with regards to documentation and code styling.</p></li>
+<li><p>Pull requests should be issued toward <code class="docutils literal notranslate"><span class="pre">hippylib2muq:master</span></code>. Make sure
+to check the items off the <a class="reference external" href="#pull-request-checklist">Pull Request Checklist</a>.</p></li>
+<li><p>After approval, hIPPYlib-MUQ developers merge the PR in <code class="docutils literal notranslate"><span class="pre">hippylib2muq:master</span></code>.</p></li>
+<li><p>If you are also interested in the whole hIPPYlib project, we encourage you to
+join the hIPPYlib organization (see <a class="reference external" href="https://github.com/hippylib/hippylib/blob/master/CONTRIBUTING.md#hippylib-organization">here</a>); if you are
+interested in the whole MUQ project, please take a look at <a class="reference external" href="http://muq.mit.edu">MUQ</a>.</p></li>
+<li><p>Don’t hesitate to <a class="reference external" href="#contact-information">contact us</a> if you have any questions.</p></li>
+</ul>
+</div>
+<div class="section" id="new-feature-development">
+<h2>New Feature Development<a class="headerlink" href="#new-feature-development" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>A new feature should be important enough that at least one person, the
+proposer, is willing to work on it and be its champion.</p></li>
+<li><p>The proposer creates a branch for the new feature (with suffix <code class="docutils literal notranslate"><span class="pre">-dev</span></code>), off
+the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch, or another existing feature branch, for example:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">Clone</span> <span class="n">assuming</span> <span class="n">you</span> <span class="n">have</span> <span class="n">setup</span> <span class="n">your</span> <span class="n">ssh</span> <span class="n">keys</span> <span class="k">on</span> <span class="n">GitHub</span><span class="p">:</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="o">@</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="p">:</span><span class="n">hippylib</span><span class="o">/</span><span class="n">hippylib2muq</span><span class="p">.</span><span class="n">git</span>
+
+<span class="o">#</span> <span class="n">Alternatively</span><span class="p">,</span> <span class="n">clone</span> <span class="k">using</span> <span class="n">the</span> <span class="ss">&quot;https&quot;</span> <span class="n">protocol</span><span class="p">:</span>
+<span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">hippylib</span><span class="o">/</span><span class="n">hippylib2muq</span><span class="p">.</span><span class="n">git</span>
+
+<span class="o">#</span> <span class="k">Create</span> <span class="n">a</span> <span class="k">new</span> <span class="n">feature</span> <span class="n">branch</span> <span class="n">starting</span> <span class="k">from</span> <span class="ss">&quot;master&quot;</span><span class="p">:</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+<span class="n">git</span> <span class="n">pull</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="n">feature</span><span class="o">-</span><span class="n">dev</span>
+
+<span class="o">#</span> <span class="k">Work</span> <span class="k">on</span> <span class="ss">&quot;feature-dev&quot;</span><span class="p">,</span> <span class="k">add</span> <span class="k">local</span> <span class="n">commits</span>
+<span class="o">#</span> <span class="p">...</span>
+
+<span class="o">#</span> <span class="p">(</span><span class="n">One</span> <span class="n">time</span> <span class="k">only</span><span class="p">)</span> <span class="n">push</span> <span class="n">the</span> <span class="n">branch</span> <span class="k">to</span> <span class="n">github</span> <span class="k">and</span> <span class="n">setup</span> <span class="n">your</span> <span class="k">local</span>
+<span class="o">#</span> <span class="n">branch</span> <span class="k">to</span> <span class="n">track</span> <span class="n">the</span> <span class="n">github</span> <span class="n">branch</span> <span class="p">(</span><span class="k">for</span> <span class="ss">&quot;git pull&quot;</span><span class="p">):</span>
+<span class="n">git</span> <span class="n">push</span> <span class="o">-</span><span class="n">u</span> <span class="n">origin</span> <span class="n">feature</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>We prefer that you create the new feature branch as a fork.</strong>
+To allow hIPPYlib-MUQ developers to edit the PR, please <a class="reference external" href="https://help.github.com/articles/allowing-changes-to-a-pull-request-branch-created-from-a-fork/">enable upstream edits</a>.</p></li>
+<li><p>The typical feature branch name is <code class="docutils literal notranslate"><span class="pre">new-feature-dev</span></code>, e.g. <code class="docutils literal notranslate"><span class="pre">optimal_exp_design-dev</span></code>. While
+not frequent in <code class="docutils literal notranslate"><span class="pre">hippylib2muq</span></code>, other suffixes are possible, e.g. <code class="docutils literal notranslate"><span class="pre">-fix</span></code>, <code class="docutils literal notranslate"><span class="pre">-doc</span></code>, etc.</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>Developer Guidelines<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><em>Keep the code lean and as simple as possible</em></p>
+<ul>
+<li><p>Well-designed simple code is frequently more general and powerful.</p></li>
+<li><p>Lean code base is easier to understand by new collaborators.</p></li>
+<li><p>New features should be added only if they are necessary or generally useful.</p></li>
+<li><p>Code must be compatible with Python 3.</p></li>
+<li><p>When adding new features add an example in the <code class="docutils literal notranslate"><span class="pre">example</span></code> or <code class="docutils literal notranslate"><span class="pre">application</span></code> folder and/or a
+new notebook in the <code class="docutils literal notranslate"><span class="pre">tutorial</span></code> folder.</p></li>
+<li><p>The preferred way to export solutions for visualization in paraview is using <code class="docutils literal notranslate"><span class="pre">dl.XDMFFile</span></code></p></li>
+<li><p>The preferred way to save samples data is using <a class="reference external" href="https://github.com/hippylib/hippylib2muq.git">h5py</a>.</p></li>
+</ul>
+</li>
+<li><p><em>Keep the code general and reasonably efficient</em></p>
+<ul>
+<li><p>Main goal is fast prototyping for research.</p></li>
+<li><p>When in doubt, generality wins over efficiency.</p></li>
+<li><p>Respect the needs of different users (current and/or future).</p></li>
+</ul>
+</li>
+<li><p><em>Keep things separate and logically organized</em></p>
+<ul>
+<li><p>General usage features go in <code class="docutils literal notranslate"><span class="pre">hippylib2muq</span></code> (implemented in as much generality as
+possible), non-general features go into external apps/projects.</p></li>
+<li><p>Inside <code class="docutils literal notranslate"><span class="pre">hippylib2muq</span></code>, compartmentalize between interface, mcmc, utility, etc.</p></li>
+<li><p>Contributions that are project-specific or have external dependencies are
+allowed (if they are of broader interest), but should be <code class="docutils literal notranslate"><span class="pre">#ifdef</span></code>-ed and not
+change the code by default.</p></li>
+</ul>
+</li>
+<li><p>Code specifics</p>
+<ul>
+<li><p>All significant new classes, methods and functions have sphinx-style
+documentation in source comments.</p></li>
+<li><p>Code styling should resemble existing code.</p></li>
+<li><p>When manually resolving conflicts during a merge, make sure to mention the
+conflicted files in the commit message.</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="pull-requests">
+<h2>Pull Requests<a class="headerlink" href="#pull-requests" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>When your branch is ready for other developers to review / comment on
+the code, create a pull request towards <code class="docutils literal notranslate"><span class="pre">hippylib2muq:master</span></code>.</p></li>
+<li><p>Pull request typically have titles like:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">Description</span> <span class="pre">[new-feature-dev]</span></code></p>
+</div></blockquote>
+<p>for example:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">Bayesian</span> <span class="pre">Optimal</span> <span class="pre">Design</span> <span class="pre">of</span> <span class="pre">Experiments</span> <span class="pre">[oed-dev]</span></code></p>
+</div></blockquote>
+<p>Note the branch name suffix (in square brackets).</p>
+</li>
+<li><p>Titles may contain a prefix in square brackets to emphasize the type of PR.
+Common choices are: <code class="docutils literal notranslate"><span class="pre">[DON'T</span> <span class="pre">MERGE]</span></code>, <code class="docutils literal notranslate"><span class="pre">[WIP]</span></code> and <code class="docutils literal notranslate"><span class="pre">[DISCUSS]</span></code>, for example:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">[DISCUSS]</span> <span class="pre">Bayesian</span> <span class="pre">Optimal</span> <span class="pre">Design</span> <span class="pre">of</span> <span class="pre">Experiments</span> <span class="pre">[oed-dev]</span></code></p>
+</div></blockquote>
+</li>
+<li><p>Add a description, appropriate labels and assign yourself to the PR. The hIPPYlib
+team will add reviewers as appropriate.</p></li>
+<li><p>List outstanding TODO items in the description.</p></li>
+</ul>
+<!-- - Track the Travis CI [continuous integration](#automated-testing) -->
+<!--   builds at the end of the PR. These should run clean, so address any errors as -->
+<!--   soon as possible. --></div>
+<div class="section" id="id3">
+<h2>Pull Request Checklist<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Before a PR can be merged, it should satisfy the following:</p>
+<ul>
+<li><p>[ ] Update <code class="docutils literal notranslate"><span class="pre">CHANGELOG</span></code>:</p>
+<ul class="simple">
+<li><p>[ ] Is this a new feature users need to be aware of? New or updated application or tutorial?</p></li>
+<li><p>[ ] Does it make sense to create a new section in the <code class="docutils literal notranslate"><span class="pre">CHANGELOG</span></code> to group with other related features?</p></li>
+</ul>
+</li>
+<li><p>[ ] New examples/applications/tutorials:</p>
+<ul>
+<li><p>[ ] All new examples/applications/tutorials run as expected.</p>
+<!-- - [ ] Add a *fast version* of the example/application/tutorial to Travis CI --></li>
+</ul>
+</li>
+<li><p>[ ] New capability:</p>
+<ul>
+<li><p>[ ] All significant new classes, methods and functions have sphinx-style documentation in source comments.</p></li>
+<li><p>[ ] Add new examples/applications/tutorials to highlight the new capability.</p></li>
+<li><p>[ ] For new classes, functions, or modules, edit the corresponding <code class="docutils literal notranslate"><span class="pre">.rst</span></code> file in the <code class="docutils literal notranslate"><span class="pre">doc</span></code> folder.</p></li>
+<li><p>[ ] If this is a major new feature, consider mentioning in the short summary inside <code class="docutils literal notranslate"><span class="pre">README</span></code> <em>(rare)</em>.</p></li>
+<li><p>[ ] If this is a <code class="docutils literal notranslate"><span class="pre">C++</span></code> extension, the <code class="docutils literal notranslate"><span class="pre">package_data</span></code> dictionary in <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> should include new files.</p>
+<!-- - [ ] CI runs without errors. --></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="contact-information">
+<h2>Contact Information<a class="headerlink" href="#contact-information" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Contact the hIPPYlib-MUQ team by posting to the <a class="reference external" href="https://github.com/hippylib/hippylib2muq/issues">GitHub issue
+tracker</a>.
+Please perform a search to make sure your question has not been answered already.</p></li>
+</ul>
+<!-- ## Slack channel -->
+<!--  -->
+<!-- The hIPPYlib slack channel is a good resource to request and receive help with using hIPPYlib. Everyone is invited to read and take part in discussions. Discussions about development of new features in hIPPYlib also take place here. You can join our Slack community by filling in [this form](https://forms.gle/w8B7uKSXxdVCmfZ99). --></div>
+<div class="section" id="id4">
+<h2><a class="reference external" href="https://developercertificate.org/">Developer’s Certificate of Origin 1.1</a><a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<p>By making a contribution to this project, I certify that:</p>
+<ol class="loweralpha simple">
+<li><p>The contribution was created in whole or in part by me and I have the right
+to submit it under the open source license indicated in the file; or</p></li>
+<li><p>The contribution is based upon previous work that, to the best of my
+knowledge, is covered under an appropriate open source license and I have
+the right under that license to submit that work with modifications, whether
+created in whole or in part by me, under the same open source license
+(unless I am permitted to submit under a different license), as indicated in
+the file; or</p></li>
+<li><p>The contribution was provided directly to me by some other person who
+certified (a), (b) or (c) and I have not modified it.</p></li>
+<li><p>I understand and agree that this project and the contribution are public and
+that a record of the contribution (including all personal information I
+submit with it, including my sign-off) is maintained indefinitely and may be
+redistributed consistent with this project or the open source license(s)
+involved.</p></li>
+</ol>
+<hr class="docutils" />
+<blockquote>
+<div><p><em>Acknowledgement</em>: This file is made based on
+<a class="reference external" href="https://github.com/hippylib/hippylib/blob/master/CONTRIBUTING.md">CONTRIBUTING.md</a>
+of <a class="reference external" href="https://hippylib.github.io">hIPPYlib</a> which used <a class="reference external" href="https://github.com/mfem">MFEM team</a> contributing
+guidelines file as template.</p>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Bayesian quantification of parameter uncertainty" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
