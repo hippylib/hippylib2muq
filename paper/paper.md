@@ -1,5 +1,5 @@
 ---
-title: 'hIPPYlib-MUQ: An Extensible Software Framework for Large-scale Bayesian Inverse Problems'
+title: 'hIPPYlib-MUQ: Scalable Markov chain Monte Carlo Sampling Methods for Large-scale Bayesian Inverse Problems Governed by PDEs'
 tags:
   - Python
   - Inverse problems
@@ -15,12 +15,12 @@ authors:
     affiliation: 2
   - name: Matthew Parno
     affiliation: 3
+  - name: Noemi Petra
+    affiliation: 1
   - name: Youssef Marzouk
     affiliation: 4
   - name: Omar Ghattas
     affiliation: 5
-  - name: Noemi Petra
-    affiliation: 1
 affiliations:
   - name: Applied Mathematics, School of Natural Sciences, University of California, Merced
     index: 1
@@ -64,7 +64,7 @@ tackle such complex large-scale partial differential differential
 science and engineering disciplines.  `hIPPYlib-MUQ` is a Python
 interface between two open source softwares, `hIPPYlib` and `MUQ`,
 which have complementary capabilities.
-[`hIPPYlib`](https://hippylib.github.io) [@VillaPetraGhattas18] is an
+[`hIPPYlib`](https://hippylib.github.io) [@Villa18, @VillaPetraGhattas20] is an
 extensible software package aimed at solving deterministic and
 linearized Bayesian inverse problems governed by PDEs.  Based on
 FEniCS [@LoggWells10], [@LoggMardalGarth12], [@LangtangenLogg17] for
@@ -72,7 +72,7 @@ the solution of forward PDE problems and on PETSc [@petsc-web-page]
 for scalable and parallel linear algebra operations and solvers,
 `hIPPYlib` implements the globalized inexact Newton-conjugate gradient
 algorithm, low-rank approximation of the Hessian, and sampling from
-large-scale Gaussian fields, see. [@Villa2018] for the details.
+large-scale Gaussian fields, see. [@VillaPetraGhattas20] for the details.
 [`MUQ`](http://muq.mit.edu/) [@Parno2014] is a collection of tools for solving
 uncertainty quantification problems.  `MUQ` provides a suite of powerful
 uncertainty quantification algorithms as Markov chain Monte Carlo (MCMC)
@@ -109,7 +109,8 @@ allowing not only for use in many diverse research and application fields, but
 also for educational purpose.
 
 The source code for `hIPPYlib-MUQ` has been archived to Zenodo with the linked DOI.
-<!-- TODO: upload source cod to Zenodo -->
+<!-- TODO: Zenodo integration has been turned on for this repo. A DOI will be generated as soon as a release is created. -->
+
 
 # Acknowledgements
 

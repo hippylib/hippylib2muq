@@ -1,22 +1,44 @@
-`hIPPYlib-MUQ` builds on [`hIPPYlib`](https://github.com/hippylib/hippylib)
+`hIPPYlib-MUQ` builds on [hIPPYlib](https://github.com/hippylib/hippylib)
 version 3.0.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
-[`MUQ`](https://bitbucket.org/mituq/muq2/src/master/) version 0.2.0.  
+[MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.2.0.
+Installations of these packages are summarized here, but please see the
+detailed installation guides given in each github/bitbucket page.
 
-Installations of these
-packages are summarized here, but please see the detailed installation guides
-given in each github/bitbucket page.
+Additional dependencies are 
+
+- jupyter, matplotlib (for tutorial notebooks)
+- seaborn, statsmodels (for postprocessing)
+
+Note that we highly recommend to use our prebuilt Docker image, which is the
+easiest way to run `hIPPYlib-MUQ`. The docker image with the installation of
+all the dependencies is available
+[here](https://hub.docker.com/r/ktkimyu/hippylib2muq).
+
+With [Docker](https://www.docker.com/) installed on your system, type: 
+```
+docker run -ti --rm ktkimyu/hippylib2muq
+```
+Then, `hIPPYlib-MUQ` is available within the generated Docker container.
+
+If you want to run `hIPPYlib-MUQ` using interactive notebooks, please type
+
+``` 
+docker run -ti --rm -v $(pwd):/home/fenics/hippylib2muq/tutorial \ 
+           -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
+``` 
+The notebook will be available at the following address in your web-browser.
 
 
 ## Installation of dependencies
 
-Note that `hIPPYlib` depends on [`FEniCS`](https://fenicsproject.org/) version 2019.1.
+Note that `hIPPYlib` depends on [FEniCS](https://fenicsproject.org/) version 2019.1.
 
 #### FEniCS on Conda (Linux and macOS only)
 
 To create a Conda environment for `FEniCS` 2019.01, run the following command in 
 your terminal:
 
-```sh
+```
 conda create -n fenics-2019.1 -c conda-forge fenics==2019.1.0
 ```
 
@@ -24,8 +46,8 @@ conda create -n fenics-2019.1 -c conda-forge fenics==2019.1.0
 
 With the supported version of `FEniCS` and its dependencies installed on your
 machine, `hippylib` can be installed using `pip`:
-```sh
-pip3 install hippylib
+```
+pip3 install hippylib --user
 ```
 
 
@@ -36,7 +58,7 @@ On macOS, you can have these by installing Xcode Command Line Tools.
 
 To compile and install `MUQ`, type
 
-```sh
+```
 git clone https://bitbucket.org/mituq/muq2
 cd muq2/build
 cmake -DCMAKE_INSTALL_PREFIX=/your/muq2/install/directory -DMUQ_USE_PYTHON=ON ..
