@@ -25,8 +25,21 @@ this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
+version = {}
+with open(path.join(this_directory, 'hippylib2muq/version.py')) as f:
+    exec(f.read(), version)
+
+VERSION = version['__version__']
+
+REQUIREMENTS = [
+    'hippylib'
+    'seaborn',
+    'statsmodels',
+    'h5py'
+]
+
 setup(name="hippylib2muq",
-      version="0.1.0",
+      version=VERSION,
       author="Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas",
       author_email="kkim107@ucmerced.edu",
       description="a hippylib-muq interface for large-scale Bayesian inverse problems",
@@ -40,9 +53,11 @@ setup(name="hippylib2muq",
           "Intended Audience :: Science/Research",
       ],
       packages=find_packages(),
-      install_requires=[
-          "hippylib"
-      ]
+      install_requires=REQUIREMENTS,
+      project_urls={
+        'Source': 'https://github.com/hippylib/hippylib2muq/tree/master/hippylib2muq',
+        'Bug Reports': 'https://github.com/hippylib/hippylib2muq/issues',
+      }
       )
 
 
