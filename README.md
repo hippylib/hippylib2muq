@@ -20,8 +20,11 @@ problems governed by PDEs.
 allowing users to implement the state-of-the-art Bayesian inversion algorithms 
 in a seamless way. 
 
-To get started, we recommend to follow the interactive tutorials in `tutorial`
-folder.
+To get started, we recommend to follow the interactive tutorial in `tutorial`
+folder, which provides step-by-step implementations by solving an example
+problem.
+A static version of the tutorial is also available [here](https://hippylib.github.io/hippylib2muq/tutorial.html).
+
 
 ## Installation
 
