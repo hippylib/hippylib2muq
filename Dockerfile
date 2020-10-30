@@ -30,8 +30,11 @@ RUN mkdir -p ./lib/muq && \
 # Install hippylib-muq interface
 RUN git clone https://github.com/hippylib/hippylib2muq.git
 
+
 # Set environmental variables
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/home/fenics/lib/muq/lib" \
-    PYTHONPATH="/home/fenics/lib/muq/lib:/hone/fenics/hippylib2muq"
+    PYTHONPATH="/home/fenics/lib/muq/python/muq:/hone/fenics/hippylib2muq"
+
+USER root
 
 CMD ["bash"]
