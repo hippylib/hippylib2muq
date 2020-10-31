@@ -23,8 +23,7 @@ Then, `hIPPYlib-MUQ` is available within the generated Docker container.
 If you want to run `hIPPYlib-MUQ` using interactive notebooks, please type
 
 ``` 
-docker run -ti --rm -v $(pwd):/home/fenics/shared \ 
-           -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
+docker run -ti --rm -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
 ``` 
 The notebook will be available at the following address in your web-browser.
 If you want to mount your local directory on docker container, add it with `-v`
