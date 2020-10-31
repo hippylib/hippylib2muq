@@ -27,7 +27,7 @@ Please refer to ModPiece_ for the detailes of member functions defined here.
 import numpy as np
 import dolfin as df
 import hippylib as hl
-import pymuqModeling as mm
+import pymuqModeling_ as mm
 from ..utility.conversion import dfVector2npArray, const_dfVector, npArray2dfVector
 
 class Param2LogLikelihood(mm.PyModPiece):
