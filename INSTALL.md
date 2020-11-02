@@ -52,7 +52,7 @@ html_theme = 'name_of_the_theme'
 
 All the packages above can be installed via `pip` or `conda`.
 
-Once the required packages are installed, type `make html` from `doc` folder to
+Once the required packages are installed, run `make html` from `doc` folder to
 build the documentation, then the document is available at
 `doc/build/html/`.
 
