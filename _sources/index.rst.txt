@@ -13,6 +13,7 @@ Welcome to hippylib2muq's documentation!
    :maxdepth: 1
 
    installation
+   changelog
    contributing
    Example Notebook <tutorial>
    API Reference <modules>

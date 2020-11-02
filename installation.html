@@ -36,6 +36,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Changelog" href="changelog.html" />
     <link rel="prev" title="Welcome to hippylib2muq’s documentation!" href="index.html" /> 
 </head>
 
@@ -82,6 +83,10 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">How to Contribute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Example Notebook</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">API Reference</a></li>
 </ul>
 
             
@@ -168,11 +173,36 @@ all the dependencies is available
 </div>
 <p>Then, <code class="docutils literal notranslate"><span class="pre">hIPPYlib-MUQ</span></code> is available within the generated Docker container.</p>
 <p>If you want to run <code class="docutils literal notranslate"><span class="pre">hIPPYlib-MUQ</span></code> using interactive notebooks, please type</p>
-<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">ti</span> <span class="c1">--rm -v $(pwd):/home/fenics/hippylib2muq/tutorial</span>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">ti</span> <span class="c1">--rm -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq &#39;jupyter-notebook --ip=0.0.0.0&#39;</span>
+</pre></div>
+</div>
+<p>The notebook will be available at the following address in your web-browser.
+If you want to mount your local directory on docker container, add it with <code class="docutils literal notranslate"><span class="pre">-v</span></code>
+options, e.g., to mount your current directory on /home/fenics/shared/ in
+docker container, type</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">run</span> <span class="o">-</span><span class="n">ti</span> <span class="c1">--rm -v $(pwd):/home/fenics/shared</span>
            <span class="o">-</span><span class="n">p</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span><span class="p">:</span><span class="mi">8888</span><span class="p">:</span><span class="mi">8888</span> <span class="n">ktkimyu</span><span class="o">/</span><span class="n">hippylib2muq</span> <span class="s1">&#39;jupyter-notebook --ip=0.0.0.0&#39;</span>
 </pre></div>
 </div>
-<p>The notebook will be available at the following address in your web-browser.</p>
+<div class="section" id="build-the-hippylib-muq-documentation-using-sphinx">
+<h2>Build the hIPPYlib-MUQ documentation using Sphinx<a class="headerlink" href="#build-the-hippylib-muq-documentation-using-sphinx" title="Permalink to this headline">¶</a></h2>
+<p>You can build the documentation on your local machine by using <code class="docutils literal notranslate"><span class="pre">sphinx</span></code>
+(tested on version 2.3.0).
+Additional required packages are</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">m2r</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx_rtd_theme</span></code> (current HTML theme)</p></li>
+</ul>
+<p>If you want to use other HTML themes, install the corresponding package and
+modify the following line in <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> in <code class="docutils literal notranslate"><span class="pre">doc/source</span></code> folder accordingly:</p>
+<div class="highlight-guess notranslate"><div class="highlight"><pre><span></span><span class="n">html_theme</span> <span class="o">=</span> <span class="s1">&#39;name_of_the_theme&#39;</span>
+</pre></div>
+</div>
+<p>All the packages above can be installed via <code class="docutils literal notranslate"><span class="pre">pip</span></code> or <code class="docutils literal notranslate"><span class="pre">conda</span></code>.</p>
+<p>Once the required packages are installed, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> from <code class="docutils literal notranslate"><span class="pre">doc</span></code> folder to
+build the documentation, then the document is available at
+<code class="docutils literal notranslate"><span class="pre">doc/build/html/</span></code>.</p>
+</div>
 <div class="section" id="installation-of-dependencies">
 <h2>Installation of dependencies<a class="headerlink" href="#installation-of-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>Note that <code class="docutils literal notranslate"><span class="pre">hIPPYlib</span></code> depends on <a class="reference external" href="https://fenicsproject.org/">FEniCS</a> version 2019.1.</p>
@@ -220,6 +250,8 @@ On macOS, you can have these by installing Xcode Command Line Tools.</p>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="changelog.html" class="btn btn-neutral float-right" title="Changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Welcome to hippylib2muq’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
