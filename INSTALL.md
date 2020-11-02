@@ -1,3 +1,5 @@
+# Installation
+
 `hIPPYlib-MUQ` builds on [hIPPYlib](https://github.com/hippylib/hippylib)
 version 3.0.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
 [MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.2.0.
@@ -34,6 +36,25 @@ docker run -ti --rm -v $(pwd):/home/fenics/shared \
            -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
 ```
 
+## Build the hIPPYlib-MUQ documentation using Sphinx
+
+You can build the documentation on your local machine by using `sphinx`
+(tested on version 2.3.0).
+Additional required packages are
+- `m2r`
+- `sphinx_rtd_theme` (current HTML theme)
+
+If you want to use other HTML themes, install the corresponding package and
+modify the following line in `conf.py` in `doc/source` folder accordingly:
+```
+html_theme = 'name_of_the_theme'
+```
+
+All the packages above can be installed via `pip` or `conda`.
+
+Once the required packages are installed, type `make html` from `doc` folder to
+build the documentation, then the document is available at
+`doc/build/html/`.
 
 ## Installation of dependencies
 
