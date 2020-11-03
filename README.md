@@ -36,7 +36,7 @@ to run `hIPPYlib-MUQ`. With [Docker](https://www.docker.com/) installed on your
 system, type: 
 
 ``` 
-docker run -ti --rm -p 127.0.0.1:8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
+docker run -ti --rm -p 8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
 ``` 
 The notebook will be available at the following address in your web-browser.
 From there you can run your own interactive notebooks or the tutorial notebook in
