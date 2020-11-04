@@ -24,7 +24,7 @@ author = 'Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk
 
 version = {}
 root_directory = (os.path.abspath(os.path.abspath(os.path.dirname(os.path.dirname(__file__)))))
-with open(os.path.join(root_directory, 'hippylib/version.py')) as f:
+with open(os.path.join(root_directory, 'hippylib2muq/version.py')) as f:
     exec(f.read(), version)
 
 VERSION = version['__version__']
