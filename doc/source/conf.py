@@ -30,7 +30,7 @@ with open(os.path.join(root_directory, 'hippylib2muq/version.py')) as f:
 VERSION = version['__version__']
 
 # The full version, including alpha/beta/rc tags
-release = VERSION
+release = '0.1.0'
 
 
 # -- General configuration ---------------------------------------------------
