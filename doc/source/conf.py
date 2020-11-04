@@ -23,7 +23,7 @@ copyright = '2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Yousse
 author = 'Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
 
 version = {}
-root_directory = (os.path.abspath(os.path.abspath(os.path.dirname(os.path.dirname(__file__)))))
+root_directory = (os.path.dirname(os.path.abspath(os.path.dirname(os.path.dirname(__file__)))))
 with open(os.path.join(root_directory, 'hippylib2muq/version.py')) as f:
     exec(f.read(), version)
 
