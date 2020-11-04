@@ -19,10 +19,10 @@
 """
 This module provides type conversions for the proper use of dependent packages.
 """
-import dolfin as df
+import dolfin as dl
 
 
-def dfVector2npArray(vec):
+def dlVector2npArray(vec):
     """
     Convert a ``dolfin:vector`` to a ``numpy:ndarray``.
 
@@ -34,7 +34,7 @@ def dfVector2npArray(vec):
     return y
 
 
-def const_dfVector(mat, dim):
+def const_dlVector(mat, dim):
     """
     Construct and initialize a dolfin vector so that it is compatible with matrix 
     :math:`A` for the multiplication :math:`Ax = b`.
@@ -44,11 +44,11 @@ def const_dfVector(mat, dim):
     :returns: an initialized ``dolfin:vector`` which is compatiable with ``mat``
 
     """
-    y = df.Vector(mat.mpi_comm())
+    y = dl.Vector(mat.mpi_comm())
     mat.init_vector(y, dim)
     return y
 
-def npArray2dfVector(arr, vec):
+def npArray2dlVector(arr, vec):
     """
     Assign values of ``numpy:ndarray`` to ``dolfin:vector``.
 
