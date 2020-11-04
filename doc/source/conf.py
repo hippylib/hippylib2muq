@@ -22,8 +22,15 @@ project = 'hippylib2muq'
 copyright = '2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
 author = 'Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
 
+version = {}
+root_directory = (os.path.abspath(os.path.abspath(os.path.dirname(os.path.dirname(__file__)))))
+with open(os.path.join(root_directory, 'hippylib/version.py')) as f:
+    exec(f.read(), version)
+
+VERSION = version['__version__']
+
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = VERSION
 
 
 # -- General configuration ---------------------------------------------------
@@ -37,6 +44,8 @@ extensions = [
 ]
 
 source_suffix = ['.rst', '.md']
+
+master_doc = 'index'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
