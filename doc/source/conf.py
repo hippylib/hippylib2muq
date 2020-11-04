@@ -33,7 +33,7 @@ release = '0.1.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'm2r'
+    'myst_parser'
 ]
 
 source_suffix = ['.rst', '.md']
