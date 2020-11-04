@@ -19,7 +19,7 @@
 """
 This module contains some functions related to the quantity of interest.
 """
-import hippylib as hl
+import hippylib as hp
 
 def cal_qoiTracer(pde, qoi, muq_samps):
     """
@@ -32,7 +32,7 @@ def cal_qoiTracer(pde, qoi, muq_samps):
     """
     samps_mat = muq_samps.AsMatrix()
     nums = samps_mat.shape[1]
-    tracer = hl.QoiTracer(nums)
+    tracer = hp.QoiTracer(nums)
 
     ct = 0
     u = pde.generate_state()
@@ -68,7 +68,7 @@ def track_qoiTracer(pde, qoi, method_list, max_lag=None):
         tracer = cal_qoiTracer(pde, qoi, samps)
 
         # Estimate IAT
-        iact, lags, acorrs = hl.integratedAutocorrelationTime(tracer.data, max_lag=max_lag)
+        iact, lags, acorrs = hp.integratedAutocorrelationTime(tracer.data, max_lag=max_lag)
 
         # Estimate ESS
         ess = samps.size() / iact
