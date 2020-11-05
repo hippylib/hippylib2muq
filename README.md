@@ -23,7 +23,7 @@ in a seamless way.
 To get started, we recommend to follow the interactive tutorial in `tutorial`
 folder, which provides step-by-step implementations by solving an example
 problem.
-A static version of the tutorial is also available [here](https://hippylib.github.io/hippylib2muq/tutorial.html).
+A static version of the tutorial is also available [here](https://hippylib2muq.readthedocs.io/en/latest/tutorial.html).
 
 
 ## Installation
