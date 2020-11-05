@@ -1,1 +1,2 @@
-myst-parser
+Sphinx~=2.2
+m2r
