@@ -14,13 +14,13 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
 
-autodoc_mock_imports = ["hippylib", "muq", "dolfin", "matplotlib", "ffc", "petsc4py", "mpi4py", "scipy", "numpy"]
+autodoc_mock_imports = ["hippylib", "pymuqSamplingAlgorithms", "muq", "dolfin", "matplotlib", "ffc", "petsc4py", "mpi4py", "scipy", "numpy"]
 
 # -- Project information -----------------------------------------------------
 
-project = 'hippylib2muq'
-copyright = '2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
-author = 'Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
+project = u'hippylib2muq'
+copyright = u'2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
+author = u'Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
 
 version = {}
 root_directory = (os.path.dirname(os.path.abspath(os.path.dirname(os.path.dirname(__file__)))))
