@@ -47,7 +47,7 @@ See [INSTALL](./INSTALL.md) for further details.
 ## Documentation
 
 A complete API documentation of `hIPPYlib-MUQ` is available
-[here](https://hippylib.github.io/hippylib2muq/).
+[here](https://hippylib2muq.readthedocs.io/en/latest/).
 
 ## Authors
 
