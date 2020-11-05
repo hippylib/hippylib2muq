@@ -46,7 +46,7 @@ def print_methodDict(method_list):
     ==== ===================
     Name MCMC kernel
     ==== ===================
-    mh   Metropolis–Hastings
+    mh   Metropolis-Hastings
     dr   Delayed Rejection
     ==== ===================
 
