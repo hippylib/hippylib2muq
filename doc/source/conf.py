@@ -30,7 +30,7 @@ with open(os.path.join(root_directory, 'hippylib2muq/version.py')) as f:
 VERSION = version['__version__']
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.0'
+release = VERSION
 
 
 # -- General configuration ---------------------------------------------------
@@ -40,7 +40,7 @@ release = '0.1.0'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'myst_parser'
+    'm2r'
 ]
 
 source_suffix = ['.rst', '.md']
