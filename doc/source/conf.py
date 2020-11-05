@@ -14,9 +14,10 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
 
-autodoc_mock_imports = ["hippylib", "statsmodels", "seaborn",
-                        "pymuqSamplingAlgorithms", "muq", "dolfin",
-                        "matplotlib", "ffc", "petsc4py", "mpi4py", "scipy", "numpy"]
+autodoc_mock_imports = ["hippylib",  "dolfin", "ufl", "ffc",
+                        "pymuqSamplingAlgorithms", "pymuqModeling_", 
+                        "matplotlib", "petsc4py", "mpi4py", "scipy", "numpy",
+                        "statsmodels", "seaborn"]
 
 # -- Project information -----------------------------------------------------
 
@@ -33,7 +34,7 @@ VERSION = version['__version__']
 
 version = u''
 # The full version, including alpha/beta/rc tags
-release = u'0.1.0' #VERSION
+release = VERSION
 
 
 # -- General configuration ---------------------------------------------------
