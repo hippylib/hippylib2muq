@@ -64,7 +64,7 @@ tackle such complex large-scale partial differential differential
 science and engineering disciplines.  `hIPPYlib-MUQ` is a Python
 interface between two open source softwares, `hIPPYlib` and `MUQ`,
 which have complementary capabilities.
-[`hIPPYlib`](https://hippylib.github.io) [@Villa2018, @VillaPetraGhattas20] is an
+[`hIPPYlib`](https://hippylib.github.io) [@Villa2018; @VillaPetraGhattas20] is an
 extensible software package aimed at solving deterministic and
 linearized Bayesian inverse problems governed by PDEs.  Based on
 FEniCS [@LoggWells10], [@LoggMardalGarth12], [@LangtangenLogg17] for
