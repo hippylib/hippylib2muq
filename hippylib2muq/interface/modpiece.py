@@ -231,35 +231,6 @@ class Param2obs(mm.PyModPiece):
 
         self.gradient = dlVector2npArray(self.gm)
 
-    def ApplyHessianImpl(self, outWrt, inWrt1, inWrt2, inputs, sens, vec):
-        """
-        Apply Hessian to ``vec`` for given ``sens`` and ``inputs``.
-
-        :param int outWrt: output dimension; should be 0
-        :param int inWrt1: input dimension; should be 0
-        :param int inWrt2: input dimension; should be 0
-        :param numpy::ndarray inputs: parameter values
-        :param numpy::ndarray sens: sensitivity values
-        :param numpy::ndarray vec: input vector Hessian applies to
-        """
-        assert inWrt1 == 0 and inWrt2 == 0
-
-        npArray2dlVector(inputs[0], self.m)
-        x = [self.u, self.m, self.p]
-
-        # Solve for state and adjoint variables
-        self._solves_stateadj(x, sens)
-
-        # Hessian apply
-        self.model.setPointForHessianEvaluations(x)
-        HessApply = hp.ReducedHessian(self.model, misfit_only=True)
-
-        npArray2dlVector(vec, self.hess0)
-        HessApply.mult(self.hess0, self.hess1)
-        self.hess1 *= -1.0
-
-        self.hessAction = dlVector2npArray(self.hess1)
-
     def _solves_stateadj(self, x, sens):
         """
         Solves the state and adjoint problems given parameters and sensitivity.
