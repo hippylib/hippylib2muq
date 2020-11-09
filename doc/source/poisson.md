@@ -881,7 +881,7 @@ for mName, method in method_list.items():
           "MCMC samples using", mName)
     
 print("\n")
-print("Parameter space dimension:", Vh[PARAMETER].dim())
+print("Parameter space dimension:", Vh[hp.PARAMETER].dim())
 print("Number of samples:", options['NumSamples'] - options['BurnIn'] + 1)
 
 # Keep track of the quantity of interest
