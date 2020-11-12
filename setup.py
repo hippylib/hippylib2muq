@@ -32,7 +32,7 @@ with open(path.join(this_directory, 'hippylib2muq/version.py')) as f:
 VERSION = version['__version__']
 
 REQUIREMENTS = [
-    'hippylib'
+    'hippylib',
     'seaborn',
     'statsmodels',
     'h5py'
