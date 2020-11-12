@@ -11,7 +11,9 @@ Additional dependencies are
 - jupyter, matplotlib (for tutorial notebooks)
 - seaborn, statsmodels (for postprocessing)
 
-Note that we highly recommend to use our prebuilt Docker image, which is the
+## Docker
+
+We highly recommend to use our prebuilt Docker image, which is the
 easiest way to run `hIPPYlib-MUQ`. The docker image with the installation of
 all the dependencies is available
 [here](https://hub.docker.com/r/ktkimyu/hippylib2muq).
@@ -36,48 +38,20 @@ docker run -ti --rm -v $(pwd):/home/fenics/shared \
            -p 8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
 ```
 
-## Build the hIPPYlib-MUQ documentation using Sphinx
+## Conda
 
-You can build the documentation on your local machine by using `sphinx`
-(tested on version 2.3.0).
-Additional required packages are
-- `m2r`
-- `sphinx_rtd_theme` (current HTML theme)
+Conda is also a very convenient way to set up an enviroment to use `hIPPYlib-MUQ`.
+The script below builds a conda enviroment with `FEniCS 2019` and `MUQ`.
+`hIPPYlib 3.0.0` is also downloaded and installed via `pip`.
 
-If you want to use other HTML themes, install the corresponding package and
-modify the following line in `conf.py` in `doc/source` folder accordingly:
-```
-html_theme = 'name_of_the_theme'
-```
-
-All the packages above can be installed via `pip` or `conda`.
-
-Once the required packages are installed, run `make html` from `doc` folder to
-build the documentation, then the document is available at
-`doc/build/html/`.
-
-## Installation of dependencies
-
-Note that `hIPPYlib` depends on [FEniCS](https://fenicsproject.org/) version 2019.1.
-
-#### FEniCS on Conda (Linux and macOS only)
-
-To create a Conda environment for `FEniCS` 2019.01, run the following command in 
-your terminal:
 
 ```
-conda create -n fenics-2019.1 -c conda-forge fenics==2019.1.0
+conda create -q -n hippylib2muq -c conda-forge fenics==2019.1.0 muq seaborn statsmodels
+conda activate hippylib2muq
+git clone --depth 1 --branch 3.0.0 https://github.com/hippylib/hippylib.git
+python hippylib/setup.py install
 ```
-
-#### Installation of hIPPYlib (latest version) using pip
-
-With the supported version of `FEniCS` and its dependencies installed on your
-machine, `hippylib` can be installed using `pip`:
-```
-pip3 install hippylib --user
-```
-
-#### Installation of MUQ from source codes
+### Installation of MUQ from source codes (Expert user/MUQ developers)
 
 This requires cmake, the GNU Compiler Collection or Clang, and pybind11.
 On macOS, you can have these by installing Xcode Command Line Tools. 
@@ -100,14 +74,23 @@ You may append the path to this library folder, for example,
 export PYTHONPATH=/your/muq2/install/directory/python:$PYTHONPATH
 ```
 
-#### MUQ on Conda
 
-MUQ is also available on Conda and can be installed by running
+## Build the hIPPYlib-MUQ documentation using Sphinx
 
+You can build the documentation on your local machine by using `sphinx`
+(tested on version 2.3.0).
+Additional required packages are
+- `m2r`
+- `sphinx_rtd_theme` (current HTML theme)
+
+If you want to use other HTML themes, install the corresponding package and
+modify the following line in `conf.py` in `doc/source` folder accordingly:
 ```
-conda activate name_of_your_conda_environment
-conda install -c conda-forge muq
+html_theme = 'name_of_the_theme'
 ```
 
-where `name_of_your_conda_environment` would be `fenics-2019.1` if you
-created your Conda environment by following the above instruction.
+All the packages above can be installed via `pip` or `conda`.
+
+Once the required packages are installed, run `make html` from `doc` folder to
+build the documentation, then the document is available at
+`doc/build/html/`.
