@@ -18,4 +18,4 @@ install:
   - python setup.py install
 
 script:
-  python -m unittest discover -v
+  cd hippylib2muq/test/ && python -m unittest discover -v
