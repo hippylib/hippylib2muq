@@ -286,20 +286,22 @@ The main classes and functions of <a href="https://hippylib.github.io">hIPPYlib<
 
 The main classes and functions used here are
 
-- `pymuqModeling::PyModPiece` : an abstract interface for defining vector-valued models
-- `pymuqModeling::PyGaussianBase` : an abstract interface for implementing Gaussian distributions
-- `pymuqModeling::WorkGraph` : a graph or a frame of connected `pymuqModeling::PyModPiece` (or `pymuqModeling::WorkPiece`) classes
-- `pymuqSamplingAlgorithms::CrankNicolsonProposal` : the pCN proposal
-- `pymuqSamplingAlgorithms::MALAProposal` : the MALA proposal
-- `pymuqSamplingAlgorithms::MHKernel` : the Metropolis-Hastings transition kernel
-- `pymuqSamplingAlgorithms::DRKernel` : the delayed rejection kernel
-- `pymuqSamplingAlgorithms::SingleChainMCMC` : a single chain MCMC sampler
+- `muq.Modeling::PyModPiece` : an abstract interface for defining vector-valued models
+- `muq.Modeling::PyGaussianBase` : an abstract interface for implementing Gaussian distributions
+- `muq.Modeling::WorkGraph` : a graph or a frame of connected
+  `muq.Modeling::PyModPiece` (or `muq.Modeling::WorkPiece`) classes
+- `muq.SamplingAlgorithms::CrankNicolsonProposal` : the pCN proposal
+- `muq.SamplingAlgorithms::MALAProposal` : the MALA proposal
+- `muq.SamplingAlgorithms::MHKernel` : the Metropolis-Hastings transition kernel
+- `muq.SamplingAlgorithms::DRKernel` : the delayed rejection kernel
+- `muq.SamplingAlgorithms::SingleChainMCMC` : a single chain MCMC sampler
 
-To interface <a href="https://hippylib.github.io">hIPPYlib</a> and <a href="http://muq.mit.edu">MUQ</a> for this example, `hippymuq` provides the following classes:
+To interface <a href="https://hippylib.github.io">hIPPYlib</a> and <a
+href="http://muq.mit.edu">MUQ</a> for this example, `hippylib2muq` provides the following classes:
 
-- `hippymuq::Param2LogLikelihood` : a child of `muq::PyModPiece` which wraps `hippylib::PDEVariationalProblem` and `hippylib:PointwiseStateObservation` (solving the forward problem, mapping from parameters to log likelihood and evaluating its derivative)
-- `hippymuq::BiLaplaceGaussian` : a child of `pymuqModeling::PyGaussianBase` which wraps `hippylib::BiLaplacianPrior`
-- `hippymuq::LAPosteriorGaussian` : a child of `pymuqModeling::PyGaussianBase` which wraps `hippylib::GaussianLRPosterior`
+- `hippylib2muq::Param2LogLikelihood` : a child of `muq::PyModPiece` which wraps `hippylib::PDEVariationalProblem` and `hippylib:PointwiseStateObservation` (solving the forward problem, mapping from parameters to log likelihood and evaluating its derivative)
+- `hippylib2muq::BiLaplaceGaussian` : a child of `muq.Modeling::PyGaussianBase` which wraps `hippylib::BiLaplacianPrior`
+- `hippylib2muq::LAPosteriorGaussian` : a child of `muq.Modeling::PyGaussianBase` which wraps `hippylib::GaussianLRPosterior`
 
 ## III. Implementation
 
@@ -313,8 +315,8 @@ import math
 import matplotlib.pyplot as plt
 %matplotlib inline
 
-import pymuqModeling_ as mm
-import pymuqSamplingAlgorithms as ms
+import muq.Modeling_ as mm
+import muq.SamplingAlgorithms as ms
 
 import dolfin as dl
 import hippylib as hp

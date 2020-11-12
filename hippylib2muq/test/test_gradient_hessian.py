@@ -18,7 +18,7 @@
 
 import unittest
 
-import pymuqModeling_ as mm
+import muq.Modeling as mm
 import dolfin as dl
 import hippylib as hp
 

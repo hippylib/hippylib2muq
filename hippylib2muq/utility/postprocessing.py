@@ -19,7 +19,7 @@
 """
 This module provides postprocessing related functions.
 """
-import pymuqSamplingAlgorithms as ms
+import muq.SamplingAlgorithms as ms
 import seaborn
 import numpy as np
 import statsmodels.api as sm

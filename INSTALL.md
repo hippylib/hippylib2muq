@@ -2,7 +2,7 @@
 
 `hIPPYlib-MUQ` builds on [hIPPYlib](https://github.com/hippylib/hippylib)
 version 3.0.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
-[MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.2.0.
+[MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.3.0.
 Installations of these packages are summarized here, but please see the
 detailed installation guides given in each github/bitbucket page.
 
@@ -77,7 +77,6 @@ machine, `hippylib` can be installed using `pip`:
 pip3 install hippylib --user
 ```
 
-
 #### Installation of MUQ from source codes
 
 This requires cmake, the GNU Compiler Collection or Clang, and pybind11.
@@ -98,5 +97,17 @@ Then Python static libraries are generated in `/your/muq2/install/directory/lib`
 You may append the path to this library folder, for example,
 
 ```
-export PYTHONPATH=/your/muq2/install/directory/lib:$PYTHONPATH
+export PYTHONPATH=/your/muq2/install/directory/python:$PYTHONPATH
 ```
+
+#### MUQ on Conda
+
+MUQ is also available on Conda and can be installed by running
+
+```
+conda activate name_of_your_conda_environment
+conda install -c conda-forge muq
+```
+
+where `name_of_your_conda_environment` would be `fenics-2019.1` if you
+created your Conda environment by following the above instruction.
