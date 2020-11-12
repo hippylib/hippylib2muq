@@ -24,7 +24,7 @@ approximation to the posterior distribution) to ``muq``.
 import numpy as np
 import dolfin as dl
 import hippylib as hp
-import pymuqModeling_ as mm
+import muq.Modeling as mm
 
 from ..utility.conversion import dlVector2npArray, const_dlVector, npArray2dlVector
 
