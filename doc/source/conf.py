@@ -15,7 +15,7 @@ import sys
 sys.path.insert(0, os.path.abspath('../..'))
 
 autodoc_mock_imports = ["hippylib",  "dolfin", "ufl", "ffc",
-                        "muq.SamplingAlgorithms", "muq.Modeling", 
+                        "muq",
                         "matplotlib", "petsc4py", "mpi4py", "scipy", "numpy",
                         "statsmodels", "seaborn"]
 
