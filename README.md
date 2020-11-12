@@ -1,3 +1,5 @@
+[![Documentation Status](https://readthedocs.org/projects/hippylib2muq/badge/?version=latest)](https://hippylib2muq.readthedocs.io/en/latest/?badge=latest)
+
 ```
  _     ___ ____  ______   ___ _ _           __  __ _   _  ___  
 | |__ |_ _|  _ \|  _ \ \ / / (_) |__       |  \/  | | | |/ _ \ 
