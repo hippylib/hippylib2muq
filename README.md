@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/291145700.svg)](https://zenodo.org/badge/latestdoi/291145700)
 [![Build Status](https://travis-ci.org/hippylib/hippylib2muq.svg?branch=master)](https://travis-ci.org/hippylib/hippylib2muq)
 [![Documentation Status](https://readthedocs.org/projects/hippylib2muq/badge/?version=latest)](https://hippylib2muq.readthedocs.io/en/latest/?badge=latest)
 
