@@ -108,8 +108,7 @@ the autocorrelation function and the effective sample size.
 allowing not only for use in many diverse research and application fields, but
 also for educational purpose.
 
-The source code for `hIPPYlib-MUQ` has been archived to Zenodo with the linked DOI.
-<!-- TODO: Zenodo integration has been turned on for this repo. A DOI will be generated as soon as a release is created. -->
+The source code for `hIPPYlib-MUQ` has been archived to Zenodo with the linked DOI [10.5281/zenodo.4270739](https://doi.org/10.5281/zenodo.4270739).
 
 
 # Acknowledgements
