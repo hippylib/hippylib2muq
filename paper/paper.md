@@ -47,7 +47,7 @@ noisy and limited observations. While many of these input parameters cannot be
 directly observed, they can be inferred indirectly from observations via an
 inverse problem. Bayesian inversion provides a framework for integration of
 data with complex physics-based models to quantify and reduce uncertainties in
-model predictions [@Kaipio2006]. Bayesian inversion with complex forward models
+model predictions [@KaipioSomersalo05]. Bayesian inversion with complex forward models
 faces several computational challenges.  First, characterizing the posterior
 distribution of the parameters of interest or subsequent predictions often
 requires repeated evaluations of large-scale partial differential equation
