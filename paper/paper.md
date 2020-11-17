@@ -105,7 +105,7 @@ the autocorrelation function, and the effective sample size.
 
 `hIPPYlib-MUQ` is designed for general large-scale Bayesian inverse problems,
 not only for research and application in diverse fields, but also for
-educational purpose.
+educational purposes.
 
 The source code for `hIPPYlib-MUQ` has been archived to Zenodo with the linked DOI [10.5281/zenodo.4270739](https://doi.org/10.5281/zenodo.4270739).
 
