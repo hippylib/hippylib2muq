@@ -68,8 +68,8 @@ for the solution of forward PDE problems and on PETSc [@petsc-web-page] for
 scalable and parallel linear algebra operations and solvers, `hIPPYlib`
 implements globalized inexact Newton-conjugate gradient methods, adjoint-based
 computation of gradients and Hessian actions, low-rank approximation of
-Hessians, and sampling from large-scale Gaussian fields; see.
-[@VillaPetraGhattas20] for the details.  [`MUQ`](http://muq.mit.edu/)
+Hessians, and sampling from large-scale Gaussian fields; see
+@VillaPetraGhattas20 for the details.  [`MUQ`](http://muq.mit.edu/)
 [@Parno2014] is a collection of tools for solving uncertainty quantification
 problems.  `MUQ` provides a suite of powerful uncertainty quantification
 algorithms including Markov chain Monte Carlo (MCMC) methods [@Parno2018],
