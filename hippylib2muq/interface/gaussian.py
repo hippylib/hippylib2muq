@@ -64,7 +64,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
             x = np.squeeze(x)
 
         # Convert `x` to dolfin.Vector
-        npArray2dlVector(y, self.xa0)
+        npArray2dlVector(x, self.xa0)
 
         # Solve
         nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
