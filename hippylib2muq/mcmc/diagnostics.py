@@ -1,5 +1,5 @@
 #  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
-#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  Copyright (c) 2019-2020, The University of Texas at Austin,
 #  University of California--Merced, Washington University in St. Louis,
 #  The United States Army Corps of Engineers, Massachusetts Institute of Technology
 
@@ -28,12 +28,12 @@ import matplotlib.pyplot as plt
 class MultPSRF(object):
     """Computing the Multivariate Potential Scale Reduction Factor
 
-    This class is to compute the Multivariate Potential Scale Reduction Factor 
+    This class is to compute the Multivariate Potential Scale Reduction Factor
     (MPSRF) described in [Brooks1998]_.
-    Note that MPSRF is the square-root version, i.e., :math:`\\hat{R}^p` where 
+    Note that MPSRF is the square-root version, i.e., :math:`\\hat{R}^p` where
     :math:`\\hat{R}^p` is defined by Equation (4.1) in [Brooks1998]_.
 
-    .. [Brooks1998] Brooks and Gelman, 1998, General Methods for 
+    .. [Brooks1998] Brooks and Gelman, 1998, General Methods for
                    Monitoring Convergence of Iterative Simulations.
     """
 
@@ -109,7 +109,7 @@ class PSRF(object):
 
     This class is to compute the Potential Scale Reduction Factor (PSRF) and
     the effective sample size (ESS) as described in [Brooks1998]_ and [Gelman2014]_.
-    Note that PSRF is the square-root version of :math:`\\hat{R}` where 
+    Note that PSRF is the square-root version of :math:`\\hat{R}` where
     :math:`\\hat{R}` is defined by Equation (1.1) defined in [Brooks1998].
 
     .. [Gelman2014] Gelman et al., 2014, Bayesian Data Analysis, pp 286-287.
@@ -120,7 +120,7 @@ class PSRF(object):
         :param int nsamps: number of samples
         :param int nchain: number of MCMC chains
         :param bool calEss: if True, ESS is calculated
-        :param int max_lag: maximum of time lag for computing the autocorrelation 
+        :param int max_lag: maximum of time lag for computing the autocorrelation
                             function
         """
         self.nsamps = nsamps
