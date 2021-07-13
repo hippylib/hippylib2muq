@@ -1,5 +1,5 @@
 #  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
-#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  Copyright (c) 2019-2020, The University of Texas at Austin,
 #  University of California--Merced, Washington University in St. Louis,
 #  The United States Army Corps of Engineers, Massachusetts Institute of Technology
 
@@ -38,7 +38,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
     """
     def __init__(self, hp_prior, use_zero_mean=False):
         """
-        :param hippylib::BiLaplacianPrior hp_prior: a hippylib class instance
+        :param hippylib::LaplacianPrior hp_prior: a hippylib class instance
         :param bool use_zero_mean: if True, mean = 0
         """
         if use_zero_mean:
@@ -60,31 +60,16 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim == 1:
-            # Convert `x` to dolfin.Vector
-            npArray2dlVector(x, self.xa0)
+        if x.ndim != 1:
+            x = np.squeeze(x)
 
-            # Solve
-            nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
+        # Convert `x` to dolfin.Vector
+        npArray2dlVector(y, self.xa0)
 
-            return dlVector2npArray(self.xa1)
-        else:
-            nrow = x.shape[0]
-            ncol = x.shape[1]
-            xt = x.T
-            yarr = np.zeros((ncol, nrow))
-            for i in range(ncol):
-                xi = xt[i, :]
+        # Solve
+        nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
 
-                # Convert `x` to dolfin.Vector
-                npArray2dlVector(xi, self.xa0)
-
-                # Solve
-                nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
-
-                yarr[i, :] = dlVector2npArray(self.xa1)
-
-            return yarr.T
+        return dlVector2npArray(self.xa1)
 
     def ApplyPrecision(self, x):
         """
@@ -92,37 +77,22 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim == 1:
-            # Convert `x` to dolfin.Vector
-            npArray2dlVector(x, self.xa1)
+        if x.ndim != 1:
+            x = np.squeeze(x)
 
-            # Apply R
-            self.prior.R.mult(self.xa1, self.xa0)
+        # Convert `x` to dolfin.Vector
+        npArray2dlVector(x, self.xa1)
 
-            return dlVector2npArray(self.xa0)
-        else:
-            nrow = x.shape[0]
-            ncol = x.shape[1]
-            xt = x.T
-            yarr = np.zeros((ncol, nrow))
-            for i in range(ncol):
-                xi = xt[i, :]
+        # Apply R
+        self.prior.R.mult(self.xa1, self.xa0)
 
-                # Convert `x` to dolfin.Vector
-                npArray2dlVector(xi, self.xa1)
-
-                # Apply R
-                self.prior.R.mult(self.xa1, self.xa0)
-
-                yarr[i, :] = dlVector2npArray(self.xa0)
-
-            return yarr.T
+        return dlVector2npArray(self.xa0)
 
     def SampleImpl(self, inputs):
         """
         Draw a sample from the prior distribution.
         This is an overloaded function of ``muq::PyGaussianBase``.
-        The argument ``inputs`` is not used, but should be given when 
+        The argument ``inputs`` is not used, but should be given when
         ``SampleImpl`` is called.
 
         :param numpy::ndarray inputs: input vector
@@ -184,31 +154,16 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim == 1:
-            # Convert `x` to dolfin.Vector
-            npArray2dlVector(x, self.xa0)
+        if x.ndim != 1:
+            x = np.squeeze(x)
 
-            # Solve
-            nit = self.prior.Rsolver.solve(self.vecc, self.xa0)
+        # Convert `x` to dolfin.Vector
+        npArray2dlVector(x, self.xa0)
 
-            return dlVector2npArray(self.vecc)
-        else:
-            nrow = x.shape[0]
-            ncol = x.shape[1]
-            xt = x.T
-            yarr = np.zeros((ncol, nrow))
-            for i in range(ncol):
-                xi = xt[i, :]
+        # Solve
+        nit = self.prior.Rsolver.solve(self.vecc, self.xa0)
 
-                # Convert `x` to dolfin.Vector
-                npArray2dlVector(xi, self.xa0)
-
-                # Solve
-                nit = self.prior.Rsolver.solve(self.vecc, self.xa0)
-
-                yarr[i, :] = dlVector2npArray(self.vecc)
-
-            return yarr.T
+        return dlVector2npArray(self.vecc)
 
     def ApplyPrecision(self, x):
         """
@@ -216,31 +171,16 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim == 1:
-            # Convert `x` to dolfin.Vector
-            npArray2dlVector(x, self.xa1)
+        if x.ndim != 1:
+            x = np.squeeze(x)
 
-            # Apply R
-            self.prior.R.mult(self.xa1, self.vecr)
+        # Convert `x` to dolfin.Vector
+        npArray2dlVector(x, self.xa1)
 
-            return dlVector2npArray(self.vecr)
-        else:
-            nrow = x.shape[0]
-            ncol = x.shape[1]
-            xt = x.T
-            yarr = np.zeros((ncol, nrow))
-            for i in range(ncol):
-                xi = xt[i, :]
+        # Apply R
+        self.prior.R.mult(self.xa1, self.vecr)
 
-                # Convert `x` to dolfin.Vector
-                npArray2dlVector(xi, self.xa1)
-
-                # Apply R
-                self.prior.R.mult(self.xa1, self.vecr)
-
-                yarr[i, :] = dlVector2npArray(self.vecr)
-
-            return yarr.T
+        return dlVector2npArray(self.vecr)
 
     def ApplyCovSqrt(self, x):
         """
@@ -248,38 +188,19 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim == 1:
+        if x.ndim != 1:
+            x = np.squeeze(x)
 
-            # Convert `x` to dolfin.Vector
-            npArray2dlVector(x, self.xsqm1)
+        # Convert `x` to dolfin.Vector
+        npArray2dlVector(x, self.xsqm1)
 
-            # Apply sqrtM to dl_x
-            self.prior.sqrtM.mult(self.xsqm1, self.vecc1)
+        # Apply sqrtM to dl_x
+        self.prior.sqrtM.mult(self.xsqm1, self.vecc1)
 
-            # Solve
-            self.prior.Asolver.solve(self.vecc2, self.vecc1)
+        # Solve
+        self.prior.Asolver.solve(self.vecc2, self.vecc1)
 
-            return dlVector2npArray(self.vecc2)
-        else:
-            nrow = x.shape[0]
-            ncol = x.shape[1]
-            xt = x.T
-            yarr = np.zeros((ncol, nrow))
-            for i in range(ncol):
-                xi = xt[i, :]
-
-                # Convert `x` to dolfin.Vector
-                npArray2dlVector(xi, self.xsqm1)
-
-                # Apply sqrtM to dl_x
-                self.prior.sqrtM.mult(self.xsqm1, self.vecc1)
-
-                # Solve
-                self.prior.Asolver.solve(self.vecc2, self.vecc1)
-
-                yarr[i, :] = dlVector2npArray(self.vecc2)
-
-            return yarr.T
+        return dlVector2npArray(self.vecc2)
 
     def ApplyPrecSqrt(self, x):
         """
@@ -287,50 +208,29 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim == 1:
-            # Convert `x` to dolfin.Vector
-            npArray2dlVector(x, self.xsqm1)
+        if x.ndim != 1:
+            x = np.squeeze(x)
 
-            # Apply sqrtM to dl_x
-            self.prior.sqrtM.mult(self.xsqm1, self.vecr1)
+        # Convert `x` to dolfin.Vector
+        npArray2dlVector(x, self.xsqm1)
 
-            # Solve M temppc1 = z
-            self.prior.M.mult(self.vecr1, self.vecr2)
+        # Apply sqrtM to dl_x
+        self.prior.sqrtM.mult(self.xsqm1, self.vecr1)
 
-            # Apply A
-            self.prior.A.mult(self.vecr2, self.vecr3)
+        # Solve M temppc1 = z
+        self.prior.M.mult(self.vecr1, self.vecr2)
 
-            return dlVector2npArray(self.vecr3)
-        else:
-            nrow = x.shape[0]
-            ncol = x.shape[1]
-            xt = x.T
-            yarr = np.zeros((ncol, nrow))
-            for i in range(ncol):
-                xi = xt[i, :]
+        # Apply A
+        self.prior.A.mult(self.vecr2, self.vecr3)
 
-                # Convert `x` to dolfin.Vector
-                npArray2dlVector(xi, self.xsqm1)
-
-                # Apply sqrtM to dl_x
-                self.prior.sqrtM.mult(self.xsqm1, self.vecr1)
-
-                # Solve M temppc1 = z
-                self.prior.M.mult(self.vecr1, self.vecr2)
-
-                # Apply A
-                self.prior.A.mult(self.vecr2, self.vecr3)
-
-                yarr[i, :] = dlVector2npArray(self.vecr3)
-
-            return yarr.T
+        return dlVector2npArray(self.vecr3)
 
 
     def SampleImpl(self, inputs):
         """
         Draw a sample from the prior distribution.
         This is an overloaded function of ``muq::PyGaussianBase``
-        The argument ``inputs`` is not used, but should be given when 
+        The argument ``inputs`` is not used, but should be given when
         ``SampleImpl`` is called.
 
         :param numpy::ndarray inputs: input vector

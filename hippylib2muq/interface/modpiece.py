@@ -1,5 +1,5 @@
 #  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
-#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  Copyright (c) 2019-2020, The University of Texas at Austin,
 #  University of California--Merced, Washington University in St. Louis,
 #  The United States Army Corps of Engineers, Massachusetts Institute of Technology
 
@@ -30,11 +30,13 @@ import hippylib as hp
 import muq.Modeling as mm
 from ..utility.conversion import dlVector2npArray, const_dlVector, npArray2dlVector
 
+
 class Param2LogLikelihood(mm.PyModPiece):
-    """ Parameter to log-likelihood map
+    """Parameter to log-likelihood map
 
     This class implements mapping from parameter to log-likelihood.
     """
+
     def __init__(self, model):
         """
         :param hippylib::Model model: a ``hipplib::Model`` instance
@@ -51,7 +53,7 @@ class Param2LogLikelihood(mm.PyModPiece):
         self.hess1 = self.model.generate_vector(component=hp.PARAMETER)
 
         # number of finite element coefficient of parameter
-        self.npar = self.model.problem.Vh[hp.PARAMETER].dim()
+        self.npar = self.m.size()
 
         mm.PyModPiece.__init__(self, [self.npar], [1])
 
@@ -106,7 +108,7 @@ class Param2LogLikelihood(mm.PyModPiece):
         :param int outDimWrt: output dimension; should be 0
         :param int inDimWrt: input dimension; should be 0
         :param numpy::ndarray inputs: parameter values
-        :param numpy::ndarray sens: input vector the transpose of Jacobian 
+        :param numpy::ndarray sens: input vector the transpose of Jacobian
                                     applies to
         """
         self.Jacobian(outDimWrt, inDimWrt, inputs)
@@ -159,10 +161,11 @@ class Param2LogLikelihood(mm.PyModPiece):
 
 
 class Param2obs(mm.PyModPiece):
-    """ Parameter to observable map
+    """Parameter to observable map
 
     This class implements mapping from parameter to observations.
     """
+
     def __init__(self, model):
         """
         :param hippylib::Model model: a ``hippylib::Model`` instance
@@ -217,7 +220,7 @@ class Param2obs(mm.PyModPiece):
         :param int outDimWrt: output dimension; should be 0
         :param int inDimWrt: input dimension; should be 0
         :param numpy::ndarray inputs: parameter values
-        :param numpy::ndarray sens: input vector the transpose of Jacobian 
+        :param numpy::ndarray sens: input vector the transpose of Jacobian
                                     applies to
         """
         npArray2dlVector(inputs[0], self.m)
@@ -248,17 +251,17 @@ class Param2obs(mm.PyModPiece):
         self.model.misfit.B.transpmult(self.sens, self.adjrhs)
         self.adjrhs *= -1
         self.model.problem.solveAdj(x[hp.ADJOINT], x, self.adjrhs)
-       
+
 
 class LogBiLaplaceGaussian(mm.PyModPiece):
-    """ Log-bi-Laplace prior
+    """Log-bi-Laplace prior
 
     This class evaluates log of the bi-Laplacian prior.
     """
 
     def __init__(self, prior):
         """
-        :param hippylib::BiLaplacianPrior prior: ``hippylib::BiLaplacianPrior`` 
+        :param hippylib::BiLaplacianPrior prior: ``hippylib::BiLaplacianPrior``
                                                  instance
         """
         self.prior = prior
@@ -361,7 +364,7 @@ class LogBiLaplaceGaussian(mm.PyModPiece):
 
 #         y = dlVector2npArray(self.Bu)
 #         self.outputs = [y]
-      
+
 #     def GradientImpl(self, outDimWrt, inDimWrt, inputs, sens):
 #         # Solve for adjoint variable
 #         npArray2dlVector(sens, self.adjrhs)
@@ -370,4 +373,3 @@ class LogBiLaplaceGaussian(mm.PyModPiece):
 #         self.model.misfit.B.transpmult(self.adjrhs, self.grad)
 
 #         self.gradient = dlVector2npArray(self.grad)
-
