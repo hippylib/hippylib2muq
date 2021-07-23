@@ -36,6 +36,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
     ``muq::GaussianBase``.
     This class is appropriate for 1D (parameter) problems.
     """
+
     def __init__(self, hp_prior, use_zero_mean=False):
         """
         :param hippylib::LaplacianPrior hp_prior: a hippylib class instance
@@ -60,16 +61,22 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim != 1:
-            x = np.squeeze(x)
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dlVector(x, self.xa0)
 
-        # Convert `x` to dolfin.Vector
-        npArray2dlVector(x, self.xa0)
+            # Solve
+            nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
 
-        # Solve
-        nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
+            return dlVector2npArray(self.xa1)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.xa0)
+                nit = self.prior.Rsolver.solve(self.xa1, self.xa0)
+                ymat[:, i] = dlVector2npArray(self.xa1)
 
-        return dlVector2npArray(self.xa1)
+            return ymat
 
     def ApplyPrecision(self, x):
         """
@@ -77,16 +84,22 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim != 1:
-            x = np.squeeze(x)
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dlVector(x, self.xa1)
 
-        # Convert `x` to dolfin.Vector
-        npArray2dlVector(x, self.xa1)
+            # Apply R
+            self.prior.R.mult(self.xa1, self.xa0)
 
-        # Apply R
-        self.prior.R.mult(self.xa1, self.xa0)
+            return dlVector2npArray(self.xa0)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape):
+                npArray2dlVector(x[:, i], self.xa1)
+                self.prior.R.mult(self.xa1, self.xa0)
+                ymat[:, i] = dlVector2npArray(self.xa0)
 
-        return dlVector2npArray(self.xa0)
+            return ymat
 
     def SampleImpl(self, inputs):
         """
@@ -97,12 +110,13 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray inputs: input vector
         """
-        hp.parRandom.normal(1., self.noise)
+        hp.parRandom.normal(1.0, self.noise)
 
         self.prior.sample(self.noise, self.sample)
 
         x = dlVector2npArray(self.sample)
         return x
+
 
 class BiLaplaceGaussian(mm.PyGaussianBase):
     """ The prior Gaussian distribution with Laplacian-like covariance operator
@@ -154,16 +168,22 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim != 1:
-            x = np.squeeze(x)
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dlVector(x, self.xa0)
 
-        # Convert `x` to dolfin.Vector
-        npArray2dlVector(x, self.xa0)
+            # Solve
+            nit = self.prior.Rsolver.solve(self.vecc, self.xa0)
 
-        # Solve
-        nit = self.prior.Rsolver.solve(self.vecc, self.xa0)
+            return dlVector2npArray(self.vecc)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.xa0)
+                nit = self.prior.Rsolver.solve(self.vecc, self.xa0)
+                ymat[:, i] = dlVector2npArray(self.vecc)
 
-        return dlVector2npArray(self.vecc)
+            return ymat
 
     def ApplyPrecision(self, x):
         """
@@ -171,16 +191,22 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim != 1:
-            x = np.squeeze(x)
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dlVector(x, self.xa1)
 
-        # Convert `x` to dolfin.Vector
-        npArray2dlVector(x, self.xa1)
+            # Apply R
+            self.prior.R.mult(self.xa1, self.vecr)
 
-        # Apply R
-        self.prior.R.mult(self.xa1, self.vecr)
+            return dlVector2npArray(self.vecr)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.xa1)
+                self.prior.R.mult(self.xa1, self.vecr)
+                ymat[:, i] = dlVector2npArray(self.vecr)
 
-        return dlVector2npArray(self.vecr)
+            return ymat
 
     def ApplyCovSqrt(self, x):
         """
@@ -188,19 +214,27 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim != 1:
-            x = np.squeeze(x)
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dlVector(x, self.xsqm1)
 
-        # Convert `x` to dolfin.Vector
-        npArray2dlVector(x, self.xsqm1)
+            # Apply sqrtM to dl_x
+            self.prior.sqrtM.mult(self.xsqm1, self.vecc1)
 
-        # Apply sqrtM to dl_x
-        self.prior.sqrtM.mult(self.xsqm1, self.vecc1)
+            # Solve
+            self.prior.Asolver.solve(self.vecc2, self.vecc1)
 
-        # Solve
-        self.prior.Asolver.solve(self.vecc2, self.vecc1)
+            return dlVector2npArray(self.vecc2)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.xsqm1)
+                self.prior.sqrtM.mult(self.xsqm1, self.vecc1)
+                self.prior.Asolver.solve(self.vecc2, self.vecc1)
 
-        return dlVector2npArray(self.vecc2)
+                ymat[:, i] = dlVector2npArray(self.vecc2)
+
+            return ymat
 
     def ApplyPrecSqrt(self, x):
         """
@@ -208,23 +242,30 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        if x.ndim != 1:
-            x = np.squeeze(x)
+        if x.ndim == 1:
+            # Convert `x` to dolfin.Vector
+            npArray2dlVector(x, self.xsqm1)
 
-        # Convert `x` to dolfin.Vector
-        npArray2dlVector(x, self.xsqm1)
+            # Apply sqrtM to dl_x
+            self.prior.sqrtM.mult(self.xsqm1, self.vecr1)
 
-        # Apply sqrtM to dl_x
-        self.prior.sqrtM.mult(self.xsqm1, self.vecr1)
+            # Solve M temppc1 = z
+            self.prior.M.mult(self.vecr1, self.vecr2)
 
-        # Solve M temppc1 = z
-        self.prior.M.mult(self.vecr1, self.vecr2)
+            # Apply A
+            self.prior.A.mult(self.vecr2, self.vecr3)
 
-        # Apply A
-        self.prior.A.mult(self.vecr2, self.vecr3)
+            return dlVector2npArray(self.vecr3)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.xsqm1)
+                self.prior.sqrtM.mult(self.xsqm1, self.vecr1)
+                self.prior.M.mult(self.vecr1, self.vecr2)
+                self.prior.A.mult(self.vecr2, self.vecr3)
+                ymat[:, i] = dlVector2npArray(self.vecr3)
 
-        return dlVector2npArray(self.vecr3)
-
+            return ymat
 
     def SampleImpl(self, inputs):
         """
@@ -235,7 +276,7 @@ class BiLaplaceGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray inputs: input vector
         """
-        hp.parRandom.normal(1., self.noise)
+        hp.parRandom.normal(1.0, self.noise)
         x = dlVector2npArray(self.noise)
         return self.GetMean() + self.ApplyCovSqrt(x)
 
@@ -246,6 +287,7 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
     A class interfacing between ``hippylib::GaussianLRPosterior`` and \
     ``muq:PyGaussianBase``.
     """
+
     def __init__(self, lapost, use_zero_mean=False):
         """
         :param hippylib::GaussianLRPosterior lapost: a hippylib class instance
@@ -278,10 +320,19 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        npArray2dlVector(x, self.help1)
-        self.lapost.Hlr.mult(self.help1, self.help0)
+        if x.ndim == 1:
+            npArray2dlVector(x, self.help1)
+            self.lapost.Hlr.mult(self.help1, self.help0)
 
-        return dlVector2npArray(self.help0)
+            return dlVector2npArray(self.help0)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in ragne(x.shape[1]):
+                npArray2dlVector(x[:, i], self.help1)
+                self.lapost.Hlr.mult(self.help1, self.help0)
+                ymat[:, i] = dlVector2npArray(self.help0)
+
+            return ymat
 
     def ApplyCovariance(self, x):
         """
@@ -289,10 +340,20 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        npArray2dlVector(x, self.help0)
-        self.lapost.Hlr.solve(self.help1, self.help0)
+        if x.ndim == 1:
+            npArray2dlVector(x, self.help0)
+            self.lapost.Hlr.solve(self.help1, self.help0)
 
-        return dlVector2npArray(self.help1)
+            return dlVector2npArray(self.help1)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.help0)
+                self.lapost.Hlr.solve(self.help1, self.help0)
+
+                ymat[:, i] = dlVector2npArray(self.help1)
+
+            return ymat
 
     def ApplyCovSqrt(self, x):
         """
@@ -300,10 +361,19 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray x: input vector
         """
-        npArray2dlVector(x, self.noise)
-        self.lapost.sample(self.noise, self.wprior, self.wpost, add_mean=False)
+        if x.ndim == 1:
+            npArray2dlVector(x, self.noise)
+            self.lapost.sample(self.noise, self.wprior, self.wpost, add_mean=False)
 
-        return dlVector2npArray(self.wpost)
+            return dlVector2npArray(self.wpost)
+        else:
+            ymat = np.zeros(x.shape)
+            for i in range(x.shape[1]):
+                npArray2dlVector(x[:, i], self.noise)
+                self.lapost.sample(self.noise, self.wprior, self.wpost, add_mean=False)
+                ymat[:, i] = dlVector2npArray(self.wpost)
+
+            return ymat
 
     def SampleImpl(self, inputs):
         """
@@ -312,6 +382,6 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
 
         :param numpy::ndarray inputs: input vector
         """
-        hp.parRandom.normal(1., self.noise)
+        hp.parRandom.normal(1.0, self.noise)
         x = dlVector2npArray(self.noise)
         return self.GetMean() + self.ApplyCovSqrt(x)
