@@ -94,7 +94,7 @@ class LaplaceGaussian(mm.PyGaussianBase):
             return dlVector2npArray(self.xa0)
         else:
             ymat = np.zeros(x.shape)
-            for i in range(x.shape):
+            for i in range(x.shape[1]):
                 npArray2dlVector(x[:, i], self.xa1)
                 self.prior.R.mult(self.xa1, self.xa0)
                 ymat[:, i] = dlVector2npArray(self.xa0)
@@ -327,7 +327,7 @@ class LAPosteriorGaussian(mm.PyGaussianBase):
             return dlVector2npArray(self.help0)
         else:
             ymat = np.zeros(x.shape)
-            for i in ragne(x.shape[1]):
+            for i in range(x.shape[1]):
                 npArray2dlVector(x[:, i], self.help1)
                 self.lapost.Hlr.mult(self.help1, self.help0)
                 ymat[:, i] = dlVector2npArray(self.help0)
