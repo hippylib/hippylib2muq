@@ -2,7 +2,7 @@
 nelement: 32
 
 # if True, some results are plotted
-plot: True
+plot: False
 
 # if False, the observation data will be stored to "data.h5"
 # if True, it will read the observation data from "data.h5"
