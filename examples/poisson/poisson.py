@@ -276,9 +276,9 @@ if __name__ == "__main__":
                 dl.Function(Vh[hp.PARAMETER], prior.mean),
             ]
 
-        mytitles = ["True Parameter", "Prior mean"]
-        hp.nb.multi1_plot(objs, mytitles)
-        plt.show()
+            mytitles = ["True Parameter", "Prior mean"]
+            hp.nb.multi1_plot(objs, mytitles)
+            plt.show()
 
         utrue = pde.generate_state()
         x = [utrue, mtrue, None]
