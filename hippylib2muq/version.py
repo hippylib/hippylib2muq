@@ -1,5 +1,5 @@
 #  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
-#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  Copyright (c) 2019-2020, The University of Texas at Austin,
 #  University of California--Merced, Washington University in St. Louis,
 #  The United States Army Corps of Engineers, Massachusetts Institute of Technology
 
@@ -17,4 +17,4 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 version_info = (0, 1, 0)
-__version__ = '.'.join([str(x) for x in version_info])
+__version__ = ".".join([str(x) for x in version_info])

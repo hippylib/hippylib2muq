@@ -1,5 +1,5 @@
 #  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
-#  Copyright (c) 2019-2020, The University of Texas at Austin, 
+#  Copyright (c) 2019-2020, The University of Texas at Austin,
 #  University of California--Merced, Washington University in St. Louis,
 #  The United States Army Corps of Engineers, Massachusetts Institute of Technology
 
@@ -69,7 +69,7 @@ def print_methodDict(method_list):
                                                    'Beta or Step-size'))
     print('-'*58)
     for mName, method in method_list.items():
-        
+
         kern = method['Sampler'].Kernels()[0]
         kernName = _get_name(kern)
         if kernName == 'dr':
@@ -134,7 +134,7 @@ def plot_qoiResult(method_list, qoi_dataset, max_lag=None):
     :param dictionary method_list: the discriptions of MCMC methods used
     :param dictionary qoi_dataset: a dictionary returned from a call of
                                    ``hippymuq:track_qoiTracer``
-    :param int max_lag: maximum of time lag for computing the autocorrelation 
+    :param int max_lag: maximum of time lag for computing the autocorrelation
                         function
     """
     fig, axes = plt.subplots(nrows=len(method_list), ncols=3, figsize=(12, 20))

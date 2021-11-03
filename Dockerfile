@@ -9,6 +9,7 @@ RUN apt-get -qq -y update && \
     pip3 install jupyter && \
     pip3 install matplotlib && \
     pip3 install h5py && \
+    pip3 install yaml && \
     pip3 install seaborn==0.10.0 && \
     pip3 install statsmodels && \
     apt-get clean && \
