@@ -12,27 +12,40 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
 
-autodoc_mock_imports = ["hippylib",  "dolfin", "ufl", "ffc",
-                        "muq",
-                        "matplotlib", "petsc4py", "mpi4py", "scipy", "numpy",
-                        "statsmodels", "seaborn"]
+sys.path.insert(0, os.path.abspath("../.."))
+
+autodoc_mock_imports = [
+    "hippylib",
+    "dolfin",
+    "ufl",
+    "ffc",
+    "muq",
+    "matplotlib",
+    "petsc4py",
+    "mpi4py",
+    "scipy",
+    "numpy",
+    "statsmodels",
+    "seaborn",
+]
 
 # -- Project information -----------------------------------------------------
 
-project = u'hippylib2muq'
-copyright = u'2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
-author = u'Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas'
+project = u"hippylib2muq"
+copyright = u"2020, Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas"
+author = u"Ki-Tae Kim, Umberto Villa, Matthew Parno, Noemi Petra, Youssef Marzouk, Omar Ghattas"
 
 version = {}
-root_directory = (os.path.dirname(os.path.abspath(os.path.dirname(os.path.dirname(__file__)))))
-with open(os.path.join(root_directory, 'hippylib2muq/version.py')) as f:
+root_directory = os.path.dirname(
+    os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+)
+with open(os.path.join(root_directory, "hippylib2muq/version.py")) as f:
     exec(f.read(), version)
 
-VERSION = version['__version__']
+VERSION = version["__version__"]
 
-version = u''
+version = u""
 # The full version, including alpha/beta/rc tags
 release = VERSION
 
@@ -42,17 +55,14 @@ release = VERSION
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = [
-    'sphinx.ext.autodoc',
-    'm2r'
-]
+extensions = ["sphinx.ext.autodoc", "m2r2"]
 
-source_suffix = ['.rst', '.md']
+source_suffix = [".rst", ".md"]
 
-master_doc = 'index'
+master_doc = "index"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -66,9 +76,9 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 #  html_theme = 'alabaster'
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ["_static"]
