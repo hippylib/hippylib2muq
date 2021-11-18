@@ -286,20 +286,22 @@ The main classes and functions of <a href="https://hippylib.github.io">hIPPYlib<
 
 The main classes and functions used here are
 
-- `pymuqModeling::PyModPiece` : an abstract interface for defining vector-valued models
-- `pymuqModeling::PyGaussianBase` : an abstract interface for implementing Gaussian distributions
-- `pymuqModeling::WorkGraph` : a graph or a frame of connected `pymuqModeling::PyModPiece` (or `pymuqModeling::WorkPiece`) classes
-- `pymuqSamplingAlgorithms::CrankNicolsonProposal` : the pCN proposal
-- `pymuqSamplingAlgorithms::MALAProposal` : the MALA proposal
-- `pymuqSamplingAlgorithms::MHKernel` : the Metropolis-Hastings transition kernel
-- `pymuqSamplingAlgorithms::DRKernel` : the delayed rejection kernel
-- `pymuqSamplingAlgorithms::SingleChainMCMC` : a single chain MCMC sampler
+- `muq.Modeling::PyModPiece` : an abstract interface for defining vector-valued models
+- `muq.Modeling::PyGaussianBase` : an abstract interface for implementing Gaussian distributions
+- `muq.Modeling::WorkGraph` : a graph or a frame of connected
+  `muq.Modeling::PyModPiece` (or `muq.Modeling::WorkPiece`) classes
+- `muq.SamplingAlgorithms::CrankNicolsonProposal` : the pCN proposal
+- `muq.SamplingAlgorithms::MALAProposal` : the MALA proposal
+- `muq.SamplingAlgorithms::MHKernel` : the Metropolis-Hastings transition kernel
+- `muq.SamplingAlgorithms::DRKernel` : the delayed rejection kernel
+- `muq.SamplingAlgorithms::SingleChainMCMC` : a single chain MCMC sampler
 
-To interface <a href="https://hippylib.github.io">hIPPYlib</a> and <a href="http://muq.mit.edu">MUQ</a> for this example, `hippymuq` provides the following classes:
+To interface <a href="https://hippylib.github.io">hIPPYlib</a> and <a
+href="http://muq.mit.edu">MUQ</a> for this example, `hippylib2muq` provides the following classes:
 
-- `hippymuq::Param2LogLikelihood` : a child of `muq::PyModPiece` which wraps `hippylib::PDEVariationalProblem` and `hippylib:PointwiseStateObservation` (solving the forward problem, mapping from parameters to log likelihood and evaluating its derivative)
-- `hippymuq::BiLaplaceGaussian` : a child of `pymuqModeling::PyGaussianBase` which wraps `hippylib::BiLaplacianPrior`
-- `hippymuq::LAPosteriorGaussian` : a child of `pymuqModeling::PyGaussianBase` which wraps `hippylib::GaussianLRPosterior`
+- `hippylib2muq::Param2LogLikelihood` : a child of `muq::PyModPiece` which wraps `hippylib::PDEVariationalProblem` and `hippylib:PointwiseStateObservation` (solving the forward problem, mapping from parameters to log likelihood and evaluating its derivative)
+- `hippylib2muq::BiLaplaceGaussian` : a child of `muq.Modeling::PyGaussianBase` which wraps `hippylib::BiLaplacianPrior`
+- `hippylib2muq::LAPosteriorGaussian` : a child of `muq.Modeling::PyGaussianBase` which wraps `hippylib::GaussianLRPosterior`
 
 ## III. Implementation
 
@@ -313,10 +315,12 @@ import math
 import matplotlib.pyplot as plt
 %matplotlib inline
 
+import muq.Modeling_ as mm
+import muq.SamplingAlgorithms as ms
+
 import dolfin as dl
-from hippylib import *
-import pymuqModeling as mm
-import pymuqSamplingAlgorithms as ms
+import hippylib as hp
+
 import hippylib2muq as hm
 import numpy as np
 
@@ -337,7 +341,7 @@ This function generates a random field with a prescribed anisotropic covariance 
 def true_model(prior):
     noise = dl.Vector()
     prior.init_vector(noise, "noise")
-    parRandom.normal(1., noise)
+    hp.parRandom.normal(1., noise)
     mtrue = dl.Vector()
     prior.init_vector(mtrue, 0)
     prior.sample(noise, mtrue)
@@ -360,7 +364,7 @@ Vh2 = dl.FunctionSpace(mesh, 'Lagrange', 2)
 Vh1 = dl.FunctionSpace(mesh, 'Lagrange', 1)
 Vh  = [Vh2, Vh1, Vh2]
 print("Number of dofs: STATE={0}, PARAMETER={1}, ADJOINT={2}".format(
-    Vh[STATE].dim(), Vh[PARAMETER].dim(), Vh[ADJOINT].dim()) )
+      Vh[hp.STATE].dim(), Vh[hp.PARAMETER].dim(), Vh[hp.ADJOINT].dim()) )
 ```
 
     Number of dofs: STATE=4225, PARAMETER=1089, ADJOINT=4225
@@ -387,12 +391,12 @@ where :math:`u \in \mathcal{V}` is the state variable, and :math:`m \in \mathcal
 the top and bottom sides of the unit square, and :math:`\Gamma_N` corresponds to the left and right sides.
 We also let :math:`f = 0`, and :math:`u_D = 1` on the top boundary and :math:`u_D = 0` on the bottom boundary.
 
-To set up the forward problem we use the `PDEVariationalProblem` class, which requires the following inputs
+To set up the forward problem we use the `hp::PDEVariationalProblem` class, which requires the following inputs
 - the finite element spaces for the state, parameter, and adjoint variables `Vh`
 - the pde in weak form `pde_varf`
 - the boundary conditions `bc` for the forward problem and `bc0` for the adjoint and incremental problems.
 
-The `PDEVariationalProblem` class offer the following functionality:
+The `hp::PDEVariationalProblem` class offer the following functionality:
 - solving the forward/adjoint and incremental problems
 - evaluate first and second partial derivative of the forward problem with respect to the state, parameter, and adojnt variables.
 
@@ -403,15 +407,15 @@ def u_boundary(x, on_boundary):
 
 u_bdr  = dl.Expression("x[1]", degree=1)
 u_bdr0 = dl.Constant(0.0)
-bc  = dl.DirichletBC(Vh[STATE], u_bdr, u_boundary)
-bc0 = dl.DirichletBC(Vh[STATE], u_bdr0, u_boundary)
+bc  = dl.DirichletBC(Vh[hp.STATE], u_bdr, u_boundary)
+bc0 = dl.DirichletBC(Vh[hp.STATE], u_bdr0, u_boundary)
 
 f = dl.Constant(0.0)
     
 def pde_varf(u,m,p):
     return dl.exp(m)*dl.inner(dl.nabla_grad(u), dl.nabla_grad(p))*dl.dx - f*p*dl.dx
     
-pde = PDEVariationalProblem(Vh, pde_varf, bc, bc0, is_fwd_linear=True)
+pde = hp.PDEVariationalProblem(Vh, pde_varf, bc, bc0, is_fwd_linear=True)
 ```
 
 #### 5. Set up the prior
@@ -420,7 +424,7 @@ To obtain the synthetic true parameter :math:`m_{\rm true}` we generate a realiz
 
 Here we assume a Gaussian prior, :math:`\mu_{\rm prior} \sim \mathcal{N}(0, \prcov)` 
 with zero mean and covariance matrix :math:`\prcov = \mathcal{A}^{-2}`, 
-which is implemented by `BiLaplacianPrior` class that provides methods to apply the regularization (precision) operator to a vector or to apply the prior covariance operator.
+which is implemented by `hp::BiLaplacianPrior` class that provides methods to apply the regularization (precision) operator to a vector or to apply the prior covariance operator.
 
 
 ```python
@@ -431,18 +435,18 @@ theta0 = 2.
 theta1 = .5
 alpha  = math.pi/4
     
-anis_diff = dl.CompiledExpression(ExpressionModule.AnisTensor2D(), degree = 1)
+anis_diff = dl.CompiledExpression(hp.ExpressionModule.AnisTensor2D(), degree = 1)
 anis_diff.set(theta0, theta1, alpha)
 
-prior = BiLaplacianPrior(Vh[PARAMETER], gamma, delta, anis_diff, robin_bc=True)
+prior = hp.BiLaplacianPrior(Vh[hp.PARAMETER], gamma, delta, anis_diff, robin_bc=True)
 print("Prior regularization: (delta_x - gamma*Laplacian)^order: "
       "delta={0}, gamma={1}, order={2}".format(delta, gamma,2))
 
 mtrue = true_model(prior)
                    
-objs = [dl.Function(Vh[PARAMETER],mtrue), dl.Function(Vh[PARAMETER],prior.mean)]
+objs = [dl.Function(Vh[hp.PARAMETER],mtrue), dl.Function(Vh[hp.PARAMETER],prior.mean)]
 mytitles = ["True parameter", "Prior mean"]
-nb.multi1_plot(objs, mytitles)
+hp.nb.multi1_plot(objs, mytitles)
 plt.show()
 ```
 
@@ -468,7 +472,7 @@ Under the assumption of Gaussian additive noise, the likelihood function :math:`
 where :math:`u(m)` denotes the solution of the forward model at a given
 parameter :math:`m`.
 
-The class `PointwiseStateObservation` implements the evaluation of the
+The class `hp::PointwiseStateObservation` implements the evaluation of the
 log-likelihood function and of its partial derivatives w.r.t. the state
 :math:`u` and parameter :math:`m`.
 
@@ -483,27 +487,27 @@ rel_noise = 0.005
 targets   = np.random.uniform(0.05, 0.95, [ntargets, ndim])
 print("Number of observation points: {0}".format(ntargets))
 
-misfit = PointwiseStateObservation(Vh[STATE], targets)
+misfit = hp.PointwiseStateObservation(Vh[hp.STATE], targets)
 
 utrue = pde.generate_state()
 x = [utrue, mtrue, None]
-pde.solveFwd(x[STATE], x)
-misfit.B.mult(x[STATE], misfit.d)
+pde.solveFwd(x[hp.STATE], x)
+misfit.B.mult(x[hp.STATE], misfit.d)
 MAX = misfit.d.norm("linf")
 noise_std_dev = rel_noise * MAX
-parRandom.normal_perturb(noise_std_dev, misfit.d)
+hp.parRandom.normal_perturb(noise_std_dev, misfit.d)
 misfit.noise_variance = noise_std_dev*noise_std_dev
 
-model = Model(pde, prior, misfit)
+model = hp.Model(pde, prior, misfit)
 
 vmax = max( utrue.max(), misfit.d.max() )
 vmin = min( utrue.min(), misfit.d.min() )
 
 plt.figure(figsize=(15,5))
-nb.plot(dl.Function(Vh[STATE], utrue), mytitle="True state", 
-        subplot_loc=121, vmin=vmin, vmax=vmax, cmap="jet")
-nb.plot_pts(targets, misfit.d, mytitle="Observations", 
-            subplot_loc=122, vmin=vmin, vmax=vmax, cmap="jet")
+hp.nb.plot(dl.Function(Vh[hp.STATE], utrue), mytitle="True state", 
+           subplot_loc=121, vmin=vmin, vmax=vmax, cmap="jet")
+hp.nb.plot_pts(targets, misfit.d, mytitle="Observations", 
+               subplot_loc=122, vmin=vmin, vmax=vmax, cmap="jet")
 plt.show()
 ```
 
@@ -521,7 +525,7 @@ We used the globalized Newtown-CG method to compute the MAP point.
 
 ```python
 m = prior.mean.copy()
-solver = ReducedSpaceNewtonCG(model)
+solver = hp.ReducedSpaceNewtonCG(model)
 solver.parameters["rel_tolerance"]  = 1e-6
 solver.parameters["abs_tolerance"]  = 1e-12
 solver.parameters["max_iter"]       = 25
@@ -541,13 +545,13 @@ print( "Final gradient norm: ", solver.final_grad_norm )
 print( "Final cost:          ", solver.final_cost )
 
 plt.figure(figsize=(18,4))
-mtrue_min = dl.Function(Vh[PARAMETER],mtrue).vector().min()
-mtrue_max = dl.Function(Vh[PARAMETER],mtrue).vector().max()
-nb.plot(dl.Function(Vh[PARAMETER],mtrue), subplot_loc=131, mytitle="True parameter", 
-        vmin=mtrue_min, vmax=mtrue_max)
-nb.plot(dl.Function(Vh[PARAMETER], x[PARAMETER]), subplot_loc=132,mytitle="MAP", 
-        vmin=mtrue_min, vmax=mtrue_max)
-nb.plot(dl.Function(Vh[STATE], x[STATE]), subplot_loc=133,mytitle="Recovered state", cmap="jet")
+mtrue_min = dl.Function(Vh[hp.PARAMETER],mtrue).vector().min()
+mtrue_max = dl.Function(Vh[hp.PARAMETER],mtrue).vector().max()
+hp.nb.plot(dl.Function(Vh[hp.PARAMETER],mtrue), subplot_loc=131, mytitle="True parameter", 
+           vmin=mtrue_min, vmax=mtrue_max)
+hp.nb.plot(dl.Function(Vh[hp.PARAMETER], x[hp.PARAMETER]), subplot_loc=132,mytitle="MAP", 
+           vmin=mtrue_min, vmax=mtrue_max)
+hp.nb.plot(dl.Function(Vh[hp.STATE], x[hp.STATE]), subplot_loc=133,mytitle="Recovered state", cmap="jet")
 plt.show()
 ```
 
@@ -592,18 +596,18 @@ The effective rank is independent of the mesh size.
 
 ```python
 model.setPointForHessianEvaluations(x, gauss_newton_approx=False)
-Hmisfit = ReducedHessian(model, misfit_only=True)
+Hmisfit = hp.ReducedHessian(model, misfit_only=True)
 k = 100
 p = 20
 print( "Single/Double Pass Algorithm. Requested eigenvectors: "\
        "{0}; Oversampling {1}.".format(k,p) )
 
-Omega = MultiVector(x[PARAMETER], k+p)
-parRandom.normal(1., Omega)
-lmbda, V = doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k)
+Omega = hp.MultiVector(x[hp.PARAMETER], k+p)
+hp.parRandom.normal(1., Omega)
+lmbda, V = hp.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k)
 
-nu = GaussianLRPosterior(prior, lmbda, V)
-nu.mean = x[PARAMETER]
+nu = hp.GaussianLRPosterior(prior, lmbda, V)
+nu.mean = x[hp.PARAMETER]
 
 plt.plot(range(0,k), lmbda, 'b*', range(0,k+1), np.ones(k+1), '-r')
 plt.yscale('log')
@@ -626,8 +630,8 @@ plt.show()
 nsamples = 3
 noise = dl.Vector()
 nu.init_vector(noise,"noise")
-s_prior = dl.Function(Vh[PARAMETER], name="sample_prior")
-s_post = dl.Function(Vh[PARAMETER], name="sample_post")
+s_prior = dl.Function(Vh[hp.PARAMETER], name="sample_prior")
+s_post = dl.Function(Vh[hp.PARAMETER], name="sample_post")
 
 post_pw_variance, pr_pw_variance, corr_pw_variance =\
     nu.pointwise_variance(method="Exact")
@@ -639,11 +643,11 @@ ps_min   = -2.5*math.sqrt( post_pw_variance.max() ) + nu.mean.min()
 
 fig = plt.figure(figsize=(18,8))
 for i in range(nsamples):
-    parRandom.normal(1., noise)
+    hp.parRandom.normal(1., noise)
     nu.sample(noise, s_prior.vector(), s_post.vector())
     
-    impr = nb.plot(s_prior, subplot_loc=231+i, vmin=pr_min, vmax=pr_max, colorbar=None)
-    imps = nb.plot(s_post, subplot_loc=234+i, vmin=ps_min, vmax=ps_max, colorbar=None)
+    impr = hp.nb.plot(s_prior, subplot_loc=231+i, vmin=pr_min, vmax=pr_max, colorbar=None)
+    imps = hp.nb.plot(s_post, subplot_loc=234+i, vmin=ps_min, vmax=ps_max, colorbar=None)
 
 fig.tight_layout()
 fig.subplots_adjust(left=0.15, right=0.8)
@@ -687,11 +691,11 @@ class FluxQOI(object):
         self.L = {}
         
     def form(self, x):
-        return dl.exp(x[PARAMETER])*dl.dot( dl.grad(x[STATE]), self.n)*self.dsGamma
+        return dl.exp(x[hp.PARAMETER])*dl.dot( dl.grad(x[hp.STATE]), self.n)*self.dsGamma
     
     def eval(self, x):
-        u = vector2Function(x[STATE], self.Vh[STATE])
-        m = vector2Function(x[PARAMETER], self.Vh[PARAMETER])
+        u = hp.vector2Function(x[hp.STATE], self.Vh[hp.STATE])
+        m = hp.vector2Function(x[hp.PARAMETER], self.Vh[hp.PARAMETER])
         return np.log( dl.assemble(self.form([u,m])) )
 
 class GammaBottom(dl.SubDomain):
@@ -717,14 +721,14 @@ To do so, we generate a MUQ WorkGraph of connected ModPieces.
 
 ```python
 # a place holder ModPiece for the parameters
-idparam = mm.IdentityOperator(Vh[PARAMETER].dim())
+idparam = mm.IdentityOperator(Vh[hp.PARAMETER].dim())
 
 # log Gaussian Prior ModPiece
 gaussprior = hm.BiLaplaceGaussian(prior)
 log_gaussprior = gaussprior.AsDensity()
 
 # parameter to log likelihood Modpiece
-param2loglikelihood = hm.Param2LogLikelihood(pde, misfit)
+param2loglikelihood = hm.Param2LogLikelihood(model)
 
 # log target ModPiece
 log_target = mm.DensityProduct(2)
@@ -853,11 +857,11 @@ hm.print_methodDict(method_list)
 # Generate starting sample vector for all the MCMC simulations
 noise = dl.Vector()
 nu.init_vector(noise, "noise")
-parRandom.normal(1., noise)
-pr_s = model.generate_vector(PARAMETER)
-post_s = model.generate_vector(PARAMETER)
+hp.parRandom.normal(1., noise)
+pr_s = model.generate_vector(hp.PARAMETER)
+post_s = model.generate_vector(hp.PARAMETER)
 nu.sample(noise, pr_s, post_s, add_mean=True)
-x0 = hm.dfVector2npArray(post_s)
+x0 = hm.dlVector2npArray(post_s)
 
 # Implement MCMC simulations
 for mName, method in method_list.items():
@@ -879,7 +883,7 @@ for mName, method in method_list.items():
           "MCMC samples using", mName)
     
 print("\n")
-print("Parameter space dimension:", Vh[PARAMETER].dim())
+print("Parameter space dimension:", Vh[hp.PARAMETER].dim())
 print("Number of samples:", options['NumSamples'] - options['BurnIn'] + 1)
 
 # Keep track of the quantity of interest
