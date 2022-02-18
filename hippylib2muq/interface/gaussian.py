@@ -53,7 +53,8 @@ class LaplaceGaussian(mm.PyGaussianBase):
 
         self.xa0 = const_dlVector(self.prior.R, 0)
         self.xa1 = const_dlVector(self.prior.R, 1)
-        self.noise = const_dlVector(self.prior.sqrtR, 1)
+        self.noise = dl.Vector()
+        self.prior.init_vector(self.noise, 'noise')
         self.sample = const_dlVector(self.prior.R, 1)
 
     def ApplyCovariance(self, x):
