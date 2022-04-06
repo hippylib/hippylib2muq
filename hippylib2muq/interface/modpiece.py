@@ -137,7 +137,14 @@ class Param2LogLikelihood(mm.PyModPiece):
         :param numpy::ndarray sens: sensitivity values
         :param numpy::ndarray vec: input vector Hessian applies to
         """
-        assert inWrt1 == 0 and inWrt2 == 0
+        assert inWrt1 == 0 and inWrt2 <2
+
+        # If we want the second derivative wrt to the sensitivity vector...
+        if(inWrt2==1):
+            # The Hessian, which is the Jacobian of the gradient, is just the Jacobian of the model in this case...
+            self.Jacobian(outWrt, inWrt1, inputs)
+            self.hessAction = self.jacobian[0,:] * vec[0]
+            return 
 
         npArray2dlVector(inputs[0], self.m)
         x = [self.u, self.m, self.p]
