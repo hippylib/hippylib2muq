@@ -57,7 +57,7 @@ A complete API documentation of `hIPPYlib-MUQ` is available
 
 - Ki-Tae Kim, University of California, Merced
 - Umberto Villa, Washington University in St. Louis
-- Matthew Parno, The United States Army Corps of Engineers 
+- Matthew Parno, Dartmouth College
 - Noemi Petra, University of California, Merced
 - Youssef Marzouk, Massachusetts Institute of Technology
 - Omar Ghattas, The University of Texas at Austin
