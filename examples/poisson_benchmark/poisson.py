@@ -144,7 +144,7 @@ class PointwiseStateObservation(hl.PointwiseStateObservation):
                 + (h - x) * (h - y) * S(x, y)
                 + (x + h) * (h - y) * S(x + h, y)
                 + (h - x) * (y + h) * S(x, y + h)
-            ) / h ** 2
+            ) / h**2
 
         B = np.zeros((obs_points.shape[0], Vh.dim()))
         dof2coord = Vh.tabulate_dof_coordinates()
@@ -174,6 +174,7 @@ class Prior:
         I.zero()
         I.ident_zeros()
         self.R = I / self.variance
+        self.sqrtR = I / math.sqrt(self.variance)
         self.Rsolver = hl.PETScLUSolver(Vh.mesh().mpi_comm())
         self.Rsolver.set_operator(self.R)
 
@@ -203,7 +204,7 @@ class Prior:
         self.R.mult(d, out)
 
     def sample(self, noise, s, add_mean=True):
-        rhs = noise
+        rhs = self.sqrtR*noise
         self.Rsolver.solve(s, rhs)
 
         if add_mean:
@@ -263,7 +264,7 @@ class Model(hl.Model):
         if component == "ALL":
             x = [
                 self.problem.generate_state(),
-                self.problem.generate_parameter(),
+                dl.Function(self.problem.Vh0).vector(),
                 self.problem.generate_state(),
             ]
         elif component == hl.STATE:
@@ -584,6 +585,44 @@ def generate_starting():
     return x0
 
 
+def sample_from_la(nsamps):
+    noise = dl.Vector()
+    nu.init_vector(noise, "noise")
+    pr_s = model.generate_vector(hl.PARAMETER)
+    post_s = model.generate_vector(hl.PARAMETER)
+
+    samples = np.empty((Vh[hl.PARAMETER].dim(), nsamps))
+    for i in range(nsamps):
+        hl.parRandom.normal(1.0, noise)
+        nu.sample(noise, pr_s, post_s, add_mean=True)
+        samples[:, i] = hm.dlVector2npArray(post_s)
+
+    plt.plot(samples[0, :])
+    plt.show()
+
+
+def sample_from_prior(nsamps, plotting=False):
+    noise = dl.Vector()
+    prior.init_vector(noise, "noise")
+    s = dl.Vector()
+    prior.init_vector(s, 0)
+
+    samps = np.zeros((Vh[hl.PARAMETER].dim(), nsamps))
+
+    for i in range(nsamps):
+        hl.parRandom.normal(1.0, noise)
+        prior.sample(noise, s)
+
+        samps[:, i] = s[:]
+
+    if plotting:
+        plt.plot(samps)
+        plt.show()
+
+    exp_m = np.exp(samps)
+    print("Mean of exp(m): ", exp_m.mean())
+
+
 def generate_MCMCsamples(mcmc_parameters, fname=None):
     problem = setup_modpiece(
         mcmc_parameters["prior"],
@@ -606,6 +645,7 @@ def generate_MCMCsamples(mcmc_parameters, fname=None):
 
     m0 = generate_starting()
     samps, acceptrate, etime = run_MCMC(opts, kern, m0)
+
     if fname is not None:
         with h5py.File(
             os.path.dirname(os.path.realpath(__file__)) + "/" + fname + ".h5", "w"
@@ -669,6 +709,9 @@ pde = PDEVariationalProblem(Vh, pde_varf, bc, bc)
 prior_std = 2
 prior_variance = prior_std * prior_std
 prior = Prior(Vh[hl.PARAMETER], prior_variance)
+prior.mean[:] = np.ones(Vh[hl.PARAMETER].dim()) * prior_variance
+
+sample_from_prior(100000)
 
 #
 # Set up the misfit
@@ -694,6 +737,7 @@ misfit.noise_variance = noise_std_dev * noise_std_dev
 #
 model = Model(pde, prior, misfit)
 
+
 #
 # Compute the MAP point
 #
@@ -701,7 +745,7 @@ m = prior.mean.copy()
 solver = hl.ReducedSpaceNewtonCG(model)
 solver.parameters["rel_tolerance"] = 1e-8
 solver.parameters["abs_tolerance"] = 1e-12
-solver.parameters["max_iter"] = 25
+solver.parameters["max_iter"] = 50
 solver.parameters["GN_iter"] = 5
 solver.parameters["globalization"] = "LS"
 solver.parameters["LS"]["c_armijo"] = 1e-4
@@ -727,7 +771,7 @@ dl.File(results_path + "map.pvd") << map
 #
 model.setPointForHessianEvaluations(x, gauss_newton_approx=False)
 Hmisfit = hl.ReducedHessian(model, misfit_only=True)
-k = 60
+k = 64
 p = 20
 
 Omega = hl.MultiVector(x[hl.PARAMETER], k + p)
@@ -744,21 +788,29 @@ plt.ylabel("eigenvalue")
 plt.show()
 
 #
+# Samples from LA
+#
+# sample_from_la(2000)
+
+#
 #  Set up ModPieces for implementing MCMC methods
 #
-mcmc_parameters = {}
-mcmc_parameters["method"] = inargs["method"]
-mcmc_parameters["nsamples"] = inargs["nsamples"]
-mcmc_parameters["burnin"] = int(mcmc_parameters["nsamples"] * 0.05)
-mcmc_parameters["beta"] = inargs["beta"]
-mcmc_parameters["tau"] = 0.0
-if mcmc_parameters["method"] == "hpcn":
-    mcmc_parameters["proposal_name"] = "pcn"
-else:
-    raise NotImplementedError()
-mcmc_parameters["proposal_gauss"] = hm.LAPosteriorGaussian(nu)
-mcmc_parameters["prior"] = mm.Gaussian(
-    prior.mean[:], prior.R.array(), mm.Gaussian.Mode.Precision
-)
-mcmc_parameters["likelihood_model"] = hm.Param2LogLikelihood(model)
-generate_MCMCsamples(mcmc_parameters, fname=inargs["fname"])
+# mcmc_parameters = {}
+# mcmc_parameters["method"] = inargs["method"]
+# mcmc_parameters["nsamples"] = inargs["nsamples"]
+# mcmc_parameters["burnin"] = int(mcmc_parameters["nsamples"] * 0.1)
+# mcmc_parameters["beta"] = inargs["beta"]
+# mcmc_parameters["tau"] = 0.0
+# if mcmc_parameters["method"] == "hpcn":
+#     mcmc_parameters["proposal_name"] = "pcn"
+# else:
+#     raise NotImplementedError()
+# mcmc_parameters["proposal_gauss"] = hm.LAPosteriorGaussian(nu)
+# # mcmc_parameters["proposal_gauss"] = mm.Gaussian(
+# #     prior.mean[:], prior.R.array(), mm.Gaussian.Mode.Precision
+# # )
+# mcmc_parameters["prior"] = mm.Gaussian(
+#     prior.mean[:], prior.R.array(), mm.Gaussian.Mode.Precision
+# )
+# mcmc_parameters["likelihood_model"] = hm.Param2LogLikelihood(model)
+# generate_MCMCsamples(mcmc_parameters, fname=inargs["fname"])
