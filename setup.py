@@ -35,7 +35,8 @@ REQUIREMENTS = [
     'hippylib',
     'seaborn',
     'statsmodels',
-    'h5py'
+    'h5py',
+    'pyyaml'
 ]
 
 setup(name="hippylib2muq",
