@@ -204,7 +204,7 @@ class Prior:
         self.R.mult(d, out)
 
     def sample(self, noise, s, add_mean=True):
-        rhs = self.sqrtR*noise
+        rhs = self.sqrtR * noise
         self.Rsolver.solve(s, rhs)
 
         if add_mean:
@@ -574,18 +574,7 @@ def run_MCMC(options, kernel, startpoint):
         return samples, kernel.AcceptanceRates(), sampler.TotalTime()
 
 
-def generate_starting():
-    noise = dl.Vector()
-    nu.init_vector(noise, "noise")
-    hl.parRandom.normal(1.0, noise)
-    pr_s = model.generate_vector(hl.PARAMETER)
-    post_s = model.generate_vector(hl.PARAMETER)
-    nu.sample(noise, pr_s, post_s, add_mean=True)
-    x0 = hm.dlVector2npArray(post_s)
-    return x0
-
-
-def sample_from_la(nsamps):
+def sample_from_la(nsamps, plotting=False):
     noise = dl.Vector()
     nu.init_vector(noise, "noise")
     pr_s = model.generate_vector(hl.PARAMETER)
@@ -597,8 +586,11 @@ def sample_from_la(nsamps):
         nu.sample(noise, pr_s, post_s, add_mean=True)
         samples[:, i] = hm.dlVector2npArray(post_s)
 
-    plt.plot(samples[0, :])
-    plt.show()
+    return samples
+
+    if plotting:
+        plt.plot(samples[0, :])
+        plt.show()
 
 
 def sample_from_prior(nsamps, plotting=False):
@@ -643,7 +635,8 @@ def generate_MCMCsamples(mcmc_parameters, fname=None):
     )
     kern = setup_kernel("mh", opts, problem, prop)
 
-    m0 = generate_starting()
+    m0 = sample_from_la(1)[:, 0]
+    # m0 = model.generate_vector(hl.PARAMETER)
     samps, acceptrate, etime = run_MCMC(opts, kern, m0)
 
     if fname is not None:
@@ -654,8 +647,6 @@ def generate_MCMCsamples(mcmc_parameters, fname=None):
             fid["/samples"] = samps.AsMatrix()
             fid["/samples"].attrs["AR"] = acceptrate
             fid["/samples"].attrs["etime"] = etime
-            # covariance = samps.Covariance()
-            # fid["/covariance"] = covariance
 
 
 #
@@ -711,7 +702,8 @@ prior_variance = prior_std * prior_std
 prior = Prior(Vh[hl.PARAMETER], prior_variance)
 prior.mean[:] = np.ones(Vh[hl.PARAMETER].dim()) * prior_variance
 
-sample_from_prior(100000)
+# sample from the prior
+# sample_from_prior(1000000)
 
 #
 # Set up the misfit
@@ -761,9 +753,8 @@ print("Termination reason: ", solver.termination_reasons[solver.reason])
 print("Final gradient norm: ", solver.final_grad_norm)
 print("Final cost: ", solver.final_cost)
 
-
-map = dl.Function(Vh[hl.PARAMETER], m)
-dl.File(results_path + "map.pvd") << map
+# map = dl.Function(Vh[hl.PARAMETER], m)
+# dl.File(results_path + "map.pvd") << map
 
 
 #
@@ -771,8 +762,8 @@ dl.File(results_path + "map.pvd") << map
 #
 model.setPointForHessianEvaluations(x, gauss_newton_approx=False)
 Hmisfit = hl.ReducedHessian(model, misfit_only=True)
-k = 64
-p = 20
+k = 60
+p = 12
 
 Omega = hl.MultiVector(x[hl.PARAMETER], k + p)
 hl.parRandom.normal(1.0, Omega)
@@ -781,11 +772,11 @@ lmbda, V = hl.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k)
 nu = hl.GaussianLRPosterior(prior, lmbda, V)
 nu.mean = x[hl.PARAMETER]
 
-plt.plot(range(0, k), lmbda, "b*", range(0, k + 1), np.ones(k + 1), "-r")
-plt.yscale("log")
-plt.xlabel("number")
-plt.ylabel("eigenvalue")
-plt.show()
+# plt.plot(range(0, k), lmbda, "b*", range(0, k + 1), np.ones(k + 1), "-r")
+# plt.yscale("log")
+# plt.xlabel("number")
+# plt.ylabel("eigenvalue")
+# plt.show()
 
 #
 # Samples from LA
@@ -795,22 +786,27 @@ plt.show()
 #
 #  Set up ModPieces for implementing MCMC methods
 #
-# mcmc_parameters = {}
-# mcmc_parameters["method"] = inargs["method"]
-# mcmc_parameters["nsamples"] = inargs["nsamples"]
-# mcmc_parameters["burnin"] = int(mcmc_parameters["nsamples"] * 0.1)
-# mcmc_parameters["beta"] = inargs["beta"]
-# mcmc_parameters["tau"] = 0.0
-# if mcmc_parameters["method"] == "hpcn":
-#     mcmc_parameters["proposal_name"] = "pcn"
-# else:
-#     raise NotImplementedError()
-# mcmc_parameters["proposal_gauss"] = hm.LAPosteriorGaussian(nu)
-# # mcmc_parameters["proposal_gauss"] = mm.Gaussian(
-# #     prior.mean[:], prior.R.array(), mm.Gaussian.Mode.Precision
-# # )
-# mcmc_parameters["prior"] = mm.Gaussian(
+mcmc_parameters = {}
+mcmc_parameters["method"] = inargs["method"]
+mcmc_parameters["nsamples"] = inargs["nsamples"]
+mcmc_parameters["burnin"] = int(mcmc_parameters["nsamples"] * 0.1)
+mcmc_parameters["beta"] = inargs["beta"]
+mcmc_parameters["tau"] = 0.0
+if mcmc_parameters["method"] == "hpcn":
+    mcmc_parameters["proposal_name"] = "pcn"
+else:
+    raise NotImplementedError()
+
+# H-pCN proposal
+mcmc_parameters["proposal_gauss"] = hm.LAPosteriorGaussian(nu)
+
+# pCN proposal
+# mcmc_parameters["proposal_gauss"] = mm.Gaussian(
 #     prior.mean[:], prior.R.array(), mm.Gaussian.Mode.Precision
 # )
-# mcmc_parameters["likelihood_model"] = hm.Param2LogLikelihood(model)
-# generate_MCMCsamples(mcmc_parameters, fname=inargs["fname"])
+
+mcmc_parameters["prior"] = mm.Gaussian(
+    prior.mean[:], prior.R.array(), mm.Gaussian.Mode.Precision
+)
+mcmc_parameters["likelihood_model"] = hm.Param2LogLikelihood(model)
+generate_MCMCsamples(mcmc_parameters, fname=inargs["fname"])

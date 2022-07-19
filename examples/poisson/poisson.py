@@ -246,7 +246,6 @@ if __name__ == "__main__":
         "delta={0}, gamma={1}, order={2}".format(delta, gamma, 2)
     )
 
-
     #
     #  Set up the misfit functional and generate synthetic observations
     #

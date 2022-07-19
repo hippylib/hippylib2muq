@@ -1,5 +1,5 @@
 # Number of elements in x and y directions
-nelement: 32
+nelement: 16
 
 # if True, some results are plotted
 plot: False
@@ -14,7 +14,7 @@ MCMC:
     # The name of MCMC method:
     # select one of
     # {"pcn","hpcn","mala","hmala","inf_mala","inf_hmala","dr","dr_inf","dili"}
-    name: 'pcn'
+    name: 'hpcn'
     # the domain over which the Hessian is averaged; only applicable when
     # "dili" is chosen for the MCMC method
     # select one of
@@ -28,5 +28,5 @@ MCMC:
     # Number of independent MCMC chains to run
     nchains: 1
     # Number of samples in each chain
-    nsamples: 200
+    nsamples: 2000
 

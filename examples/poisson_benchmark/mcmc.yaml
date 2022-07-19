@@ -1,4 +1,4 @@
 fname: 'hpcn0'
 method: 'hpcn'
-nsamples: 1000
-beta: 1.0e-1
+nsamples: 200
+beta: 2.0e-1
