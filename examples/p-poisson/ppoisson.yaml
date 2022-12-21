@@ -1,0 +1,16 @@
+# Number of elements in x and y directions and z direction
+nelement:
+  - 128
+  - 3
+
+write_data: True
+
+savefig: False
+
+nsample: 25000
+
+fname: 'hpcn0'
+method: 'hpcn'
+
+beta: 0.2
+tau: 0.0

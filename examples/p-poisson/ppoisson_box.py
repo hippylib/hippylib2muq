@@ -1,58 +1,30 @@
-#  hIPPYlib-MUQ interface for large-scale Bayesian inverse problems
-#  Copyright (c) 2019-2020, The University of Texas at Austin,
-#  University of California--Merced, Washington University in St. Louis,
-#  The United States Army Corps of Engineers, Massachusetts Institute of Technology
-
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-"""
-The basic part of this code is taken from
-https://github.com/hippylib/hippylib/blob/master/applications/poisson/model_subsurf.py.
-
-Input values of this script should be defined in "ppoisson_box.yaml"
-"""
 import os
 import sys
-
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(""))))
-
 import math
 import yaml
+
+#  import argparse
 import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.tri as tri
 
 import dolfin as dl
-import hippylib as hp
+from hippylib import *
+
 import muq.Modeling as mm
 import muq.SamplingAlgorithms as ms
 import hippylib2muq as hm
 
 from nonlinearPPoissonProblem import *
 
+# np.random.seed(seed=1)
+
 
 def true_model(prior):
-    """
-    Define true parameter field.
-
-    In this example, we sample from the prior and take it as the true parameter
-    field.
-    """
     noise = dl.Vector()
     prior.init_vector(noise, "noise")
-    hp.parRandom.normal(1.0, noise)
+    parRandom.normal(1.0, noise)
     mtrue = dl.Vector()
     prior.init_vector(mtrue, 0)
     prior.sample(noise, mtrue)
@@ -63,8 +35,12 @@ def export2XDMF(x, Vh, fid):
     fid.parameters["functions_share_mesh"] = True
     fid.parameters["rewrite_function_mesh"] = False
 
-    fun = hp.vector2Function(x, Vh)
+    fun = vector2Function(x, Vh)
     fid.write(fun, 0)
+
+
+def Boundary(x, on_boundary):
+    return on_boundary
 
 
 class BottomBoundary(dl.SubDomain):
@@ -87,30 +63,54 @@ class TopBoundary(dl.SubDomain):
         return on_boundary and dl.near(x[2], Height)
 
 
+def generate_MHoptions():
+    opts = dict()
+    opts["BurnIn"] = inargs["nsample"] // 10
+    opts["NumSamples"] = inargs["nsample"] + opts["BurnIn"]
+    opts["PrintLevel"] = 2
+    opts["Beta"] = inargs["beta"]
+    opts["StepSize"] = inargs["tau"]
+    return opts
+
+
+def setup_proposal(propName, options, problem, propGaussian):
+    if propName == "pcn":
+        proposal = ms.CrankNicolsonProposal(options, problem, propGaussian)
+    return proposal
+
+
+def setup_kernel(kernName, options, problem, proposal):
+    if kernName == "mh":
+        kernel = ms.MHKernel(options, problem, proposal)
+
+    return kernel
+
+
 def generate_starting():
-    """
-    Generate an initial parameter sample from the Laplace posterior for the MUQ
-    MCMC simulation
-    """
     noise = dl.Vector()
     nu.init_vector(noise, "noise")
-    hp.parRandom.normal(1.0, noise)
-    pr_s = model.generate_vector(hp.PARAMETER)
-    post_s = model.generate_vector(hp.PARAMETER)
+    parRandom.normal(1.0, noise)
+    pr_s = model.generate_vector(PARAMETER)
+    post_s = model.generate_vector(PARAMETER)
     nu.sample(noise, pr_s, post_s, add_mean=True)
     x0 = hm.dlVector2npArray(post_s)
     return x0
 
 
-def data_file(action, target=None, data=None):
-    """
-    Read or write the observations.
+def run_MCMC(options, kernel, startpoint):
+    # Construct the MCMC sampler
+    sampler = ms.SingleChainMCMC(options, [kernel])
 
-    :param action: "w" is to write the date to the file named "data.h5" and "r"
-                   is to read the data from "data.h5"
-    :param target: the location of the observation data
-    :param data: the observation data
-    """
+    # Run the MCMC sampler
+    samples = sampler.Run([startpoint])
+
+    if "AcceptanceRate" in dir(kernel):
+        return samples, kernel.AcceptanceRate(), sampler.TotalTime()
+    elif "AcceptanceRates" in dir(kernel):
+        return samples, kernel.AcceptanceRates(), sampler.TotalTime()
+
+
+def data_file(action, target=None, data=None):
     f = h5py.File("data.h5", action)
     if action == "w":
         f["/target"] = target
@@ -174,13 +174,29 @@ class ExtractBottomData:
         plt.show()
 
 
+class TracerBottomFlux:
+    def __init__(self, n):
+        self.m = pde.generate_parameter()
+        self.mf = vector2Function(self.m, Vh[PARAMETER])
+        self.f = self.mf * ds(1)
+
+        self.tracer = QoiTracer(n)
+        self.ct = 0
+
+    def update_tracer(self, sample):
+        self.mf.vector().set_local(sample)
+        y = dl.assemble(self.f)
+        self.tracer.append(self.ct, y)
+        self.ct += 1
+
+
 class TracerSideFlux:
     def __init__(self, ds, p, n):
         self.n = dl.FacetNormal(mesh)
         self.ds = ds
         self.p = p
 
-        self.tracer = hp.QoiTracer(n)
+        self.tracer = QoiTracer(n)
         self.ct = 0
 
     def form(self, u):
@@ -190,7 +206,7 @@ class TracerSideFlux:
         return etah ** (0.5 * (self.p - 2)) * dl.dot(grad_u, self.n) * self.ds
 
     def eval(self, u):
-        uf = hp.vector2Function(u, Vh[hp.STATE])
+        uf = vector2Function(u, Vh[STATE])
         return dl.assemble(self.form(uf))
 
     def update_tracer(self, state):
@@ -211,25 +227,48 @@ def paramcoord2eigencoord(V, B, x):
     """
     # convert np.array to multivector
     nvec = 1
-    Xvecs = hp.MultiVector(pde.generate_parameter(), nvec)
+    Xvecs = MultiVector(model.generate_vector(PARAMETER), nvec)
     hm.npArray2dlVector(x, Xvecs[0])
 
     # multipy B
-    BX = hp.MultiVector(Xvecs[0], nvec)
-    hp.MatMvMult(B, Xvecs, BX)
+    BX = MultiVector(Xvecs[0], nvec)
+    MatMvMult(B, Xvecs, BX)
     VtBX = BX.dot_mv(V)
 
     return VtBX.transpose()
 
 
+# def check_positiveness_parm2obs(nsamps: int):
+#     noise = dl.Vector()
+#     prior.init_vector(noise, "noise")
+#     m = dl.Vector()
+#     prior.init_vector(m, 0)
+#     u = pde.generate_state()
+#     Bu = dl.Vector(misfit.B.mpi_comm())
+#     misfit.B.init_vector(Bu, 0)
+#
+#     for i in range(nsamps):
+#         parRandom.normal(1.0, noise)
+#         prior.sample(noise, m)
+#
+#         x = [u, m, None]
+#
+#         pde.solveFwd(x[STATE], x)
+#         misfit.B.mult(x[STATE], Bu)
+#
+#         if (Bu[:] < 0.).any():
+#             print("Negative values of Bu encountered.")
+
+
 if __name__ == "__main__":
-    with open("ppoisson_box.yaml") as fid:
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    with open(dir_path + "/ppoisson.yaml") as fid:
         inargs = yaml.full_load(fid)
 
     sep = "\n" + "#" * 80 + "\n"
 
     #
-    #  Set up the mesh and finite element function spaces
+    #  Set up the mesh and finite element spacs
     #
     ndim = 3
     Length = 1.0
@@ -242,83 +281,112 @@ if __name__ == "__main__":
 
     mesh = dl.BoxMesh(dl.Point(0, 0, 0), dl.Point(Length, Width, Height), nx, ny, nz)
     bottom = BottomBoundary()
-    side = SideBoundary()
-    top = TopBoundary()
+    # side = SideBoundary()
+    # top = TopBoundary()
 
-    Vh1 = dl.FunctionSpace(mesh, "Lagrange", 1)
+    # mesh for the parameter field
+    mesh_param = dl.RectangleMesh(dl.Point(0, 0), dl.Point(Length, Width), nx, ny)
+
+    rank = dl.MPI.rank(mesh.mpi_comm())
+
+    Vh1 = dl.FunctionSpace(mesh_param, "Lagrange", 1)
     Vh2 = dl.FunctionSpace(mesh, "Lagrange", 1)
     Vh = [Vh2, Vh1, Vh2]
 
-    print(
-        "Number of dofs: STATE={0}, PARAMETER={1}, ADJOINT={2}".format(
-            Vh[hp.STATE].dim(), Vh[hp.PARAMETER].dim(), Vh[hp.ADJOINT].dim()
+    if rank == 0:
+        print(
+            "Number of dofs: STATE={0}, PARAMETER={1}, ADJOINT={2}".format(
+                Vh[STATE].dim(), Vh[PARAMETER].dim(), Vh[ADJOINT].dim()
+            )
         )
-    )
 
-    extract_bottom = ExtractBottomData(mesh, Vh[hp.PARAMETER])
+    # extract_bottom = ExtractBottomData(mesh, Vh[PARAMETER])
 
     #
     #  Set up the forward problem
     #
     dl.parameters["form_compiler"]["quadrature_degree"] = 3
 
-    bc = dl.DirichletBC(Vh[hp.STATE], dl.Constant(0.0), side)
+    # bc = dl.DirichletBC(Vh[STATE], dl.Constant(0.0), side)
 
     #  Bottom and side boundary markers
     boundary_markers = dl.MeshFunction("size_t", mesh, mesh.geometry().dim() - 1)
     boundary_markers.set_all(0)
 
     bottom.mark(boundary_markers, 1)
-    side.mark(boundary_markers, 2)
+    # side.mark(boundary_markers, 2)
     ds = dl.Measure("ds", domain=mesh, subdomain_data=boundary_markers)
 
     order_ppoisson = 3.0
-    functional = NonlinearPPossionForm(order_ppoisson, None, ds(1))
-    pde = EnergyFunctionalPDEVariationalProblem(Vh, functional, bc, bc)
+    f = dl.Constant(1.0)
+    functional = NonlinearPPossionForm(order_ppoisson, f, ds(1))
+    pde = EnergyFunctionalPDEVariationalProblem(Vh, functional, [], [])
 
     pde.solver = dl.PETScKrylovSolver("cg", "icc")  # amg_method())
     pde.solver_fwd_inc = dl.PETScKrylovSolver("cg", "icc")  # amg_method())
     pde.solver_adj_inc = dl.PETScKrylovSolver("cg", "icc")  # amg_method())
     pde.fwd_solver.solver = dl.PETScKrylovSolver("cg", "icc")  # amg_method())
 
-    pde.fwd_solver.parameters["gdu_tolerance"] = 1e-16
+    # pde.fwd_solver.parameters["print_level"] = 1
+    pde.fwd_solver.parameters["gdu_tolerance"] = 1e-14
     pde.fwd_solver.parameters["LS"]["max_backtracking_iter"] = 20
 
-    #  pde.solver.parameters["relative_tolerance"] = 1e-15
-    #  pde.solver.parameters["absolute_tolerance"] = 1e-20
-    #  pde.solver_fwd_inc.parameters = pde.solver.parameters
-    #  pde.solver_adj_inc.parameters = pde.solver.parameters
-    #  pde.fwd_solver.solver.parameters = pde.solver.parameters
+    pde.solver_fwd_inc.parameters = pde.solver.parameters
+    pde.solver_adj_inc.parameters = pde.solver.parameters
+    pde.fwd_solver.solver.parameters = pde.solver.parameters
 
     #
-    # Set up the prior
+    #  Set up the prior
     #
-    gamma = 1.0
-    delta = 1.0
+    # gamma = 1.0
+    # delta = 1.0
+    gamma = 0.1
+    delta = 0.5
 
-    prior = hp.BiLaplacianPrior(Vh[hp.PARAMETER], gamma, delta, robin_bc=True)
-    print(
-        "Prior regularization: (delta_x - gamma*Laplacian)^order: "
-        "delta={0}, gamma={1}, order={2}".format(delta, gamma, 2)
-    )
+    theta0 = 2.0
+    theta1 = 0.5
+    alpha = math.pi / 4
+    anis_diff = dl.CompiledExpression(ExpressionModule.AnisTensor2D(), degree=1)
+    anis_diff.set(theta0, theta1, alpha)
+
+    prior = BiLaplacianPrior(Vh[PARAMETER], gamma, delta, anis_diff, robin_bc=True)
+    if rank == 0:
+        print(
+            "Prior regularization: (delta_x - gamma*Laplacian)^order: "
+            "delta={0}, gamma={1}, order={2}".format(delta, gamma, 2)
+        )
+        print("Correlatio length: ", math.sqrt(gamma/delta))
+        print("Variace: ", 1./(gamma*delta))
+        print("")
+
+    mtrue0 = true_model(prior)
+
+    if inargs["savefig"]:
+        pp = nb.plot(
+            dl.Function(Vh[PARAMETER], mtrue0), colorbar=False, cmap="coolwarm"
+        )
+        plt.gca().set_aspect("equal")
+        # plt.show()
+        plt.savefig("mtrue.png", bbox_inches="tight", pad_inches=0)
+        plt.close()
+
+    mtrue = pde.parameter_projection(mtrue0)
+
+    # ##########################################################
+    # # with dl.XDMFFile(mesh.mpi_comm(), 'mtrue.xdmf') as fid:
+    # #     export2XDMF(mtrue, Vh[PARAMETER], fid)
+    # #
+    # # marr = mtrue.get_local()
+    # # extract_bottom.plot_array(marr, fname='mtrue.png')
+    # ##########################################################
 
     #
     #  Set up the misfit functional and generate synthetic observations
     #
     ntargets = 300
-    rel_noise = 0.005
+    Mpar = 1e4
 
-    print("Number of observation points: {0}".format(ntargets))
-
-    if inargs["have_data"]:
-        targets, data = data_file("r")
-        misfit = hp.PointwiseStateObservation(Vh[hp.STATE], targets)
-        misfit.d.set_local(data)
-
-        MAX = misfit.d.norm("linf")
-        noise_std_dev = rel_noise * MAX
-        misfit.noise_variance = noise_std_dev * noise_std_dev
-    else:
+    if inargs["write_data"]:
         eps = 0.05
         dummy1 = np.random.uniform(
             Length * (0.0 + eps), Length * (1.0 - eps), [ntargets, 1]
@@ -329,104 +397,145 @@ if __name__ == "__main__":
         dummy3 = np.full((ntargets, 1), Height)
         targets = np.concatenate([dummy1, dummy2, dummy3], axis=1)
 
-        misfit = hp.PointwiseStateObservation(Vh[hp.STATE], targets)
+        if rank == 0:
+            print("Number of observation points: {0}".format(ntargets))
 
-        mtrue = true_model(prior)
+        misfit = MultPointwiseStateObservation(Vh[STATE], targets, Mpar)
 
-        # Export true parameter to mtrue.xdmf file
-        with dl.XDMFFile(mesh.mpi_comm(), "mtrue.xdmf") as fid:
-            export2XDMF(mtrue, Vh[hp.PARAMETER], fid)
+        # True state
 
         utrue = pde.generate_state()
         x = [utrue, mtrue, None]
-        pde.solveFwd(x[hp.STATE], x)
-        misfit.B.mult(x[hp.STATE], misfit.d)
-        MAX = misfit.d.norm("linf")
-        noise_std_dev = rel_noise * MAX
-        misfit.noise_variance = noise_std_dev * noise_std_dev
+        pde.solveFwd(x[STATE], x)
 
-        hp.parRandom.normal_perturb(noise_std_dev, misfit.d)
+        misfit.B.mult(x[STATE], misfit.d)
+        y_true = misfit.d.get_local()
+        parRandom.speckle(Mpar, misfit.d)
+        y_noise = misfit.d.get_local()
+        # print("Max error: ", np.linalg.norm((y_noise - y_true) / y_true, ord=np.inf))
 
         data_file("w", target=targets, data=misfit.d.get_local())
 
-        #  Export true state solution to uture.xdmf file
-        with dl.XDMFFile(mesh.mpi_comm(), "utrue.xdmf") as fid:
-            export2XDMF(utrue, Vh[hp.STATE], fid)
+        ##########################################################
+        # with dl.XDMFFile(mesh.mpi_comm(), 'utrue.xdmf') as fid:
+        #     export2XDMF(utrue, Vh[STATE], fid)
+        ##########################################################
 
-    model = hp.Model(pde, prior, misfit)
+    else:
+        targets, data = data_file("r")
+
+        misfit = MultPointwiseStateObservation(Vh[STATE], targets, Mpar)
+        misfit.d.set_local(data)
+
+    # Check positiveness of parameter to observable map
+    # pde.fwd_solver.parameters["print_level"] = 1
+    # pde.fwd_solver.parameters["LS"]["max_backtracking_iter"] = 100
+    # pde.fwd_solver.parameters["gdu_tolerance"] = 1e-16
+    # check_positiveness_parm2obs(1000)
+
+    model = MixedDimensionModel(pde, prior, misfit)
+
+    #
+    # Gradient check
+    #
+    # m0 = dl.interpolate(dl.Expression("sin(x[0])", degree=5), Vh[PARAMETER])
+    # _ = modelVerify(model, m0.vector())
+    # plt.show()
 
     #
     #  Compute the MAP point
     #
-    print(sep, "Compute the MAP point", sep)
-
     m = prior.mean.copy()
-    solver = hp.ReducedSpaceNewtonCG(model)
-    solver.parameters["rel_tolerance"] = 1e-8
-    solver.parameters["abs_tolerance"] = 1e-12
+    solver = ReducedSpaceNewtonCG(model)
+    # solver.parameters["rel_tolerance"] = 1e-8
+    # solver.parameters["abs_tolerance"] = 1e-12
     solver.parameters["max_iter"] = 25
     solver.parameters["GN_iter"] = 5
     solver.parameters["globalization"] = "LS"
+    solver.parameters["LS"]["c_armijo"] = 1e-4
 
     x = solver.solve([None, m, None])
 
-    if solver.converged:
-        print("\nConverged in ", solver.it, " iterations.")
-    else:
-        print("\nNot Converged")
+    if rank == 0:
+        if solver.converged:
+            print("\nConverged in ", solver.it, " iterations.")
+        else:
+            print("\nNot Converged")
 
-    print("Termination reason:  ", solver.termination_reasons[solver.reason])
-    print("Final gradient norm: ", solver.final_grad_norm)
-    print("Final cost:          ", solver.final_cost)
+        print("Termination reason:  ", solver.termination_reasons[solver.reason])
+        print("Final gradient norm: ", solver.final_grad_norm)
+        print("Final cost:          ", solver.final_cost)
 
-    # Export the MAP solution to map.xdmf file
-    with dl.XDMFFile(mesh.mpi_comm(), "map.xdmf") as fid:
-        export2XDMF(x[hp.PARAMETER], Vh[hp.PARAMETER], fid)
+    if inargs["savefig"]:
+        pp = nb.plot(dl.Function(Vh[PARAMETER], m), colorbar=False, cmap="coolwarm")
+        plt.gca().set_aspect("equal")
+        # plt.show()
+        plt.savefig("map.png", bbox_inches="tight", pad_inches=0)
+        plt.close()
 
-    # Export the state solution corresponding to the MAP point to
-    # mat_state.xdmf file
-    with dl.XDMFFile(mesh.mpi_comm(), "map_state.xdmf") as fid:
-        export2XDMF(x[hp.STATE], Vh[hp.STATE], fid)
+    ##########################################################
+    # with dl.XDMFFile(mesh.mpi_comm(), "map.xdmf") as fid:
+    #     export2XDMF(x[PARAMETER], Vh[PARAMETER], fid)
+    #
+    #  marr = x[PARAMETER].get_local()
+    #  extract_bottom.plot_array(marr, fname='map.png')
+    ##########################################################
+    #  ##########################################################
+    #  with dl.XDMFFile(mesh.mpi_comm(), 'map_state.xdmf') as fid:
+    #      export2XDMF(x[STATE], Vh[STATE], fid)
+    #  ###########################################################
 
     #
     #  Compute the low-rank based Laplace approximation of the posterior
     #
-    print(
-        sep,
-        "Compute the low-rank based Laplace approximation of the posterior",
-        sep,
-    )
     pde.nit = 0
     model.setPointForHessianEvaluations(x, gauss_newton_approx=False)
-    Hmisfit = hp.ReducedHessian(model, misfit_only=True)
+    Hmisfit = ReducedHessian(model, misfit_only=True)
     k = 100
     p = 20
 
-    print(
-        "Single/Double Pass Algorithm. Requested eigenvectors: "
-        "{0}; Oversampling {1}.".format(k, p)
-    )
+    if rank == 0:
+        print(
+            "Single/Double Pass Algorithm. Requested eigenvectors: "
+            "{0}; Oversampling {1}.".format(k, p)
+        )
 
-    Omega = hp.MultiVector(x[hp.PARAMETER], k + p)
-    hp.parRandom.normal(1.0, Omega)
-    lmbda, V = hp.doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k)
+    Omega = MultiVector(x[PARAMETER], k + p)
+    parRandom.normal(1.0, Omega)
+    lmbda, V = doublePassG(Hmisfit, prior.R, prior.Rsolver, Omega, k)
 
-    plt.plot(range(0, k), lmbda, "b*", range(0, k + 1), np.ones(k + 1), "-r")
-    plt.yscale("log")
-    plt.xlabel("number")
-    plt.ylabel("eigenvalue")
-    plt.show()
+    if inargs["savefig"]:
+        plt.plot(range(0, k), lmbda, "b*", range(0, k + 1), np.ones(k + 1), "-r")
+        plt.yscale("log")
+        plt.xlabel("number")
+        plt.ylabel("eigenvalue")
+        plt.show()
 
-    nu = hp.GaussianLRPosterior(prior, lmbda, V)
-    nu.mean = x[hp.PARAMETER]
+    nu = GaussianLRPosterior(prior, lmbda, V)
+    nu.mean = x[PARAMETER]
+    # #
+    # # #  ###########################################################
+    # # #  print("Prior and LA-posterior pointwise variance fields")
+    # # #  nsamples = 5
+    # # #  noise = dl.Vector()
+    # # #  nu.init_vector(noise, "noise")
+    # # #  sprior = dl.Function(Vh[PARAMETER], name="sample_prior")
+    # # #  spost = dl.Function(Vh[PARAMETER], name="sample_post")
+    # # #
+    # # #  for i in range(nsamples):
+    # # #      parRandom.normal(1., noise)
+    # # #      nu.sample(noise, sprior.vector(), spost.vector())
+    # # #      extract_bottom.plot_array(sprior.vector().get_local())#, vmax=1., vmin=-1.)
+    # # #      extract_bottom.plot_array(spost.vector().get_local())#, vmax=1., vmin=-1.)
+    # # #
+    # # #      #  print(sprior.vector().get_local().max(), sprior.vector().get_local().min())
+    # #
+    # # #  ###########################################################
 
     #
     #  Set up ModPieces for implementing MCMC methods
     #
-    print(sep, "Set up ModPieces for implementing MCMC methods", sep)
-
-    # a place holder ModPiece for the parameters
-    idparam = mm.IdentityOperator(Vh[hp.PARAMETER].dim())
+    idparam = mm.IdentityOperator(Vh[PARAMETER].dim())
 
     # log Gaussian Prior ModPiece
     gaussprior = hm.BiLaplaceGaussian(prior)
@@ -450,68 +559,58 @@ if __name__ == "__main__":
     workgraph.AddNode(param2likelihood, "Likelihood")
 
     # Posterior
-    workgraph.AddNode(log_target, "Log_target")
+    workgraph.AddNode(log_target, "Target")
 
     workgraph.AddEdge("Identity", 0, "Prior", 0)
-    workgraph.AddEdge("Prior", 0, "Log_target", 0)
+    workgraph.AddEdge("Prior", 0, "Target", 0)
 
     workgraph.AddEdge("Identity", 0, "Likelihood", 0)
-    workgraph.AddEdge("Likelihood", 0, "Log_target", 1)
+    workgraph.AddEdge("Likelihood", 0, "Target", 1)
 
     # Enable caching
-    if inargs["MCMC"]["name"] not in ("hpcn", ""):
+    if inargs["method"] not in ("hpcn", ""):
         log_gaussprior.EnableCache()
         param2likelihood.EnableCache()
 
     # Construct the problem
-    postDens = workgraph.CreateModPiece("Log_target")
+    postDens = workgraph.CreateModPiece("Target")
     problem = ms.SamplingProblem(postDens)
 
     #
     #  Exploring the posterior via MCMC methods
     #
-    opts = hm.generate_MHoptions()
-    opts["Beta"] = inargs["MCMC"]["beta"]
-    opts["StepSize"] = inargs["MCMC"]["tau"]
-    opts["NumSamples"] = inargs["MCMC"]["nsamples"]
-    opts["BurnIn"] = opts["NumSamples"] // 20
+    opts = generate_MHoptions()
 
-    if inargs["MCMC"]["name"] == "hpcn":
+    if inargs["method"] == "hpcn":
         gaussprop = hm.LAPosteriorGaussian(nu)
         propName = "pcn"
         kernName = "mh"
     else:
         sys.exit()
 
-    propos = hm.setup_proposal(propName, opts, problem, gaussprop)
-    kern = hm.setup_kernel(kernName, opts, problem, propos)
+    propos = setup_proposal(propName, opts, problem, gaussprop)
+    kern = setup_kernel(kernName, opts, problem, propos)
 
-    if inargs["MCMC"]["fname"] != "":
-        nchain = inargs["MCMC"]["nchains"]
+    if inargs["fname"] != "":
+        fid = h5py.File(inargs["fname"] + ".h5", "w")
 
-        fid = h5py.File(inargs["MCMC"]["fname"] + ".h5", "w")
-
-        fid["/"].attrs["Method"] = inargs["MCMC"]["name"]
+        fid["/"].attrs["Method"] = inargs["method"]
         fid["/"].attrs["Beta"] = opts["Beta"]
         fid["/"].attrs["StepSize"] = opts["StepSize"]
     else:
-        nchain = inargs["MCMC"]["nchains"]
         fid = None
 
     # Projection matrix from fe coordinates to eigen coordinates
     num_eigcoord = 25
-    TT = hp.MultiVector(pde.generate_parameter(), num_eigcoord)
+    TT = MultiVector(model.generate_vector(PARAMETER), num_eigcoord)
     for i in range(num_eigcoord):
+        # TODO: is there a better way to to this??
         TT[i].axpy(1.0, V[i])
 
-    for i in range(nchain):
-        print("Iteration ", i, " Chain ", nchain, ":")
+    if inargs["fname"]:
         x0 = generate_starting()
 
-        qoi = TracerSideFlux(ds(2), order_ppoisson, inargs["MCMC"]["nsamples"] + 1)
-        pde.qoi = qoi
-        pde.cal_qoi = True
-        samps, acceptrate, etime = hm.run_MCMC(opts, kern, x0)
+        samps, acceptrate, etime = run_MCMC(opts, kern, x0)
 
         if isinstance(fid, h5py.File):
             samps_data = np.zeros((num_eigcoord, samps.size()))
@@ -521,33 +620,16 @@ if __name__ == "__main__":
 
                 samps_data[:, j] = paramcoord2eigencoord(TT, prior.R, xx).reshape(-1)
 
-            sname = "sample" + str(i)
-            tname = "tracer" + str(i)
-            mname = "mean" + str(i)
+            sname = "sample"
             sampsDataset = fid.create_dataset(
                 sname, (num_eigcoord, samps.size()), dtype=np.float
-            )
-            tracerDataset = fid.create_dataset(
-                tname, (qoi.tracer.data.size,), dtype=np.float
-            )
-            meanDataset = fid.create_dataset(
-                mname, (Vh[hp.PARAMETER].dim(),), dtype=np.float
             )
 
             sampsDataset.attrs["AR"] = acceptrate
             sampsDataset.attrs["etime"] = etime
             sampsDataset[...] = samps_data
-            tracerDataset[...] = qoi.tracer.data
-            meanDataset[...] = samps.Mean()
 
         del samps
 
-    if inargs["MCMC"]["fname"] != "":
-        fid["/"].attrs["NumberNit"] = pde.nit
-        fid["/"].attrs["neval"] = (
-            param2likelihood.GetNumCalls("Evaluate") - nchain * opts["BurnIn"]
-        )
-        fid["/"].attrs["ngrad"] = (
-            param2likelihood.GetNumCalls("Gradient") - nchain * opts["BurnIn"]
-        )
+        fid["/"].attrs["neval"] = param2likelihood.GetNumCalls("Evaluate")
         fid.close()
