@@ -1,12 +1,12 @@
 # Installation
 
 `hIPPYlib-MUQ` builds on [hIPPYlib](https://github.com/hippylib/hippylib)
-version 3.0.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
+version 3.1.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
 [MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.3.0.
 Installations of these packages are summarized here, but please see the
 detailed installation guides given in each github/bitbucket page.
 
-Additional dependencies are 
+Additional dependencies are
 
 - jupyter, matplotlib (for tutorial notebooks)
 - seaborn, statsmodels (for postprocessing)
@@ -18,7 +18,7 @@ easiest way to run `hIPPYlib-MUQ`. The docker image with the installation of
 all the dependencies is available
 [here](https://hub.docker.com/r/ktkimyu/hippylib2muq).
 
-With [Docker](https://www.docker.com/) installed on your system, type: 
+With [Docker](https://www.docker.com/) installed on your system, type:
 ```
 docker run -ti --rm ktkimyu/hippylib2muq
 ```
@@ -26,16 +26,16 @@ Then, `hIPPYlib-MUQ` is available within the generated Docker container.
 
 If you want to run `hIPPYlib-MUQ` using interactive notebooks, please type
 
-``` 
-docker run -ti --rm -p 8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
-``` 
+```
+docker run -ti --rm -p 8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0'
+```
 The notebook will be available at the following address in your web-browser.
 If you want to mount your local directory on docker container, add it with `-v`
 options, e.g., to mount your current directory on /home/fenics/shared/ in
 docker container, type
-``` 
-docker run -ti --rm -v $(pwd):/home/fenics/shared \ 
-           -p 8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0' 
+```
+docker run -ti --rm -v $(pwd):/home/fenics/shared \
+           -p 8888:8888 ktkimyu/hippylib2muq 'jupyter-notebook --ip=0.0.0.0'
 ```
 
 ## Conda
@@ -54,7 +54,7 @@ python hippylib/setup.py install
 ### Installation of MUQ from source codes (Expert user/MUQ developers)
 
 This requires cmake, the GNU Compiler Collection or Clang, and pybind11.
-On macOS, you can have these by installing Xcode Command Line Tools. 
+On macOS, you can have these by installing Xcode Command Line Tools.
 
 To compile and install `MUQ`, type
 
