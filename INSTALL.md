@@ -2,7 +2,7 @@
 
 `hIPPYlib-MUQ` builds on [hIPPYlib](https://github.com/hippylib/hippylib)
 version 3.1.0 with [FEniCS](https://fenicsproject.org/) version 2019.1 and
-[MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.3.0.
+[MUQ](https://bitbucket.org/mituq/muq2/src/master/) version 0.4.0.
 Installations of these packages are summarized here, but please see the
 detailed installation guides given in each github/bitbucket page.
 
@@ -42,13 +42,13 @@ docker run -ti --rm -v $(pwd):/home/fenics/shared \
 
 Conda is also a very convenient way to set up an enviroment to use `hIPPYlib-MUQ`.
 The script below builds a conda enviroment with `FEniCS 2019` and `MUQ`.
-`hIPPYlib 3.0.0` is also downloaded and installed via `pip`.
+`hIPPYlib 3.1.0` is also downloaded and installed via `pip`.
 
 
 ```
 conda create -q -n hippylib2muq -c conda-forge fenics==2019.1.0 muq seaborn statsmodels
 conda activate hippylib2muq
-git clone --depth 1 --branch 3.0.0 https://github.com/hippylib/hippylib.git
+git clone --depth 1 --branch 3.1.0 https://github.com/hippylib/hippylib.git
 python hippylib/setup.py install
 ```
 ### Installation of MUQ from source codes (Expert user/MUQ developers)
